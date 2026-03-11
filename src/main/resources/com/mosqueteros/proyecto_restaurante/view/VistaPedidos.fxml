@@ -18,7 +18,7 @@
 
 <StackPane
     styleClass="root-container"
-    stylesheets="@../vista-mesas.css"
+    stylesheets="@../styles/vista-mesas.css"
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.mosqueteros.proyecto_restaurante.controller.PedidoController">

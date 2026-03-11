@@ -201,7 +201,7 @@ public class LoginController implements Initializable {
                 Thread.sleep(800);
                 Usuario usuario = UsuarioDAO.autenticar(loginStr, password);
                 if (usuario != null) {
-                    SessionUtil.guardarUsuario(usuario);
+                    SessionUtil.saveUser(usuario);
                     return true;
                 }
                 return false;
@@ -231,7 +231,7 @@ public class LoginController implements Initializable {
     }
 
     private void manejarLoginExitoso(String usuarioLogin) {
-        System.out.println("✅ Login exitoso: " + usuarioLogin + " - " + SessionUtil.obtenerRol());
+        System.out.println("✅ Login exitoso: " + usuarioLogin + " - " + SessionUtil.getUserRole());
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mosqueteros/proyecto_restaurante/view/main.fxml"));
             Parent root = loader.load();
@@ -240,7 +240,7 @@ public class LoginController implements Initializable {
             
             Stage stage = (Stage) botIngreso.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Cali Delights - " + SessionUtil.obtenerRol());
+            stage.setTitle("Cali Delights - " + SessionUtil.getUserRole());
             stage.show();
         } catch (Exception e) {
             mostrarBannerError("Error dashboard: " + e.getMessage());

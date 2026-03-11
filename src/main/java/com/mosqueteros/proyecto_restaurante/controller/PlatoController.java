@@ -10,7 +10,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -20,8 +22,8 @@ import java.util.List;
 public class PlatoController {
 
     @FXML private MFXTextField txtBuscarPlato;
-    @FXML private MFXComboBox<CategoriaPlato> cmbFiltroCategoriaPlato;
-    @FXML private MFXComboBox<Estado> cmbFiltroEstadoPlato;
+    @FXML private ComboBox<CategoriaPlato> cmbFiltroCategoriaPlato;
+    @FXML private ComboBox<Estado> cmbFiltroEstadoPlato;
     
     @FXML private TableView<Plato> tblListaPlatos;
     @FXML private TableColumn<Plato, Integer> colPlatId;
@@ -40,6 +42,7 @@ public class PlatoController {
     @FXML private MFXButton btnGuardarPlato;
     @FXML private MFXButton btnCancelarPlato;
     @FXML private MFXButton btnDesactivarPlato;
+    @FXML private VBox boxPlaceholder;
 
     private final ObservableList<Plato> platosObservable = FXCollections.observableArrayList();
     private Plato platoSeleccionado;
@@ -49,7 +52,15 @@ public class PlatoController {
         configurarTabla();
         cargarCategorias();
         cargarEstados();
+
+        // Registrar listener ANTES de cargar datos para detectar el estado inicial
+        platosObservable.addListener((javafx.collections.ListChangeListener<Plato>) c -> {
+            actualizarPlaceholder();
+        });
+
         cargarListado();
+        // Forzar estado inicial por si el listener no disparó
+        actualizarPlaceholder();
 
         tblListaPlatos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -62,6 +73,12 @@ public class PlatoController {
         txtBuscarPlato.textProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroCategoriaPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroEstadoPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
+    }
+
+    private void actualizarPlaceholder() {
+        boolean vacio = platosObservable.isEmpty();
+        boxPlaceholder.setVisible(vacio);
+        boxPlaceholder.setManaged(vacio);
     }
 
     private void configurarTabla() {
@@ -81,7 +98,9 @@ public class PlatoController {
 
     private void cargarEstados() {
         List<Estado> estados = EstadoDAO.listarPorTipo(3);
-        cmbFiltroEstadoPlato.setItems(FXCollections.observableArrayList(estados));
+        ObservableList<Estado> estadosObservable = FXCollections.observableArrayList(estados);
+        cmbFiltroEstadoPlato.setItems(estadosObservable);
+        cmbEstadoPlato.setItems(estadosObservable);
     }
 
     private void cargarListado() {
@@ -90,20 +109,20 @@ public class PlatoController {
     }
 
     private void mostrarDetallePlato(Plato plato) {
-        txtPlatCodigo.setText(plato.obtenerCodigo());
-        txtPlatNombre.setText(plato.obtenerNombre());
-        txtPlatPrecio.setText(plato.obtenerPrecio().toString());
-        txtPlatCosto.setText(plato.obtenerCosto() != null ? plato.obtenerCosto().toString() : "0.00");
+        txtPlatCodigo.setText(plato.getCodigo());
+        txtPlatNombre.setText(plato.getNombre());
+        txtPlatPrecio.setText(plato.getPrecio().toString());
+        txtPlatCosto.setText(plato.getCosto() != null ? plato.getCosto().toString() : "0.00");
         
         for (CategoriaPlato cat : cmbCategoriaPlato.getItems()) {
-            if (cat.obtenerId().equals(plato.obtenerCategoriaPlatoId())) {
+            if (cat.getId().equals(plato.getCategoriaPlatoId())) {
                 cmbCategoriaPlato.selectItem(cat);
                 break;
             }
         }
 
         for (Estado est : cmbEstadoPlato.getItems()) {
-            if (est.obtenerId().equals(plato.obtenerEstId())) {
+            if (est.getId().equals((int)plato.getEstId())) {
                 cmbEstadoPlato.selectItem(est);
                 break;
             }
@@ -113,7 +132,7 @@ public class PlatoController {
     @FXML
     private void prepararNuevoPlato() {
         platoSeleccionado = null;
-        txtPlatCodigo.clear();
+        txtPlatCodigo.setText(PlatoDAO.obtenerSiguienteCodigo());
         txtPlatNombre.clear();
         txtPlatPrecio.clear();
         txtPlatCosto.clear();
@@ -133,17 +152,17 @@ public class PlatoController {
             Estado est = cmbEstadoPlato.getValue();
 
             if (nombre.isEmpty() || cat == null) {
-                mostrarAlerta("Error", "El nombre y la categoría son obligatorios.");
+                mostrarAlerta("Error", "El nombre y la categoría son obligatorias.");
                 return;
             }
 
-            Integer estadoId = (est != null) ? est.obtenerId() : 7; // 7 = Activo por defecto
+            Integer estadoId = (est != null) ? est.getId() : 7; // 7 = Activo por defecto
 
             boolean exito;
             if (platoSeleccionado == null) {
-                exito = PlatoDAO.insertar(nombre, codigo, precio, costo, cat.obtenerId(), estadoId);
+                exito = PlatoDAO.insertar(nombre, codigo, precio, costo, cat.getId(), (long)estadoId);
             } else {
-                exito = PlatoDAO.actualizar(platoSeleccionado.obtenerId(), nombre, codigo, precio, costo, cat.obtenerId(), estadoId);
+                exito = PlatoDAO.actualizar(platoSeleccionado.getId(), nombre, codigo, precio, costo, cat.getId(), (long)estadoId);
             }
 
             if (exito) {
@@ -164,10 +183,10 @@ public class PlatoController {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar Inactivación");
-        alert.setHeaderText("¿Desea inactivar el plato " + platoSeleccionado.obtenerNombre() + "?");
+        alert.setHeaderText("¿Desea inactivar el plato " + platoSeleccionado.getNombre() + "?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            if (PlatoDAO.cambiarEstado(platoSeleccionado.obtenerId(), 9)) {
+            if (PlatoDAO.cambiarEstado(platoSeleccionado.getId(), 9)) {
                 cargarListado();
                 prepararNuevoPlato();
             }
@@ -188,10 +207,10 @@ public class PlatoController {
         Estado estFiltro = cmbFiltroEstadoPlato.getValue();
 
         List<Plato> listaFiltrada = PlatoDAO.listarTodos().stream().filter(p -> {
-            boolean coincideBusqueda = p.obtenerNombre().toLowerCase().contains(busqueda) || 
-                                     p.obtenerCodigo().toLowerCase().contains(busqueda);
-            boolean coincideCat = (catFiltro == null) || (p.obtenerCategoriaPlatoId() == catFiltro.obtenerId());
-            boolean coincideEst = (estFiltro == null) || (p.obtenerEstId() == estFiltro.obtenerId());
+            boolean coincideBusqueda = p.getNombre().toLowerCase().contains(busqueda) || 
+                                     p.getCodigo().toLowerCase().contains(busqueda);
+            boolean coincideCat = (catFiltro == null) || (p.getCategoriaPlatoId() == (long)catFiltro.getId());
+            boolean coincideEst = (estFiltro == null) || (p.getEstId() == (long)estFiltro.getId());
             
             return coincideBusqueda && coincideCat && coincideEst;
         }).toList();

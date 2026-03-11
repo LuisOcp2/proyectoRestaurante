@@ -11,7 +11,7 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(
             "view/login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(App.class.getResource("styles.css").toExternalForm());
+        scene.getStylesheets().add(App.class.getResource("styles/styles.css").toExternalForm());
         stage.setTitle("Cali Delights — Sistema de Gestión");
         stage.setResizable(true);
         stage.setMaximized(true);

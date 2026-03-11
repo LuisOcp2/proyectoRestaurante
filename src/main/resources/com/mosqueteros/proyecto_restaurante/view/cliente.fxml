@@ -140,7 +140,7 @@
         </VBox>
     </children>
    <stylesheets>
-      <URL value="@clientes.css" />
-      <URL value="@../clientes.css" />
+      <URL value="@../styles/clientes.css" />
+      <URL value="@../styles/clientes.css" />
    </stylesheets>
 </AnchorPane>

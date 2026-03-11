@@ -9,13 +9,13 @@ import java.util.List;
 public class EstadoDAO {
     public static List<Estado> listarPorTipo(int tipoEstadoId) {
         List<Estado> lista = new ArrayList<>();
-        String sql = "SELECT est_id, est_nombre, est_descripcion FROM estado WHERE test_id = ? ORDER BY est_nombre";
+        String sql = "SELECT est_id, est_descripcion FROM estado WHERE tes_id = ? ORDER BY est_descripcion";
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, tipoEstadoId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(new Estado(rs.getInt("est_id"), rs.getString("est_nombre")));
+                    lista.add(new Estado(rs.getInt("est_id"), rs.getString("est_descripcion")));
                 }
             }
         } catch (SQLException e) {

@@ -14,11 +14,11 @@ public class CategoriaPlato {
         this.nombre = nombre;
     }
 
-    public Long obtenerId() { return id; }
-    public void establecerId(Long id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String obtenerNombre() { return nombre; }
-    public void establecerNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
     @Override
     public String toString() {

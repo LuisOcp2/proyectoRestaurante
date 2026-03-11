@@ -1,18 +1,18 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
 import com.mosqueteros.proyecto_restaurante.dao.AreaMesaDAO;
-import com.mosqueteros.proyecto_restaurante.dao.EstadoDAO;
 import com.mosqueteros.proyecto_restaurante.dao.MesaDAO;
 import com.mosqueteros.proyecto_restaurante.dao.SedeDAO;
 import com.mosqueteros.proyecto_restaurante.model.AreaMesa;
-import com.mosqueteros.proyecto_restaurante.model.Estado;
 import com.mosqueteros.proyecto_restaurante.model.Mesa;
 import com.mosqueteros.proyecto_restaurante.model.Sede;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -21,30 +21,38 @@ import java.util.List;
 
 public class MesaController {
 
-    @FXML private ComboBox<Sede> cmbFiltroSede;
+    // ── Filtros de listado ────────────────────────────────────────────────────
+    @FXML private ComboBox<Sede>    cmbFiltroSede;
     @FXML private ComboBox<AreaMesa> cmbFiltroArea;
-    @FXML private ComboBox<Estado> cmbFiltroEstado;
-    
-    @FXML private TableView<Mesa> tblListaMesas;
-    @FXML private TableColumn<Mesa, Integer> colNumero;
+    @FXML private ComboBox<String>  cmbFiltroEstado;
+
+    // ── Tabla ─────────────────────────────────────────────────────────────────
+    @FXML private TableView<Mesa>          tblListaMesas;
+    @FXML private TableColumn<Mesa, String>  colNumero;
     @FXML private TableColumn<Mesa, Integer> colCapacidad;
-    @FXML private TableColumn<Mesa, String> colSede;
-    @FXML private TableColumn<Mesa, String> colArea;
-    @FXML private TableColumn<Mesa, String> colEstado;
+    @FXML private TableColumn<Mesa, String>  colSede;
+    @FXML private TableColumn<Mesa, String>  colArea;
+    @FXML private TableColumn<Mesa, String>  colEstado;
 
-    @FXML private MFXTextField txtMesNumero;
-    @FXML private MFXTextField txtMesCapacidad;
-    @FXML private MFXComboBox<Sede> cmbSedeMesa;
+    // ── Formulario ────────────────────────────────────────────────────────────
+    @FXML private MFXTextField          txtMesNumero;
+    @FXML private MFXTextField          txtMesCapacidad;
+    @FXML private MFXComboBox<Sede>     cmbSedeMesa;
     @FXML private MFXComboBox<AreaMesa> cmbAreaMesa;
-    @FXML private MFXComboBox<Estado> cmbEstadoMesa;
+    @FXML private MFXComboBox<String>   cmbEstadoMesa;
 
+    // ── Botones ───────────────────────────────────────────────────────────────
     @FXML private MFXButton btnGuardarMesa;
     @FXML private MFXButton btnNuevoMesa;
     @FXML private MFXButton btnEditarMesa;
-    @FXML private MFXButton btnEliminarMesa;
-    @FXML private MFXButton btnBuscarMesa;
-    @FXML private MFXButton btnLimpiarFiltroMesa;
+    @FXML private MFXButton btnEliminarMesaForm;
+    @FXML private MFXButton btnLimpiarFiltro;
     @FXML private MFXTextField txtBuscarMesa;
+    @FXML private VBox boxPlaceholder;
+
+    /** Estados posibles para la mesa según el ENUM de la BD */
+    private static final ObservableList<String> ESTADOS_MESA =
+        FXCollections.observableArrayList("Disponible", "Ocupada", "Reservada", "Inactiva");
 
     private final ObservableList<Mesa> mesasObservable = FXCollections.observableArrayList();
     private Mesa mesaSeleccionada;
@@ -55,7 +63,15 @@ public class MesaController {
         cargarSedes();
         cargarAreas();
         cargarEstados();
+
+        // Registrar listener ANTES de cargar datos para detectar el estado inicial
+        mesasObservable.addListener((javafx.collections.ListChangeListener<Mesa>) c -> {
+            actualizarPlaceholder();
+        });
+
         cargarListado();
+        // Forzar estado inicial por si el listener no disparó
+        actualizarPlaceholder();
 
         tblListaMesas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -64,17 +80,24 @@ public class MesaController {
             }
         });
 
+        txtBuscarMesa.textProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroSede.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroArea.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroEstado.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
+    }
+
+    private void actualizarPlaceholder() {
+        boolean vacio = mesasObservable.isEmpty();
+        boxPlaceholder.setVisible(vacio);
+        boxPlaceholder.setManaged(vacio);
     }
 
     private void configurarTabla() {
         colNumero.setCellValueFactory(new PropertyValueFactory<>("numero"));
         colCapacidad.setCellValueFactory(new PropertyValueFactory<>("capacidad"));
         colSede.setCellValueFactory(new PropertyValueFactory<>("sedeNombre"));
-        colArea.setCellValueFactory(new PropertyValueFactory<>("areaDesc"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estadoDesc"));
+        colArea.setCellValueFactory(new PropertyValueFactory<>("areaNombre"));
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         tblListaMesas.setItems(mesasObservable);
     }
 
@@ -91,10 +114,9 @@ public class MesaController {
     }
 
     private void cargarEstados() {
-        List<Estado> estados = EstadoDAO.listarPorTipo(5); 
-        cmbFiltroEstado.setItems(FXCollections.observableArrayList(estados));
+        cmbFiltroEstado.setItems(ESTADOS_MESA);
         if (cmbEstadoMesa != null) {
-            cmbEstadoMesa.setItems(FXCollections.observableArrayList(estados));
+            cmbEstadoMesa.setItems(ESTADOS_MESA);
         }
     }
 
@@ -104,32 +126,28 @@ public class MesaController {
     }
 
     private void mostrarDetalleMesa(Mesa mesa) {
-        txtMesNumero.setText(String.valueOf(mesa.obtenerNumero()));
-        txtMesCapacidad.setText(String.valueOf(mesa.obtenerCapacidad()));
-        
+        txtMesNumero.setText(mesa.getNumero());
+        txtMesCapacidad.setText(String.valueOf(mesa.getCapacidad()));
+
         for (Sede s : cmbSedeMesa.getItems()) {
-            if (s.obtenerId().equals(mesa.obtenerSedeId())) {
+            if (s.getId() == mesa.getSedeId()) {
                 cmbSedeMesa.selectItem(s);
                 break;
             }
         }
-        
+
         for (AreaMesa a : cmbAreaMesa.getItems()) {
-            if (a.obtenerId().equals(mesa.obtenerAreaMesaId())) {
+            if (a.getId() == mesa.getAreaId()) {
                 cmbAreaMesa.selectItem(a);
                 break;
             }
         }
 
         if (cmbEstadoMesa != null) {
-            for (Estado e : cmbEstadoMesa.getItems()) {
-                if (e.obtenerId().equals(mesa.obtenerEstId())) {
-                    cmbEstadoMesa.selectItem(e);
-                    break;
-                }
-            }
+            cmbEstadoMesa.selectItem(mesa.getEstado());
         }
-        btnEliminarMesa.setDisable(false);
+
+        btnEliminarMesaForm.setDisable(false);
     }
 
     @FXML
@@ -141,32 +159,32 @@ public class MesaController {
         cmbAreaMesa.getSelectionModel().clearSelection();
         if (cmbEstadoMesa != null) cmbEstadoMesa.getSelectionModel().clearSelection();
         tblListaMesas.getSelectionModel().clearSelection();
-        btnEliminarMesa.setDisable(true);
+        btnEliminarMesaForm.setDisable(true);
     }
 
     @FXML
     private void guardarMesa() {
         try {
-            int numero = Integer.parseInt(txtMesNumero.getText());
-            int capacidad = Integer.parseInt(txtMesCapacidad.getText());
-            Sede sede = cmbSedeMesa.getValue();
-            AreaMesa area = cmbAreaMesa.getValue();
-            Estado est = (cmbEstadoMesa != null) ? cmbEstadoMesa.getValue() : null;
+            String numero  = txtMesNumero.getText().trim();
+            int capacidad  = Integer.parseInt(txtMesCapacidad.getText().trim());
+            Sede sede      = cmbSedeMesa.getValue();
+            AreaMesa area  = cmbAreaMesa.getValue();
+            String estado  = (cmbEstadoMesa != null) ? cmbEstadoMesa.getValue() : "Disponible";
 
-            if (area == null || sede == null) {
-                mostrarAlerta("Error", "El área y la sede son obligatorias.");
+            if (numero.isEmpty() || sede == null) {
+                mostrarAlerta("Error", "El número y la sede son obligatorios.");
                 return;
             }
 
-            long sedeId = sede.obtenerId();
-            long areaMesaId = area.obtenerId();
-            long estadoId = (est != null) ? est.obtenerId() : 15; // 15 = Libre
+            long sedeId  = sede.getId();
+            long areaId  = (area != null && area.getId() != null) ? area.getId() : 0L;
+            if (estado == null) estado = "Disponible";
 
             boolean exito;
             if (mesaSeleccionada == null) {
-                exito = MesaDAO.insertar(numero, capacidad, areaMesaId, sedeId, estadoId);
+                exito = MesaDAO.insertar(numero, capacidad, areaId, sedeId);
             } else {
-                exito = MesaDAO.actualizar(mesaSeleccionada.obtenerId(), numero, capacidad, areaMesaId, sedeId, estadoId);
+                exito = MesaDAO.actualizar(mesaSeleccionada.getId(), numero, capacidad, areaId, sedeId, estado);
             }
 
             if (exito) {
@@ -178,7 +196,7 @@ public class MesaController {
             }
 
         } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Formato numérico inválido.");
+            mostrarAlerta("Error", "La capacidad debe ser un número válido.");
         }
     }
 
@@ -186,17 +204,17 @@ public class MesaController {
     private void desactivarMesa() {
         if (mesaSeleccionada == null) return;
 
-        if (MesaDAO.tienePedidosActivos(mesaSeleccionada.obtenerId())) {
+        if (MesaDAO.tienePedidosActivos(mesaSeleccionada.getId())) {
             mostrarAlerta("Acción denegada", "No se puede inactivar una mesa con pedidos activos.");
             return;
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar Inactivación");
-        alert.setHeaderText("¿Desea inactivar la mesa #" + mesaSeleccionada.obtenerNumero() + "?");
-        
+        alert.setHeaderText("¿Desea inactivar la mesa #" + mesaSeleccionada.getNumero() + "?");
+
         if (alert.showAndWait().get() == ButtonType.OK) {
-            if (MesaDAO.cambiarEstado(mesaSeleccionada.obtenerId(), 15)) {
+            if (MesaDAO.cambiarEstado(mesaSeleccionada.getId(), "Inactiva")) {
                 cargarListado();
                 prepararNuevaMesa();
             }
@@ -229,16 +247,18 @@ public class MesaController {
     }
 
     private void filtrar() {
-        Sede sedeFiltro = cmbFiltroSede.getValue();
-        AreaMesa areaFiltro = cmbFiltroArea.getValue();
-        Estado estFiltro = cmbFiltroEstado.getValue();
+        Sede     sedeFiltro  = cmbFiltroSede.getValue();
+        AreaMesa areaFiltro  = cmbFiltroArea.getValue();
+        String   estFiltro   = cmbFiltroEstado.getValue();
+        String   textFiltro  = txtBuscarMesa.getText().trim().toLowerCase();
 
         List<Mesa> listaFiltrada = MesaDAO.listarTodas().stream().filter(m -> {
-            boolean coincideSede = (sedeFiltro == null) || (m.obtenerSedeId() == sedeFiltro.obtenerId());
-            boolean coincideArea = (areaFiltro == null) || (m.obtenerAreaMesaId() == areaFiltro.obtenerId());
-            boolean coincideEst = (estFiltro == null) || (m.obtenerEstId() == estFiltro.obtenerId());
-            
-            return coincideSede && coincideArea && coincideEst;
+            boolean coincideSede  = (sedeFiltro == null) || (m.getSedeId() == sedeFiltro.getId());
+            boolean coincideArea  = (areaFiltro == null) || (m.getAreaId() == areaFiltro.getId());
+            boolean coincideEst   = (estFiltro  == null) || estFiltro.equalsIgnoreCase(m.getEstado());
+            boolean coincideTexto = textFiltro.isEmpty() ||
+                                    m.getNumero().toLowerCase().contains(textFiltro);
+            return coincideSede && coincideArea && coincideEst && coincideTexto;
         }).toList();
 
         mesasObservable.setAll(listaFiltrada);

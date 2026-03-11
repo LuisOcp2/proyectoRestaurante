@@ -52,35 +52,35 @@ public class Plato {
 
     // ── Getters y Setters ─────────────────────────────────────────────────────
 
-    public long       obtenerId()                       { return id; }
-    public void       establecerId(long id)             { this.id = id; }
+    public long       getId()                       { return id; }
+    public void       setId(long id)             { this.id = id; }
 
-    public String     obtenerNombre()                   { return nombre; }
-    public void       establecerNombre(String n)        { this.nombre = n; }
+    public String     getNombre()                   { return nombre; }
+    public void       setNombre(String n)        { this.nombre = n; }
 
-    public String     obtenerDescripcion()              { return descripcion; }
-    public void       establecerDescripcion(String d)   { this.descripcion = d; }
+    public String     getDescripcion()              { return descripcion; }
+    public void       setDescripcion(String d)   { this.descripcion = d; }
 
-    public String     obtenerCodigo()                   { return codigo; }
-    public void       establecerCodigo(String c)        { this.codigo = c; }
+    public String     getCodigo()                   { return codigo; }
+    public void       setCodigo(String c)        { this.codigo = c; }
 
-    public BigDecimal obtenerPrecio()                   { return precio; }
-    public void       establecerPrecio(BigDecimal p)    { this.precio = p; }
+    public BigDecimal getPrecio()                   { return precio; }
+    public void       setPrecio(BigDecimal p)    { this.precio = p; }
 
-    public BigDecimal obtenerCosto()                 { return costo; }
-    public void       establecerCosto(BigDecimal c)  { this.costo = c; }
+    public BigDecimal getCosto()                 { return costo; }
+    public void       setCosto(BigDecimal c)  { this.costo = c; }
 
-    public long       obtenerCategoriaPlatoId()         { return categoriaPlatoId; }
-    public void       establecerCategoriaPlatoId(long c){ this.categoriaPlatoId = c; }
+    public long       getCategoriaPlatoId()         { return categoriaPlatoId; }
+    public void       setCategoriaPlatoId(long c){ this.categoriaPlatoId = c; }
 
-    public String     obtenerCategoriaDesc()            { return categoriaDesc; }
-    public void       establecerCategoriaDesc(String c) { this.categoriaDesc = c; }
+    public String     getCategoriaDesc()            { return categoriaDesc; }
+    public void       setCategoriaDesc(String c) { this.categoriaDesc = c; }
 
-    public long       obtenerEstId()                    { return estId; }
-    public void       establecerEstId(long e)           { this.estId = e; }
+    public long       getEstId()                    { return estId; }
+    public void       setEstId(long e)           { this.estId = e; }
 
-    public String     obtenerEstadoDesc()               { return estadoDesc; }
-    public void       establecerEstadoDesc(String e)    { this.estadoDesc = e; }
+    public String     getEstadoDesc()               { return estadoDesc; }
+    public void       setEstadoDesc(String e)    { this.estadoDesc = e; }
 
     @Override
     public String toString() {

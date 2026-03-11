@@ -5,7 +5,9 @@ package com.mosqueteros.proyecto_restaurante.model;
  */
 public class AreaMesa {
     private Long id;
+    private Long sedeId;
     private String nombre;
+    private String estado;
 
     public AreaMesa() {}
 
@@ -14,11 +16,17 @@ public class AreaMesa {
         this.nombre = nombre;
     }
 
-    public Long obtenerId() { return id; }
-    public void establecerId(Long id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String obtenerNombre() { return nombre; }
-    public void establecerNombre(String nombre) { this.nombre = nombre; }
+    public Long getSedeId() { return sedeId; }
+    public void setSedeId(Long sedeId) { this.sedeId = sedeId; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
     @Override
     public String toString() {

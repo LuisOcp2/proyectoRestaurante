@@ -40,38 +40,40 @@ public class Pedido {
 
     // ── Getters y Setters ─────────────────────────────────────────────────────
 
-    public long   obtenerId()                         { return id; }
-    public void   establecerId(long id)               { this.id = id; }
+    // ── Getters y Setters ─────────────────────────────────────────────────────
 
-    public Date   obtenerFecha()                      { return fecha; }
-    public void   establecerFecha(Date f)             { this.fecha = f; }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    public String obtenerObservaciones()              { return observaciones; }
-    public void   establecerObservaciones(String o)   { this.observaciones = o; }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
 
-    public long   obtenerMesaId()                     { return mesaId; }
-    public void   establecerMesaId(long m)            { this.mesaId = m; }
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 
-    public int    obtenerMesaNumero()                 { return mesaNumero; }
-    public void   establecerMesaNumero(int m)         { this.mesaNumero = m; }
+    public long getMesaId() { return mesaId; }
+    public void setMesaId(long mesaId) { this.mesaId = mesaId; }
 
-    public long   obtenerUsuarioId()                  { return usuarioId; }
-    public void   establecerUsuarioId(long u)         { this.usuarioId = u; }
+    public int getMesaNumero() { return mesaNumero; }
+    public void setMesaNumero(int mesaNumero) { this.mesaNumero = mesaNumero; }
 
-    public String obtenerUsuarioNombre()              { return usuarioNombre; }
-    public void   establecerUsuarioNombre(String u)   { this.usuarioNombre = u; }
+    public long getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(long usuarioId) { this.usuarioId = usuarioId; }
 
-    public long   obtenerSedeId()                     { return sedeId; }
-    public void   establecerSedeId(long s)            { this.sedeId = s; }
+    public String getUsuarioNombre() { return usuarioNombre; }
+    public void setUsuarioNombre(String usuarioNombre) { this.usuarioNombre = usuarioNombre; }
 
-    public String obtenerSedeNombre()                 { return sedeNombre; }
-    public void   establecerSedeNombre(String s)      { this.sedeNombre = s; }
+    public long getSedeId() { return sedeId; }
+    public void setSedeId(long sedeId) { this.sedeId = sedeId; }
 
-    public long   obtenerEstId()                      { return estId; }
-    public void   establecerEstId(long e)             { this.estId = e; }
+    public String getSedeNombre() { return sedeNombre; }
+    public void setSedeNombre(String sedeNombre) { this.sedeNombre = sedeNombre; }
 
-    public String obtenerEstadoDesc()                 { return estadoDesc; }
-    public void   establecerEstadoDesc(String e)      { this.estadoDesc = e; }
+    public long getEstId() { return estId; }
+    public void setEstId(long estId) { this.estId = estId; }
+
+    public String getEstadoDesc() { return estadoDesc; }
+    public void setEstadoDesc(String estadoDesc) { this.estadoDesc = estadoDesc; }
 
     @Override
     public String toString() {

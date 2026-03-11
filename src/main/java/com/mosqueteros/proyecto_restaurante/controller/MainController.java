@@ -3,7 +3,6 @@ package com.mosqueteros.proyecto_restaurante.controller;
 import com.mosqueteros.proyecto_restaurante.util.SessionUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
-import java.io.IOException;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -33,7 +32,6 @@ import javafx.util.Duration;
 public class MainController {
 
     // ── Topbar ────────────────────────────────────────────────────────────
-    @FXML private MFXButton btnHamburger;
     @FXML private Label     lblTopbarBrand;
     @FXML private Label     lblAvatar;
     @FXML private Label     lblNombreUsuario;
@@ -42,7 +40,6 @@ public class MainController {
 
     // ── Sidebar — Brand ───────────────────────────────────────────────────
     @FXML private VBox  sidebar;
-    @FXML private VBox  sidebarBrandBox;
     @FXML private Label lblSidebarBrand;
     @FXML private Label lblSidebarSub;
 
@@ -110,9 +107,9 @@ public class MainController {
      * Roles: Administrador, Mesero, Cocinero, Cajero.
      */
     public void inicializarDashboard() {
-        String perfil = SessionUtil.obtenerRol();
-        String login  = SessionUtil.obtenerUsuario() != null
-                        ? SessionUtil.obtenerUsuario().obtenerNombre() : "Usuario";
+        String perfil = SessionUtil.getUserRole();
+        String login  = SessionUtil.getUser() != null
+                        ? SessionUtil.getUser().getNombre() : "Usuario";
 
         // ── Topbar ──
         lblAvatar.setText(obtenerIniciales(login));
@@ -485,6 +482,7 @@ public class MainController {
                         Thread.sleep(50);
                     } catch (Exception e) {
                         System.err.println("No se pudo precargar: " + ruta);
+                        e.printStackTrace();
                     }
                 }
                 return null;

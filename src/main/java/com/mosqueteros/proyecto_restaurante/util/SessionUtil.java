@@ -5,19 +5,19 @@ import com.mosqueteros.proyecto_restaurante.model.Usuario;
 public class SessionUtil {
     private static Usuario usuarioActual;
 
-    public static void guardarUsuario(Usuario usuario) { 
-        usuarioActual = usuario; 
-        System.out.println("Sesión de Usuario: " + usuarioActual.obtenerLogin());
+    public static void saveUser(Usuario user) { 
+        usuarioActual = user; 
+        System.out.println("Sesión de Usuario: " + (usuarioActual != null ? usuarioActual.getLogin() : "null"));
     }
     
-    public static Usuario obtenerUsuario() { return usuarioActual; }
+    public static Usuario getUser() { return usuarioActual; }
     
-    public static String obtenerRol() { 
-        return usuarioActual != null ? usuarioActual.obtenerRol() : "Invitado"; 
+    public static String getUserRole() { 
+        return usuarioActual != null ? usuarioActual.getRol() : "Invitado"; 
     }
     
-    public static long obtenerIdUsuario() { 
-        return usuarioActual != null ? usuarioActual.obtenerId() : 0; 
+    public static long getUserId() { 
+        return usuarioActual != null ? usuarioActual.getId() : 0; 
     }
     
     public static void limpiarSesion() { usuarioActual = null; }

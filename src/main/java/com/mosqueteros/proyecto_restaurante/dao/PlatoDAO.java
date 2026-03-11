@@ -147,4 +147,33 @@ public class PlatoDAO {
             throw new RuntimeException("Error al cambiar estado del plato: " + e.getMessage(), e);
         }
     }
+
+    // ── OBTENER SIGUIENTE CÓDIGO ──────────────────────────────────────────────
+
+    /**
+     * Obtiene el siguiente código disponible para un nuevo plato.
+     * Formato: PLT-XXX (ej. PLT-008)
+     */
+    public static String obtenerSiguienteCodigo() {
+        String sql = "SELECT MAX(pla_codigo) AS max_codigo FROM plato WHERE pla_codigo LIKE 'PLT-%'";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+             
+            if (rs.next()) {
+                String maxCodigo = rs.getString("max_codigo");
+                if (maxCodigo != null && maxCodigo.startsWith("PLT-")) {
+                    try {
+                        int num = Integer.parseInt(maxCodigo.substring(4));
+                        return String.format("PLT-%03d", num + 1);
+                    } catch (NumberFormatException e) {
+                        // ignore and use default
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener el siguiente código: " + e.getMessage(), e);
+        }
+        return "PLT-001";
+    }
 }

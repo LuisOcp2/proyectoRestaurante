@@ -37,26 +37,26 @@ public class Usuario {
         );
     }
 
-    public long obtenerId() { return id; }
-    public void establecerId(long id) { this.id = id; }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    public String obtenerNombre() { return nombre; }
-    public void establecerNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String obtenerApellido() { return apellido; }
-    public void establecerApellido(String apellido) { this.apellido = apellido; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public String obtenerLogin() { return login; }
-    public void establecerLogin(String login) { this.login = login; }
+    public String getLogin() { return login; }
+    public void setLogin(String login) { this.login = login; }
 
-    public String obtenerCorreo() { return correo; }
-    public void establecerCorreo(String correo) { this.correo = correo; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-    public String obtenerRol() { return rol; }
-    public void establecerRol(String rol) { this.rol = rol; }
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
 
-    public String obtenerEstado() { return estado; }
-    public void establecerEstado(String estado) { this.estado = estado; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
     @Override
     public String toString() {

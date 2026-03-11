@@ -20,7 +20,7 @@
 -->
 
 <BorderPane styleClass="shell-root"
-            stylesheets="@../main-shell.css,@../styles.css"
+            stylesheets="@../styles/main-shell.css,@../styles/styles.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.mosqueteros.proyecto_restaurante.controller.MainController">

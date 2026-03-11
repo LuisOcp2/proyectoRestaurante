@@ -39,32 +39,34 @@ public class PedidoDetalle {
 
     // ── Getters y Setters ─────────────────────────────────────────────────────
 
-    public long       obtenerId()                         { return id; }
-    public void       establecerId(long id)               { this.id = id; }
+    // ── Getters y Setters ─────────────────────────────────────────────────────
 
-    public long       obtenerPedidoId()                   { return pedidoId; }
-    public void       establecerPedidoId(long p)          { this.pedidoId = p; }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    public long       obtenerPlatoId()                    { return platoId; }
-    public void       establecerPlatoId(long p)           { this.platoId = p; }
+    public long getPedidoId() { return pedidoId; }
+    public void setPedidoId(long pedidoId) { this.pedidoId = pedidoId; }
 
-    public String     obtenerPlatoNombre()                { return platoNombre; }
-    public void       establecerPlatoNombre(String n)     { this.platoNombre = n; }
+    public long getPlatoId() { return platoId; }
+    public void setPlatoId(long platoId) { this.platoId = platoId; }
 
-    public int        obtenerCantidad()                   { return cantidad; }
-    public void       establecerCantidad(int c)           { this.cantidad = c; }
+    public String getPlatoNombre() { return platoNombre; }
+    public void setPlatoNombre(String platoNombre) { this.platoNombre = platoNombre; }
 
-    public BigDecimal obtenerPrecioMomento()              { return precioMomento; }
-    public void       establecerPrecioMomento(BigDecimal p){ this.precioMomento = p; }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 
-    public String     obtenerObservaciones()              { return observaciones; }
-    public void       establecerObservaciones(String o)   { this.observaciones = o; }
+    public BigDecimal getPrecioMomento() { return precioMomento; }
+    public void setPrecioMomento(BigDecimal precioMomento) { this.precioMomento = precioMomento; }
 
-    public long       obtenerEstId()                      { return estId; }
-    public void       establecerEstId(long e)             { this.estId = e; }
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 
-    public String     obtenerEstadoDesc()                 { return estadoDesc; }
-    public void       establecerEstadoDesc(String e)      { this.estadoDesc = e; }
+    public long getEstId() { return estId; }
+    public void setEstId(long estId) { this.estId = estId; }
+
+    public String getEstadoDesc() { return estadoDesc; }
+    public void setEstadoDesc(String estadoDesc) { this.estadoDesc = estadoDesc; }
 
     @Override
     public String toString() {

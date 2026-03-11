@@ -9,7 +9,7 @@ import java.util.List;
 public class CategoriaPlatoDAO {
     public static List<CategoriaPlato> listarTodas() {
         List<CategoriaPlato> lista = new ArrayList<>();
-        String sql = "SELECT cat_id, cat_nombre FROM categoriaplato ORDER BY cat_nombre";
+        String sql = "SELECT cat_id, cat_nombre FROM categoria_plato ORDER BY cat_nombre";
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

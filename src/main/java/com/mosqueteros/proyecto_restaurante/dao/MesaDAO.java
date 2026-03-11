@@ -7,23 +7,31 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * DAO para la tabla `mesa`.
+ *
+ * Esquema real de la BD:
+ *   mesa(mesa_id, sede_id, area_id, mesa_numero, capacidad, x_pos, y_pos,
+ *        estado ENUM('Disponible','Ocupada','Reservada','Inactiva'), ...)
+ *
+ * NOTA: el estado de mesa es un ENUM directo, NO una FK a la tabla `estado`.
+ */
 public class MesaDAO {
 
     private static final String SQL_SELECT =
-        "SELECT m.mes_id, m.mes_numero, m.mes_capacidad, " +
-        "m.arem_id, a.arem_descripcion, " +
-        "m.sede_id, s.sede_nombre, " +
-        "m.est_id, e.est_descripcion " +
+        "SELECT m.mesa_id, m.sede_id, m.area_id, m.mesa_numero, m.capacidad, " +
+        "m.x_pos, m.y_pos, m.estado, " +
+        "s.sede_nombre, " +
+        "a.area_nombre " +
         "FROM mesa m " +
-        "JOIN areamesa a ON m.arem_id = a.arem_id " +
         "JOIN sede s ON m.sede_id = s.sede_id " +
-        "JOIN estado e ON m.est_id = e.est_id ";
+        "LEFT JOIN area_mesa a ON m.area_id = a.area_id ";
 
-    
+    // ── LISTAR ─────────────────────────────────────────────────────────────────
+
     public static List<Mesa> listarTodas() {
         List<Mesa> lista = new ArrayList<>();
-        String sql = SQL_SELECT + "ORDER BY s.sede_nombre, m.mes_numero";
+        String sql = SQL_SELECT + "ORDER BY s.sede_nombre, m.mesa_numero";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -38,7 +46,7 @@ public class MesaDAO {
 
     public static List<Mesa> listarPorSede(long sedeId) {
         List<Mesa> lista = new ArrayList<>();
-        String sql = SQL_SELECT + "WHERE m.sede_id = ? ORDER BY m.mes_numero";
+        String sql = SQL_SELECT + "WHERE m.sede_id = ? ORDER BY m.mesa_numero";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -54,7 +62,7 @@ public class MesaDAO {
     }
 
     public static Mesa buscarPorId(long id) {
-        String sql = SQL_SELECT + "WHERE m.mes_id = ?";
+        String sql = SQL_SELECT + "WHERE m.mesa_id = ?";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -69,38 +77,49 @@ public class MesaDAO {
         return null;
     }
 
+    // ── INSERTAR ───────────────────────────────────────────────────────────────
 
-    public static boolean insertar(int numero, int capacidad, long areaMesaId,
-                                   long sedeId, long estId) {
-        String sql = "INSERT INTO mesa (mes_numero, mes_capacidad, arem_id, sede_id, est_id) " +
-                     "VALUES (?, ?, ?, ?, ?)";
+    /**
+     * Inserta una nueva mesa. El estado inicial es siempre 'Disponible'.
+     * @param numero    Nombre/número de mesa (String: "1", "A1", etc.)
+     * @param capacidad Capacidad de personas
+     * @param areaId    ID del área (puede ser 0 si no aplica)
+     * @param sedeId    ID de la sede
+     */
+    public static boolean insertar(String numero, int capacidad, long areaId, long sedeId) {
+        String sql = "INSERT INTO mesa (sede_id, area_id, mesa_numero, capacidad, estado) " +
+                     "VALUES (?, ?, ?, ?, 'Disponible')";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, numero);
-            ps.setInt(2, capacidad);
-            ps.setLong(3, areaMesaId);
-            ps.setLong(4, sedeId);
-            ps.setLong(5, estId);
+            ps.setLong(1, sedeId);
+            if (areaId > 0) ps.setLong(2, areaId);
+            else            ps.setNull(2, Types.BIGINT);
+            ps.setString(3, numero);
+            ps.setInt(4, capacidad);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("Error al insertar mesa: " + e.getMessage(), e);
         }
     }
 
+    // ── ACTUALIZAR ─────────────────────────────────────────────────────────────
 
-    public static boolean actualizar(long id, int numero, int capacidad, long areaMesaId, long sedeId, long estId) {
-        String sql = "UPDATE mesa SET mes_numero=?, mes_capacidad=?, arem_id=?, sede_id=?, est_id=? WHERE mes_id=?";
+    public static boolean actualizar(long id, String numero, int capacidad,
+                                     long areaId, long sedeId, String estado) {
+        String sql = "UPDATE mesa SET mesa_numero=?, capacidad=?, area_id=?, " +
+                     "sede_id=?, estado=? WHERE mesa_id=?";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, numero);
+            ps.setString(1, numero);
             ps.setInt(2, capacidad);
-            ps.setLong(3, areaMesaId);
+            if (areaId > 0) ps.setLong(3, areaId);
+            else            ps.setNull(3, Types.BIGINT);
             ps.setLong(4, sedeId);
-            ps.setLong(5, estId);
+            ps.setString(5, estado);
             ps.setLong(6, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -108,35 +127,63 @@ public class MesaDAO {
         }
     }
 
-    public static boolean cambiarEstado(long mesId, long estId) {
-        String sql = "UPDATE mesa SET est_id=? WHERE mes_id=?";
+    // ── CAMBIAR ESTADO ─────────────────────────────────────────────────────────
+
+    /**
+     * Cambia el estado de la mesa usando el ENUM directamente.
+     * @param mesaId ID de la mesa
+     * @param estado Uno de: 'Disponible', 'Ocupada', 'Reservada', 'Inactiva'
+     */
+    public static boolean cambiarEstado(long mesaId, String estado) {
+        String sql = "UPDATE mesa SET estado=? WHERE mesa_id=?";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setLong(1, estId);
-            ps.setLong(2, mesId);
+            ps.setString(1, estado);
+            ps.setLong(2, mesaId);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("Error al cambiar estado de mesa: " + e.getMessage(), e);
         }
     }
 
-  
-    public static boolean tienePedidosActivos(long mesId) {
+    // ── VALIDACIONES ───────────────────────────────────────────────────────────
+
+    public static boolean tienePedidosActivos(long mesaId) {
         String sql = "SELECT COUNT(*) FROM pedido p " +
                      "JOIN estado e ON p.est_id = e.est_id " +
-                     "WHERE p.mes_id = ? AND e.est_descripcion IN ('Creado','En Proceso')";
+                     "WHERE p.mesa_id = ? AND e.est_descripcion IN ('Creado','En Proceso')";
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setLong(1, mesId);
+            ps.setLong(1, mesaId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al verificar pedidos activos: " + e.getMessage(), e);
+        }
+        return false;
+    }
+
+    public static boolean mesaTienePedidoActivo(long mesaId, long sedeId) {
+        String sql = "SELECT COUNT(*) FROM pedido p " +
+                     "JOIN estado e ON p.est_id = e.est_id " +
+                     "WHERE p.mesa_id = ? AND p.sede_id = ? " +
+                     "AND e.est_descripcion IN ('Creado','En Proceso')";
+
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, mesaId);
+            ps.setLong(2, sedeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al validar mesa: " + e.getMessage(), e);
         }
         return false;
     }

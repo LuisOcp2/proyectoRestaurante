@@ -25,7 +25,7 @@
 }
 
 .topbar-title {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #000;
     -fx-font-size: 19px;
     -fx-font-weight: 900;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 4, 0.15, 0, 1);
@@ -302,6 +302,7 @@
     -fx-background-radius: 9;
     -fx-pref-height: 36px;
     -fx-font-size: 13px;
+    -fx-fill: #000;
 }
 
 /* ══════════════════════════════════════════════════
@@ -411,6 +412,64 @@
     -fx-pref-height: 36px;
     -fx-font-size: 13px;
     -fx-max-width: Infinity;
+}
+
+.form-combo {
+    -fx-background-color: #F5F3FF;
+    -fx-border-color: #DDD6FE;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-pref-height: 36px;
+    -fx-font-size: 13px;
+    -fx-max-width: Infinity;
+    -fx-text-fill: #1E1B4B;
+    
+}
+
+/* MaterialFX ComboBox Specific Fixes */
+.mfx-combo-box, .mfx-filter-combo-box {
+    -fx-text-fill: #1E1B4B;
+}
+
+.mfx-combo-box .mfx-combo-box-selected-value-container .text,
+.mfx-combo-box .mfx-combo-box-selected-value-container .label,
+.mfx-combo-box .display-node,
+.mfx-combo-box .value-label,
+.mfx-combo-box .prompt-text,
+.mfx-filter-combo-box .prompt-text {
+    -fx-fill: #1E1B4B;
+    -fx-text-fill: #1E1B4B;
+}
+
+.mfx-combo-box {
+    -fx-prompt-text-fill: #A78BFA;
+}
+
+/* Dropdown styling */
+.mfx-combo-box .virtual-flow .mfx-combo-box-list-cell .text,
+.mfx-combo-box .virtual-flow .mfx-combo-box-cell .text,
+.mfx-combo-box-cell .label,
+.mfx-combo-box-list-cell .text,
+.mfx-list-cell .text,
+.mfx-list-cell .label {
+    -fx-fill: #1E1B4B;
+    -fx-text-fill: #1E1B4B;
+}
+
+.mfx-combo-box-cell:hover, .mfx-combo-box-list-cell:hover, .mfx-list-cell:hover {
+    -fx-background-color: #EDE9FE;
+}
+
+.mfx-combo-box-cell:selected, .mfx-combo-box-list-cell:selected, .mfx-list-cell:selected {
+    -fx-background-color: #8B5CF6;
+}
+
+.mfx-combo-box-cell:selected .text, .mfx-combo-box-list-cell:selected .text,
+.mfx-combo-box-cell:selected .label, .mfx-combo-box-list-cell:selected .label,
+.mfx-list-cell:selected .text, .mfx-list-cell:selected .label {
+    -fx-fill: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
 }
 
 .form-textarea {
