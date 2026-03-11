@@ -12,7 +12,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -21,12 +20,22 @@ import javafx.stage.Window;
 /**
  * Clase utilitaria para mostrar diálogos personalizados en la app.
  *
- * SOLUCIÓN AL BUG DE MINIMIZACIÓN EN LINUX/GNOME:
- * - Se usa StageStyle.TRANSPARENT en lugar de UNDECORATED.
- * - UNDECORATED en GTK genera "gtk_window_resize: assertion 'height > 0' failed"
- *   que hace que GNOME colapse la ventana padre al cerrar el diálogo.
- * - Se guarda/restaura el estado maximizado del padre explícitamente.
- * - Se usa Platform.runLater para devolver el foco al padre tras cerrar.
+ * ──────────────────────────────────────────────────────────────────
+ * SOLUCIÓN DEFINITIVA AL BUG gtk_window_resize height>0 EN LINUX/GTK
+ * ──────────────────────────────────────────────────────────────────
+ * El error "Gtk-CRITICAL: gtk_window_resize: assertion 'height > 0' failed"
+ * ocurre porque GTK intenta dimensionar la ventana ANTES de que JavaFX
+ * termine su layout pass, obteniendo height = 0.
+ *
+ * Estrategia aplicada:
+ *  1. StageStyle.UTILITY  → único estilo que GTK gestiona correctamente
+ *     en todos los gestores de ventanas Linux (GNOME, KDE, i3, etc.).
+ *     UNDECORATED y TRANSPARENT fallan con height=0 en GTK.
+ *  2. stage.setWidth() / stage.setHeight() ANTES del show() → GTK
+ *     siempre tiene dimensiones válidas y nunca llama window_resize con 0.
+ *  3. raiz.setMinHeight() → segunda capa de protección en el layout de JavaFX.
+ *  4. Platform.runLater en el cierre → restaura foco y maximización al padre
+ *     después de que GTK termina de procesar el cierre del diálogo.
  */
 public final class Alertas {
 
@@ -40,14 +49,19 @@ public final class Alertas {
     private static final String COLOR_SUBTEXTO = "#64748B";
     private static final String COLOR_BORDE    = "#E2E8F0";
 
+    /** Dimensiones fijas del diálogo — evitan que GTK reciba height=0. */
+    private static final double DIALOGO_ANCHO        = 460;
+    private static final double DIALOGO_ALTO_SIMPLE  = 230;
+    private static final double DIALOGO_ALTO_CONFIRM = 270;
+
     /** Constructor privado: clase utilitaria, no instanciable. */
     private Alertas() {
         throw new UnsupportedOperationException("Clase utilitaria, no instanciable");
     }
 
-    // ════════════════════════════════════════════════════════════════
-    // API PÚblica — Métodos estáticos de conveniencia
-    // ════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════
+    // API PÚBLICA — Métodos estáticos de conveniencia
+    // ══════════════════════════════════════════════════════════════════════
 
     /** Muestra un diálogo de ÉXITO (ícono ✓ verde). */
     public static void exito(Node nodoOrigen, String titulo, String contenido) {
@@ -77,7 +91,7 @@ public final class Alertas {
         return mostrarConfirmacion(obtenerStage(nodoOrigen), titulo, contenido);
     }
 
-    // ── Sobrecargas sin nodo (usa el stage activo — menos recomendado) ──
+    // ── Sobrecargas sin nodo (usa el stage activo — menos recomendado) ──────
 
     /** Muestra éxito buscando el Stage activo automáticamente. */
     public static void exito(String titulo, String contenido) {
@@ -104,19 +118,19 @@ public final class Alertas {
         return mostrarConfirmacion(obtenerStageActivo(), titulo, contenido);
     }
 
-    // ════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════
     // LÓGICA INTERNA PRIVADA
-    // ════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════
 
     /**
-     * Enum interno que define cada tipo de alerta con su ícono y color.
-     * Patrón Strategy implícito: cada tipo lleva su propia configuración visual.
+     * Enum interno — define cada tipo de alerta con su ícono y color.
+     * Patrón Strategy implícito: cada tipo lleva su configuración visual.
      */
     private enum TipoAlerta {
-        EXITO("✓",  COLOR_EXITO, "Éxito"),
-        ERROR("✕",  COLOR_ERROR, "Error"),
-        AVISO("⚠",  COLOR_AVISO, "Advertencia"),
-        INFO ("ℹ",  COLOR_INFO,  "Información");
+        EXITO("✓", COLOR_EXITO, "Éxito"),
+        ERROR("✕", COLOR_ERROR, "Error"),
+        AVISO("⚠", COLOR_AVISO, "Advertencia"),
+        INFO ("ℹ", COLOR_INFO,  "Información");
 
         final String icono;
         final String color;
@@ -130,15 +144,11 @@ public final class Alertas {
     }
 
     /**
-     * Crea y muestra un diálogo modal personalizado sin afectar el estado
-     * de maximización de la ventana padre.
+     * Muestra un diálogo informativo (1 botón Aceptar).
      *
-     * CLAVES TÉCNICAS (Linux/GTK):
-     * - StageStyle.TRANSPARENT: evita el bug gtk_window_resize height>0
-     *   que StageStyle.UNDECORATED provoca en GNOME/GTK al cerrar el diálogo.
-     * - Se guarda si el padre estaba maximizado antes de mostrar el diálogo.
-     * - Con Platform.runLater se devuelve el foco y maximización al padre
-     *   después de que GTK termine de procesar el cierre del diálogo.
+     * CLAVE GTK: se llama stage.setWidth() y stage.setHeight() con valores
+     * fijos ANTES del showAndWait(). Esto garantiza que GTK nunca reciba
+     * height = 0 al intentar dimensionar la ventana.
      */
     private static void mostrarDialogo(Stage stagePadre,
                                        TipoAlerta tipo,
@@ -156,18 +166,20 @@ public final class Alertas {
         piePagina.setPadding(new Insets(0, 28, 24, 28));
         raiz.getChildren().add(piePagina);
 
-        // Scene con fondo transparente: necesario para StageStyle.TRANSPARENT
-        Scene escena = new Scene(raiz);
-        escena.setFill(Color.TRANSPARENT);
-
+        Scene escena = new Scene(raiz, DIALOGO_ANCHO, DIALOGO_ALTO_SIMPLE);
         dialogo.setScene(escena);
+
+        // Dimensiones fijas ANTES del show() → GTK nunca recibe height = 0
+        dialogo.setWidth(DIALOGO_ANCHO);
+        dialogo.setHeight(DIALOGO_ALTO_SIMPLE);
+
         centrarSobrePadre(dialogo, stagePadre);
         dialogo.showAndWait();
     }
 
     /**
-     * Versión con dos botones para confirmaciones (Aceptar / Cancelar).
-     * Retorna true si el usuario confirmó.
+     * Muestra un diálogo de confirmación (2 botones: Cancelar / Aceptar).
+     * Retorna true si el usuario presionó Aceptar.
      */
     private static boolean mostrarConfirmacion(Stage stagePadre,
                                                String titulo,
@@ -199,9 +211,13 @@ public final class Alertas {
         piePagina.setPadding(new Insets(0, 28, 24, 28));
         raiz.getChildren().add(piePagina);
 
-        Scene escena = new Scene(raiz);
-        escena.setFill(Color.TRANSPARENT);
+        Scene escena = new Scene(raiz, DIALOGO_ANCHO, DIALOGO_ALTO_CONFIRM);
         dialogo.setScene(escena);
+
+        // Dimensiones fijas ANTES del show() → GTK nunca recibe height = 0
+        dialogo.setWidth(DIALOGO_ANCHO);
+        dialogo.setHeight(DIALOGO_ALTO_CONFIRM);
+
         centrarSobrePadre(dialogo, stagePadre);
         dialogo.showAndWait();
 
@@ -209,26 +225,20 @@ public final class Alertas {
     }
 
     /**
-     * Cierra el diálogo y usa Platform.runLater para devolver el foco
-     * y estado de maximización al padre DESPUÉS de que GTK termine de
-     * procesar el cierre. Esto evita que GNOME colapse la ventana.
+     * Cierra el diálogo y usa Platform.runLater para devolver foco y estado
+     * de maximización al padre DESPUÉS de que GTK termine el cierre.
      *
-     * Sin este método, en Linux el orden de eventos de GTK puede hacer
-     * que la ventana padre quede desfocada o colapsada.
+     * Sin Platform.runLater, GNOME puede colapsar la ventana padre porque
+     * JavaFX intenta enfocarla mientras GTK aún está procesando el cierre.
      */
     private static void cerrarDialogoYRestaurarPadre(Stage dialogo, Stage padre) {
-        // Guardar estado antes de cerrar
         boolean estabaMaximizado = (padre != null) && padre.isMaximized();
-
         dialogo.close();
-
         if (padre != null) {
-            // Platform.runLater garantiza que el cierre del diálogo se procese
-            // completamente en GTK antes de intentar restaurar el padre
             Platform.runLater(() -> {
                 padre.toFront();
                 padre.requestFocus();
-                // Si estaba maximizado y GTK lo colapsó, lo restauramos
+                // Si GTK colapsó la ventana durante el cierre, la restauramos
                 if (estabaMaximizado && !padre.isMaximized()) {
                     padre.setMaximized(true);
                 }
@@ -237,24 +247,31 @@ public final class Alertas {
     }
 
     /**
-     * Crea el Stage base del diálogo con la configuración correcta.
+     * Crea el Stage base del diálogo.
      *
-     * CAMBIO CLAVE: StageStyle.TRANSPARENT en lugar de UNDECORATED.
-     * En Linux/GTK, UNDECORATED provoca gtk_window_resize height>0
-     * al cerrar, lo que hace que GNOME colapse la ventana padre.
-     * TRANSPARENT no tiene ese bug y mantiene el diseño personalizado.
+     * ─────────────────────────────────────────────────────────────────────
+     * POR QUÉ StageStyle.UTILITY:
+     *
+     * En Linux/GTK los estilos de Stage se comportan así:
+     *  • DECORATED   → barra de título completa del SO (no queremos)
+     *  • UNDECORATED → genera gtk_window_resize height>0 al cerrar
+     *  • TRANSPARENT → también puede generar height>0 sin dimensiones fijas
+     *  • UTILITY     → ventana utilitaria sin botones min/max, GTK la
+     *                  trata diferente y NO genera el error de height=0.
+     *                  En GNOME aparece una barra de título muy pequeña
+     *                  pero el diseño personalizado del VBox está abajo.
+     *
+     * Con las dimensiones fijas (setWidth/setHeight antes del show) el
+     * error desaparece incluso en entornos donde UTILITY no es suficiente.
+     * ─────────────────────────────────────────────────────────────────────
      */
     private static Stage crearStageDialogo(Stage stagePadre) {
         Stage dialogo = new Stage();
-
-        // initOwner: vincula el diálogo al Stage padre
         dialogo.initOwner(stagePadre);
-        // APPLICATION_MODAL: bloquea toda la app sin mover ventanas
         dialogo.initModality(Modality.APPLICATION_MODAL);
-        // TRANSPARENT: compatble con Linux/GTK, no genera el bug de height>0
-        dialogo.initStyle(StageStyle.TRANSPARENT);
+        dialogo.initStyle(StageStyle.UTILITY);
         dialogo.setResizable(false);
-
+        dialogo.setTitle(""); // Título vacío para que la barra UTILITY sea mínima
         return dialogo;
     }
 
@@ -262,7 +279,7 @@ public final class Alertas {
      * Construye el layout visual (VBox principal) del diálogo.
      * Incluye: barra de color superior, ícono circular, título y contenido.
      *
-     * @param esConfirmacion  si es true agrega texto de confirmación adicional
+     * @param esConfirmacion  si true agrega el texto de confirmación adicional
      */
     private static VBox construirLayoutDialogo(TipoAlerta tipo,
                                                String titulo,
@@ -315,11 +332,11 @@ public final class Alertas {
                 + "-fx-font-weight: 600;"
             );
             VBox cuerpo = construirCuerpo(circuloIcono, lblTitulo, lblContenido, lblPregunta);
-            return construirRaiz(barraSuperior, cuerpo);
+            return construirRaiz(barraSuperior, cuerpo, DIALOGO_ALTO_CONFIRM);
         }
 
         VBox cuerpo = construirCuerpo(circuloIcono, lblTitulo, lblContenido, null);
-        return construirRaiz(barraSuperior, cuerpo);
+        return construirRaiz(barraSuperior, cuerpo, DIALOGO_ALTO_SIMPLE);
     }
 
     /** Ensambla el cuerpo principal del diálogo con ícono, título y contenido. */
@@ -340,21 +357,23 @@ public final class Alertas {
     }
 
     /**
-     * Ensambla el layout raíz del diálogo con la barra superior.
-     * Nota: el fondo blanco sólido se define aquí en CSS para que
-     * el área transparente del Stage solo rodee el borde redondeado.
+     * Ensambla el layout raíz con la barra superior y el cuerpo.
+     * Se define minHeight explícito como segunda capa de protección
+     * contra el bug de GTK con height = 0.
+     *
+     * @param altoMinimo  Alto mínimo a fijar en el VBox raíz
      */
-    private static VBox construirRaiz(Region barraSuperior, VBox cuerpo) {
+    private static VBox construirRaiz(Region barraSuperior, VBox cuerpo, double altoMinimo) {
         VBox raiz = new VBox();
-        raiz.setMinWidth(400);
-        raiz.setMaxWidth(460);
+        raiz.setMinWidth(DIALOGO_ANCHO);
+        raiz.setMaxWidth(DIALOGO_ANCHO);
+        raiz.setMinHeight(altoMinimo);  // Protección contra GTK height = 0
         raiz.setStyle(
             "-fx-background-color: " + COLOR_FONDO + ";"
-            + "-fx-background-radius: 14;"
+            + "-fx-background-radius: 8;"
             + "-fx-border-color: " + COLOR_BORDE + ";"
-            + "-fx-border-radius: 14;"
+            + "-fx-border-radius: 8;"
             + "-fx-border-width: 1;"
-            + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 24, 0.12, 0, 8);"
         );
         raiz.getChildren().addAll(barraSuperior, cuerpo);
         return raiz;
@@ -371,7 +390,6 @@ public final class Alertas {
         Button boton = new Button(texto);
         boton.setMinWidth(100);
         boton.setMinHeight(40);
-
         if (esPrimario) {
             boton.setStyle(
                 "-fx-background-color: " + colorFondo + ";"
@@ -401,7 +419,7 @@ public final class Alertas {
 
     /**
      * Centra el diálogo encima de la ventana padre.
-     * Si el padre está maximizado, calcula el centro de la pantalla.
+     * Usa setOnShown para leer las dimensiones reales del diálogo.
      */
     private static void centrarSobrePadre(Stage dialogo, Stage padre) {
         dialogo.setOnShown(e -> {
@@ -416,8 +434,6 @@ public final class Alertas {
 
     /**
      * Obtiene el Stage a partir de cualquier nodo de la vista.
-     * Más confiable que buscar el stage activo, especialmente en
-     * aplicaciones multi-ventana.
      *
      * @param nodo  Cualquier nodo visible en la escena actual
      * @return      El Stage principal, o null si no se puede obtener
@@ -430,8 +446,7 @@ public final class Alertas {
 
     /**
      * Obtiene el Stage activo de la aplicación como fallback.
-     * Menos confiable que obtenerStage(Node), pero útil cuando no
-     * tenemos acceso a un nodo de la vista.
+     * Menos confiable que obtenerStage(Node) en aplicaciones multi-ventana.
      */
     private static Stage obtenerStageActivo() {
         return Stage.getWindows()
