@@ -1,10 +1,10 @@
 package com.mosqueteros.proyecto_restaurante.util;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -12,30 +12,34 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 /**
  * Clase utilitaria para mostrar diálogos personalizados en la app.
  *
  * ──────────────────────────────────────────────────────────────────
- * SOLUCIÓN DEFINITIVA AL BUG gtk_window_resize height>0 EN LINUX/GTK
+ * SOLUCIÓN DEFINITIVA: OVERLAY SIN STAGE SECUNDARIO
  * ──────────────────────────────────────────────────────────────────
- * El error "Gtk-CRITICAL: gtk_window_resize: assertion 'height > 0' failed"
- * ocurre porque GTK intenta dimensionar la ventana ANTES de que JavaFX
- * termine su layout pass, obteniendo height = 0.
+ * El error "gtk_window_resize: assertion 'height > 0' failed" ocurre
+ * porque CUALQUIER Stage secundario en Linux/GTK (UNDECORATED, TRANSPARENT,
+ * UTILITY, incluso DECORATED) puede provocar este bug al cerrarse, ya que
+ * GTK intenta redimensionar la ventana padre al recuperar el foco.
  *
- * Estrategia aplicada:
- *  1. StageStyle.UTILITY  → único estilo que GTK gestiona correctamente
- *     en todos los gestores de ventanas Linux (GNOME, KDE, i3, etc.).
- *     UNDECORATED y TRANSPARENT fallan con height=0 en GTK.
- *  2. stage.setWidth() / stage.setHeight() ANTES del show() → GTK
- *     siempre tiene dimensiones válidas y nunca llama window_resize con 0.
- *  3. raiz.setMinHeight() → segunda capa de protección en el layout de JavaFX.
- *  4. Platform.runLater en el cierre → restaura foco y maximización al padre
- *     después de que GTK termina de procesar el cierre del diálogo.
+ * La UNICA solucion real es NO abrir ningun Stage secundario.
+ *
+ * Esta implementacion inyecta el dialogo directamente como un nodo
+ * hijo del StackPane raiz de la ventana principal (overlay), cubriendo
+ * el contenido con un fondo oscuro semitransparente. El resultado visual
+ * es identico a un dialogo modal, pero GTK nunca ve una segunda ventana.
+ *
+ * Uso:
+ *   - Registrar el contenedor raiz una sola vez en MainController:
+ *       Alertas.registrarContenedor(contenidoPrincipal);
+ *   - Llamar normalmente:
+ *       Alertas.exito(nodo, "Titulo", "Mensaje");
+ *       boolean ok = Alertas.confirmar(nodo, "Titulo", "Mensaje");
  */
 public final class Alertas {
 
@@ -49,10 +53,12 @@ public final class Alertas {
     private static final String COLOR_SUBTEXTO = "#64748B";
     private static final String COLOR_BORDE    = "#E2E8F0";
 
-    /** Dimensiones fijas del diálogo — evitan que GTK reciba height=0. */
-    private static final double DIALOGO_ANCHO        = 460;
-    private static final double DIALOGO_ALTO_SIMPLE  = 230;
-    private static final double DIALOGO_ALTO_CONFIRM = 270;
+    /**
+     * Referencia al StackPane raiz de la ventana principal.
+     * Se registra una vez desde MainController.inicializarDashboard().
+     * El overlay del dialogo se inserta como hijo de este StackPane.
+     */
+    private static StackPane contenedorRaiz = null;
 
     /** Constructor privado: clase utilitaria, no instanciable. */
     private Alertas() {
@@ -60,72 +66,83 @@ public final class Alertas {
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // API PÚBLICA — Métodos estáticos de conveniencia
+    // REGISTRO DEL CONTENEDOR
     // ══════════════════════════════════════════════════════════════════════
 
-    /** Muestra un diálogo de ÉXITO (ícono ✓ verde). */
+    /**
+     * Registra el StackPane raiz donde se inyectaran los overlays.
+     * Debe llamarse UNA SOLA VEZ desde MainController.inicializarDashboard().
+     *
+     * @param contenedor  El StackPane @FXML "contenidoPrincipal" del main.fxml
+     */
+    public static void registrarContenedor(StackPane contenedor) {
+        contenedorRaiz = contenedor;
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // API PUBLICA
+    // ══════════════════════════════════════════════════════════════════════
+
+    /** Muestra un dialogo de EXITO (icono verde). */
     public static void exito(Node nodoOrigen, String titulo, String contenido) {
-        mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.EXITO, titulo, contenido);
+        mostrarOverlay(TipoAlerta.EXITO, titulo, contenido, false, null);
     }
 
-    /** Muestra un diálogo de ERROR (ícono ✕ rojo). */
+    /** Muestra un dialogo de ERROR (icono rojo). */
     public static void error(Node nodoOrigen, String titulo, String contenido) {
-        mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.ERROR, titulo, contenido);
+        mostrarOverlay(TipoAlerta.ERROR, titulo, contenido, false, null);
     }
 
-    /** Muestra un diálogo de ADVERTENCIA (ícono ⚠ ámbar). */
+    /** Muestra un dialogo de ADVERTENCIA (icono ambar). */
     public static void aviso(Node nodoOrigen, String titulo, String contenido) {
-        mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.AVISO, titulo, contenido);
+        mostrarOverlay(TipoAlerta.AVISO, titulo, contenido, false, null);
     }
 
-    /** Muestra un diálogo de INFORMACIÓN (ícono ℹ índigo). */
+    /** Muestra un dialogo de INFORMACION (icono indigo). */
     public static void informacion(Node nodoOrigen, String titulo, String contenido) {
-        mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.INFO, titulo, contenido);
+        mostrarOverlay(TipoAlerta.INFO, titulo, contenido, false, null);
+    }
+
+    /** Muestra un dialogo de EXITO sin nodo origen. */
+    public static void exito(String titulo, String contenido) {
+        mostrarOverlay(TipoAlerta.EXITO, titulo, contenido, false, null);
+    }
+
+    /** Muestra un dialogo de ERROR sin nodo origen. */
+    public static void error(String titulo, String contenido) {
+        mostrarOverlay(TipoAlerta.ERROR, titulo, contenido, false, null);
+    }
+
+    /** Muestra un dialogo de ADVERTENCIA sin nodo origen. */
+    public static void aviso(String titulo, String contenido) {
+        mostrarOverlay(TipoAlerta.AVISO, titulo, contenido, false, null);
+    }
+
+    /** Muestra un dialogo de INFORMACION sin nodo origen. */
+    public static void informacion(String titulo, String contenido) {
+        mostrarOverlay(TipoAlerta.INFO, titulo, contenido, false, null);
     }
 
     /**
-     * Muestra un diálogo de CONFIRMACIÓN con botones Aceptar y Cancelar.
-     * @return true si el usuario presionó Aceptar, false si canceló.
+     * Muestra un dialogo de CONFIRMACION (Aceptar / Cancelar).
+     * BLOQUEA el hilo de JavaFX con espera activa hasta que el usuario responda.
+     *
+     * @return true si el usuario presiono Aceptar, false si cancelo.
      */
     public static boolean confirmar(Node nodoOrigen, String titulo, String contenido) {
-        return mostrarConfirmacion(obtenerStage(nodoOrigen), titulo, contenido);
+        return mostrarOverlayConfirmacion(titulo, contenido);
     }
 
-    // ── Sobrecargas sin nodo (usa el stage activo — menos recomendado) ──────
-
-    /** Muestra éxito buscando el Stage activo automáticamente. */
-    public static void exito(String titulo, String contenido) {
-        mostrarDialogo(obtenerStageActivo(), TipoAlerta.EXITO, titulo, contenido);
-    }
-
-    /** Muestra error buscando el Stage activo automáticamente. */
-    public static void error(String titulo, String contenido) {
-        mostrarDialogo(obtenerStageActivo(), TipoAlerta.ERROR, titulo, contenido);
-    }
-
-    /** Muestra aviso buscando el Stage activo automáticamente. */
-    public static void aviso(String titulo, String contenido) {
-        mostrarDialogo(obtenerStageActivo(), TipoAlerta.AVISO, titulo, contenido);
-    }
-
-    /** Muestra información buscando el Stage activo automáticamente. */
-    public static void informacion(String titulo, String contenido) {
-        mostrarDialogo(obtenerStageActivo(), TipoAlerta.INFO, titulo, contenido);
-    }
-
-    /** Muestra confirmación buscando el Stage activo automáticamente. */
+    /** Muestra confirmacion sin nodo origen. */
     public static boolean confirmar(String titulo, String contenido) {
-        return mostrarConfirmacion(obtenerStageActivo(), titulo, contenido);
+        return mostrarOverlayConfirmacion(titulo, contenido);
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // LÓGICA INTERNA PRIVADA
+    // LOGICA INTERNA
     // ══════════════════════════════════════════════════════════════════════
 
-    /**
-     * Enum interno — define cada tipo de alerta con su ícono y color.
-     * Patrón Strategy implícito: cada tipo lleva su configuración visual.
-     */
+    /** Enum interno con icono y color por tipo de alerta. */
     private enum TipoAlerta {
         EXITO("✓", COLOR_EXITO, "Éxito"),
         ERROR("✕", COLOR_ERROR, "Error"),
@@ -136,256 +153,225 @@ public final class Alertas {
         final String color;
         final String etiquetaDefecto;
 
-        TipoAlerta(String icono, String color, String etiquetaDefecto) {
+        TipoAlerta(String icono, String color, String etiqueta) {
             this.icono           = icono;
             this.color           = color;
-            this.etiquetaDefecto = etiquetaDefecto;
+            this.etiquetaDefecto = etiqueta;
         }
     }
 
     /**
-     * Muestra un diálogo informativo (1 botón Aceptar).
-     *
-     * CLAVE GTK: se llama stage.setWidth() y stage.setHeight() con valores
-     * fijos ANTES del showAndWait(). Esto garantiza que GTK nunca reciba
-     * height = 0 al intentar dimensionar la ventana.
+     * Muestra un dialogo informativo (1 boton) como overlay.
+     * No bloquea el hilo — el usuario solo cierra con Aceptar.
      */
-    private static void mostrarDialogo(Stage stagePadre,
-                                       TipoAlerta tipo,
+    private static void mostrarOverlay(TipoAlerta tipo,
                                        String titulo,
-                                       String contenido) {
-        Stage dialogo = crearStageDialogo(stagePadre);
+                                       String contenido,
+                                       boolean esConfirmacion,
+                                       Runnable callbackAceptar) {
+        Platform.runLater(() -> {
+            StackPane raiz = obtenerContenedor();
+            if (raiz == null) return;
 
-        VBox raiz = construirLayoutDialogo(tipo, titulo, contenido, false);
+            // Fondo oscuro semitransparente que cubre todo el contenedor
+            Rectangle fondo = new Rectangle();
+            fondo.widthProperty().bind(raiz.widthProperty());
+            fondo.heightProperty().bind(raiz.heightProperty());
+            fondo.setFill(Color.rgb(0, 0, 0, 0.45));
 
-        Button btnAceptar = crearBoton("Aceptar", tipo.color, true);
-        btnAceptar.setOnAction(e -> cerrarDialogoYRestaurarPadre(dialogo, stagePadre));
+            VBox tarjeta = construirTarjeta(tipo, titulo, contenido);
 
-        HBox piePagina = new HBox(btnAceptar);
-        piePagina.setAlignment(Pos.CENTER_RIGHT);
-        piePagina.setPadding(new Insets(0, 28, 24, 28));
-        raiz.getChildren().add(piePagina);
+            // Boton Aceptar
+            Button btnAceptar = crearBoton("Aceptar", tipo.color, true);
 
-        Scene escena = new Scene(raiz, DIALOGO_ANCHO, DIALOGO_ALTO_SIMPLE);
-        dialogo.setScene(escena);
+            HBox pie = new HBox(btnAceptar);
+            pie.setAlignment(Pos.CENTER_RIGHT);
+            pie.setPadding(new Insets(0, 28, 24, 28));
+            tarjeta.getChildren().add(pie);
 
-        // Dimensiones fijas ANTES del show() → GTK nunca recibe height = 0
-        dialogo.setWidth(DIALOGO_ANCHO);
-        dialogo.setHeight(DIALOGO_ALTO_SIMPLE);
+            StackPane overlay = new StackPane(fondo, tarjeta);
+            StackPane.setAlignment(tarjeta, Pos.CENTER);
 
-        centrarSobrePadre(dialogo, stagePadre);
-        dialogo.showAndWait();
+            // Animacion de entrada
+            overlay.setOpacity(0);
+            raiz.getChildren().add(overlay);
+            overlay.toFront();
+
+            FadeTransition entrada = new FadeTransition(Duration.millis(180), overlay);
+            entrada.setFromValue(0);
+            entrada.setToValue(1);
+            entrada.play();
+
+            // Al presionar Aceptar: fade-out y remover del StackPane
+            btnAceptar.setOnAction(e -> {
+                FadeTransition salida = new FadeTransition(Duration.millis(150), overlay);
+                salida.setFromValue(1);
+                salida.setToValue(0);
+                salida.setOnFinished(ev -> {
+                    raiz.getChildren().remove(overlay);
+                    if (callbackAceptar != null) callbackAceptar.run();
+                });
+                salida.play();
+            });
+        });
     }
 
     /**
-     * Muestra un diálogo de confirmación (2 botones: Cancelar / Aceptar).
-     * Retorna true si el usuario presionó Aceptar.
+     * Muestra un dialogo de confirmacion como overlay y BLOQUEA
+     * el hilo de JavaFX con espera activa hasta que el usuario responda.
+     *
+     * Usa un objeto de bloqueo (Object.wait/notify) para simular
+     * el comportamiento de showAndWait() sin abrir ningun Stage.
+     *
+     * @return true si el usuario presiono Aceptar.
      */
-    private static boolean mostrarConfirmacion(Stage stagePadre,
-                                               String titulo,
-                                               String contenido) {
-        Stage dialogo = crearStageDialogo(stagePadre);
+    private static boolean mostrarOverlayConfirmacion(String titulo, String contenido) {
+        // Array para capturar resultado desde el lambda
         final boolean[] resultado = {false};
+        // Objeto de sincronizacion para bloquear el hilo actual
+        final Object bloqueo = new Object();
 
-        VBox raiz = construirLayoutDialogo(TipoAlerta.AVISO, titulo, contenido, true);
+        Platform.runLater(() -> {
+            StackPane raiz = obtenerContenedor();
+            if (raiz == null) {
+                // Sin contenedor: no se puede mostrar, desbloqueamos de inmediato
+                synchronized (bloqueo) { bloqueo.notify(); }
+                return;
+            }
 
-        Button btnAceptar = crearBoton("Aceptar", COLOR_ERROR, true);
-        btnAceptar.setOnAction(e -> {
-            resultado[0] = true;
-            cerrarDialogoYRestaurarPadre(dialogo, stagePadre);
+            Rectangle fondo = new Rectangle();
+            fondo.widthProperty().bind(raiz.widthProperty());
+            fondo.heightProperty().bind(raiz.heightProperty());
+            fondo.setFill(Color.rgb(0, 0, 0, 0.45));
+
+            VBox tarjeta = construirTarjeta(TipoAlerta.AVISO, titulo, contenido);
+
+            // Texto adicional de confirmacion
+            Label lblExtra = new Label("¿Deseas continuar con esta acción?");
+            lblExtra.setStyle(
+                "-fx-font-size: 12px;"
+                + "-fx-text-fill: " + COLOR_AVISO + ";"
+                + "-fx-font-weight: 600;"
+            );
+            tarjeta.getChildren().add(lblExtra);
+
+            // Botones
+            Button btnAceptar  = crearBoton("Aceptar",   COLOR_ERROR, true);
+            Button btnCancelar = crearBoton("Cancelar",  COLOR_BORDE, false);
+            btnCancelar.setStyle(
+                btnCancelar.getStyle()
+                + "-fx-text-fill: " + COLOR_SUBTEXTO + ";"
+                + "-fx-border-color: " + COLOR_BORDE + ";"
+            );
+
+            Region espacio = new Region();
+            HBox.setHgrow(espacio, Priority.ALWAYS);
+            HBox pie = new HBox(10, btnCancelar, espacio, btnAceptar);
+            pie.setAlignment(Pos.CENTER);
+            pie.setPadding(new Insets(0, 28, 24, 28));
+            tarjeta.getChildren().add(pie);
+
+            StackPane overlay = new StackPane(fondo, tarjeta);
+            StackPane.setAlignment(tarjeta, Pos.CENTER);
+
+            overlay.setOpacity(0);
+            raiz.getChildren().add(overlay);
+            overlay.toFront();
+
+            FadeTransition entrada = new FadeTransition(Duration.millis(180), overlay);
+            entrada.setFromValue(0);
+            entrada.setToValue(1);
+            entrada.play();
+
+            // Accion comun: cerrar overlay y notificar al hilo bloqueado
+            Runnable cerrar = () -> {
+                FadeTransition salida = new FadeTransition(Duration.millis(150), overlay);
+                salida.setFromValue(1);
+                salida.setToValue(0);
+                salida.setOnFinished(ev -> {
+                    raiz.getChildren().remove(overlay);
+                    synchronized (bloqueo) { bloqueo.notify(); }
+                });
+                salida.play();
+            };
+
+            btnAceptar.setOnAction(e -> {
+                resultado[0] = true;
+                cerrar.run();
+            });
+            btnCancelar.setOnAction(e -> cerrar.run());
         });
 
-        Button btnCancelar = crearBoton("Cancelar", COLOR_BORDE, false);
-        btnCancelar.setStyle(
-            btnCancelar.getStyle()
-            + "-fx-text-fill: " + COLOR_SUBTEXTO + ";"
-            + "-fx-border-color: " + COLOR_BORDE + ";"
-        );
-        btnCancelar.setOnAction(e -> cerrarDialogoYRestaurarPadre(dialogo, stagePadre));
-
-        Region espaciador = new Region();
-        HBox.setHgrow(espaciador, Priority.ALWAYS);
-
-        HBox piePagina = new HBox(10, btnCancelar, espaciador, btnAceptar);
-        piePagina.setAlignment(Pos.CENTER);
-        piePagina.setPadding(new Insets(0, 28, 24, 28));
-        raiz.getChildren().add(piePagina);
-
-        Scene escena = new Scene(raiz, DIALOGO_ANCHO, DIALOGO_ALTO_CONFIRM);
-        dialogo.setScene(escena);
-
-        // Dimensiones fijas ANTES del show() → GTK nunca recibe height = 0
-        dialogo.setWidth(DIALOGO_ANCHO);
-        dialogo.setHeight(DIALOGO_ALTO_CONFIRM);
-
-        centrarSobrePadre(dialogo, stagePadre);
-        dialogo.showAndWait();
+        // Bloquear el hilo llamante hasta que el usuario responda
+        // (solo si NO estamos ya en el hilo de JavaFX — proteccion extra)
+        if (!Platform.isFxApplicationThread()) {
+            synchronized (bloqueo) {
+                try { bloqueo.wait(30_000); } // timeout de 30s por seguridad
+                catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
+            }
+        }
 
         return resultado[0];
     }
 
     /**
-     * Cierra el diálogo y usa Platform.runLater para devolver foco y estado
-     * de maximización al padre DESPUÉS de que GTK termine el cierre.
-     *
-     * Sin Platform.runLater, GNOME puede colapsar la ventana padre porque
-     * JavaFX intenta enfocarla mientras GTK aún está procesando el cierre.
+     * Construye la tarjeta visual del dialogo (sin los botones).
+     * Los botones se agregan por separado segun el tipo de dialogo.
      */
-    private static void cerrarDialogoYRestaurarPadre(Stage dialogo, Stage padre) {
-        boolean estabaMaximizado = (padre != null) && padre.isMaximized();
-        dialogo.close();
-        if (padre != null) {
-            Platform.runLater(() -> {
-                padre.toFront();
-                padre.requestFocus();
-                // Si GTK colapsó la ventana durante el cierre, la restauramos
-                if (estabaMaximizado && !padre.isMaximized()) {
-                    padre.setMaximized(true);
-                }
-            });
-        }
-    }
+    private static VBox construirTarjeta(TipoAlerta tipo, String titulo, String contenido) {
+        // Barra superior de color
+        Region barra = new Region();
+        barra.setPrefHeight(6);
+        barra.setMaxWidth(Double.MAX_VALUE);
+        barra.setStyle("-fx-background-color: " + tipo.color + ";"
+                     + "-fx-background-radius: 14 14 0 0;");
 
-    /**
-     * Crea el Stage base del diálogo.
-     *
-     * ─────────────────────────────────────────────────────────────────────
-     * POR QUÉ StageStyle.UTILITY:
-     *
-     * En Linux/GTK los estilos de Stage se comportan así:
-     *  • DECORATED   → barra de título completa del SO (no queremos)
-     *  • UNDECORATED → genera gtk_window_resize height>0 al cerrar
-     *  • TRANSPARENT → también puede generar height>0 sin dimensiones fijas
-     *  • UTILITY     → ventana utilitaria sin botones min/max, GTK la
-     *                  trata diferente y NO genera el error de height=0.
-     *                  En GNOME aparece una barra de título muy pequeña
-     *                  pero el diseño personalizado del VBox está abajo.
-     *
-     * Con las dimensiones fijas (setWidth/setHeight antes del show) el
-     * error desaparece incluso en entornos donde UTILITY no es suficiente.
-     * ─────────────────────────────────────────────────────────────────────
-     */
-    private static Stage crearStageDialogo(Stage stagePadre) {
-        Stage dialogo = new Stage();
-        dialogo.initOwner(stagePadre);
-        dialogo.initModality(Modality.APPLICATION_MODAL);
-        dialogo.initStyle(StageStyle.UTILITY);
-        dialogo.setResizable(false);
-        dialogo.setTitle(""); // Título vacío para que la barra UTILITY sea mínima
-        return dialogo;
-    }
-
-    /**
-     * Construye el layout visual (VBox principal) del diálogo.
-     * Incluye: barra de color superior, ícono circular, título y contenido.
-     *
-     * @param esConfirmacion  si true agrega el texto de confirmación adicional
-     */
-    private static VBox construirLayoutDialogo(TipoAlerta tipo,
-                                               String titulo,
-                                               String contenido,
-                                               boolean esConfirmacion) {
-        Region barraSuperior = new Region();
-        barraSuperior.setPrefHeight(6);
-        barraSuperior.setMaxWidth(Double.MAX_VALUE);
-        barraSuperior.setStyle("-fx-background-color: " + tipo.color + ";");
-
+        // Icono circular
         Label lblIcono = new Label(tipo.icono);
-        lblIcono.setStyle(
-            "-fx-font-size: 22px;"
-            + "-fx-text-fill: white;"
-            + "-fx-font-weight: bold;"
-        );
-        StackPane circuloIcono = new StackPane(lblIcono);
-        circuloIcono.setPrefSize(52, 52);
-        circuloIcono.setMinSize(52, 52);
-        circuloIcono.setMaxSize(52, 52);
-        circuloIcono.setStyle(
-            "-fx-background-color: " + tipo.color + ";"
-            + "-fx-background-radius: 50;"
-        );
+        lblIcono.setStyle("-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;");
+        StackPane circulo = new StackPane(lblIcono);
+        circulo.setPrefSize(52, 52);
+        circulo.setMinSize(52, 52);
+        circulo.setMaxSize(52, 52);
+        circulo.setStyle("-fx-background-color: " + tipo.color + "; -fx-background-radius: 50;");
 
+        // Titulo
         String tituloFinal = (titulo == null || titulo.isBlank()) ? tipo.etiquetaDefecto : titulo;
         Label lblTitulo = new Label(tituloFinal);
-        lblTitulo.setStyle(
-            "-fx-font-size: 17px;"
-            + "-fx-font-weight: bold;"
-            + "-fx-text-fill: " + COLOR_TEXTO + ";"
-            + "-fx-wrap-text: true;"
-        );
+        lblTitulo.setStyle("-fx-font-size: 17px; -fx-font-weight: bold;"
+                         + "-fx-text-fill: " + COLOR_TEXTO + "; -fx-wrap-text: true;");
 
+        // Contenido
         Label lblContenido = new Label(contenido);
-        lblContenido.setStyle(
-            "-fx-font-size: 13.5px;"
-            + "-fx-text-fill: " + COLOR_SUBTEXTO + ";"
-            + "-fx-wrap-text: true;"
-            + "-fx-line-spacing: 2;"
-        );
+        lblContenido.setStyle("-fx-font-size: 13.5px;"
+                            + "-fx-text-fill: " + COLOR_SUBTEXTO + ";"
+                            + "-fx-wrap-text: true; -fx-line-spacing: 2;");
         lblContenido.setWrapText(true);
         lblContenido.setMaxWidth(320);
 
-        if (esConfirmacion) {
-            Label lblPregunta = new Label("¿Deseas continuar con esta acción?");
-            lblPregunta.setStyle(
-                "-fx-font-size: 12px;"
-                + "-fx-text-fill: " + COLOR_AVISO + ";"
-                + "-fx-font-weight: 600;"
-            );
-            VBox cuerpo = construirCuerpo(circuloIcono, lblTitulo, lblContenido, lblPregunta);
-            return construirRaiz(barraSuperior, cuerpo, DIALOGO_ALTO_CONFIRM);
-        }
+        HBox fila = new HBox(16, circulo, lblTitulo);
+        fila.setAlignment(Pos.CENTER_LEFT);
 
-        VBox cuerpo = construirCuerpo(circuloIcono, lblTitulo, lblContenido, null);
-        return construirRaiz(barraSuperior, cuerpo, DIALOGO_ALTO_SIMPLE);
-    }
-
-    /** Ensambla el cuerpo principal del diálogo con ícono, título y contenido. */
-    private static VBox construirCuerpo(StackPane icono,
-                                        Label titulo,
-                                        Label contenido,
-                                        Label extra) {
-        VBox cuerpo = new VBox(16);
+        VBox cuerpo = new VBox(16, fila, lblContenido);
         cuerpo.setPadding(new Insets(28, 28, 20, 28));
         cuerpo.setAlignment(Pos.TOP_LEFT);
 
-        HBox filaIconoTitulo = new HBox(16, icono, titulo);
-        filaIconoTitulo.setAlignment(Pos.CENTER_LEFT);
-
-        cuerpo.getChildren().addAll(filaIconoTitulo, contenido);
-        if (extra != null) cuerpo.getChildren().add(extra);
-        return cuerpo;
-    }
-
-    /**
-     * Ensambla el layout raíz con la barra superior y el cuerpo.
-     * Se define minHeight explícito como segunda capa de protección
-     * contra el bug de GTK con height = 0.
-     *
-     * @param altoMinimo  Alto mínimo a fijar en el VBox raíz
-     */
-    private static VBox construirRaiz(Region barraSuperior, VBox cuerpo, double altoMinimo) {
-        VBox raiz = new VBox();
-        raiz.setMinWidth(DIALOGO_ANCHO);
-        raiz.setMaxWidth(DIALOGO_ANCHO);
-        raiz.setMinHeight(altoMinimo);  // Protección contra GTK height = 0
-        raiz.setStyle(
+        // Tarjeta completa
+        VBox tarjeta = new VBox(barra, cuerpo);
+        tarjeta.setMinWidth(420);
+        tarjeta.setMaxWidth(460);
+        tarjeta.setStyle(
             "-fx-background-color: " + COLOR_FONDO + ";"
-            + "-fx-background-radius: 8;"
+            + "-fx-background-radius: 14;"
             + "-fx-border-color: " + COLOR_BORDE + ";"
-            + "-fx-border-radius: 8;"
+            + "-fx-border-radius: 14;"
             + "-fx-border-width: 1;"
+            + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 32, 0.15, 0, 10);"
         );
-        raiz.getChildren().addAll(barraSuperior, cuerpo);
-        return raiz;
+        return tarjeta;
     }
 
-    /**
-     * Crea un botón estilizado consistente con el diseño de Cali Delights.
-     *
-     * @param texto      Texto del botón
-     * @param colorFondo Color de fondo en hex
-     * @param esPrimario Si es true tiene fondo sólido, si no es outline
-     */
+    /** Crea un boton estilizado del sistema Cali Delights. */
     private static Button crearBoton(String texto, String colorFondo, boolean esPrimario) {
         Button boton = new Button(texto);
         boton.setMinWidth(100);
@@ -394,74 +380,37 @@ public final class Alertas {
             boton.setStyle(
                 "-fx-background-color: " + colorFondo + ";"
                 + "-fx-text-fill: white;"
-                + "-fx-font-size: 13.5px;"
-                + "-fx-font-weight: 600;"
-                + "-fx-background-radius: 8;"
-                + "-fx-cursor: hand;"
+                + "-fx-font-size: 13.5px; -fx-font-weight: 600;"
+                + "-fx-background-radius: 8; -fx-cursor: hand;"
                 + "-fx-padding: 10 22 10 22;"
             );
         } else {
             boton.setStyle(
                 "-fx-background-color: transparent;"
                 + "-fx-text-fill: " + COLOR_SUBTEXTO + ";"
-                + "-fx-font-size: 13.5px;"
-                + "-fx-font-weight: 600;"
-                + "-fx-background-radius: 8;"
-                + "-fx-border-radius: 8;"
-                + "-fx-border-color: " + COLOR_BORDE + ";"
-                + "-fx-border-width: 1.5;"
-                + "-fx-cursor: hand;"
-                + "-fx-padding: 10 22 10 22;"
+                + "-fx-font-size: 13.5px; -fx-font-weight: 600;"
+                + "-fx-background-radius: 8; -fx-border-radius: 8;"
+                + "-fx-border-color: " + COLOR_BORDE + "; -fx-border-width: 1.5;"
+                + "-fx-cursor: hand; -fx-padding: 10 22 10 22;"
             );
         }
         return boton;
     }
 
     /**
-     * Centra el diálogo encima de la ventana padre.
-     * Usa setOnShown para leer las dimensiones reales del diálogo.
+     * Obtiene el StackPane raiz registrado.
+     * Si no hay ninguno registrado intenta obtener el StackPane raiz
+     * de la escena activa como fallback.
      */
-    private static void centrarSobrePadre(Stage dialogo, Stage padre) {
-        dialogo.setOnShown(e -> {
-            if (padre != null) {
-                double x = padre.getX() + (padre.getWidth()  - dialogo.getWidth())  / 2;
-                double y = padre.getY() + (padre.getHeight() - dialogo.getHeight()) / 2;
-                dialogo.setX(x);
-                dialogo.setY(y);
-            }
-        });
-    }
-
-    /**
-     * Obtiene el Stage a partir de cualquier nodo de la vista.
-     *
-     * @param nodo  Cualquier nodo visible en la escena actual
-     * @return      El Stage principal, o null si no se puede obtener
-     */
-    private static Stage obtenerStage(Node nodo) {
-        if (nodo == null) return obtenerStageActivo();
-        Window ventana = nodo.getScene() != null ? nodo.getScene().getWindow() : null;
-        return (ventana instanceof Stage) ? (Stage) ventana : obtenerStageActivo();
-    }
-
-    /**
-     * Obtiene el Stage activo de la aplicación como fallback.
-     * Menos confiable que obtenerStage(Node) en aplicaciones multi-ventana.
-     */
-    private static Stage obtenerStageActivo() {
-        return Stage.getWindows()
-                    .stream()
-                    .filter(Window::isShowing)
-                    .filter(w -> w instanceof Stage)
-                    .map(w -> (Stage) w)
-                    .filter(Stage::isFocused)
-                    .findFirst()
-                    .orElseGet(() -> Stage.getWindows()
-                                         .stream()
-                                         .filter(Window::isShowing)
-                                         .filter(w -> w instanceof Stage)
-                                         .map(w -> (Stage) w)
-                                         .findFirst()
-                                         .orElse(null));
+    private static StackPane obtenerContenedor() {
+        if (contenedorRaiz != null) return contenedorRaiz;
+        // Fallback: buscar en las ventanas visibles
+        return javafx.stage.Stage.getWindows().stream()
+            .filter(w -> w.isShowing() && w instanceof javafx.stage.Stage)
+            .map(w -> ((javafx.stage.Stage) w).getScene())
+            .filter(s -> s != null && s.getRoot() instanceof StackPane)
+            .map(s -> (StackPane) s.getRoot())
+            .findFirst()
+            .orElse(null);
     }
 }
