@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+  Cali Delights — main.fxml  v3.0  (Shell Inmersivo MaterialFX)
+  Topbar: gradiente índigo→cian  |  Sidebar: blanco 260px colapsable
+  Acento: #FF6933  |  Fondo: #F8F9FA
+-->
+
+<BorderPane styleClass="shell-root"
+            stylesheets="@../main-shell.css,@../styles.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mosqueteros.proyecto_restaurante.controller.MainController">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         TOPBAR — gradiente índigo → cian, 60px alto
+         ══════════════════════════════════════════════════════════════ -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="topbar">
+
+            <!-- Botón hamburger -->
+            <MFXButton fx:id="btnHamburger"
+                       onAction="#toggleSidebar"
+                       styleClass="btn-hamburger"
+                       text="☰" />
+
+            <!-- Marca en topbar (sólo visible en mini-sidebar) -->
+            <Label fx:id="lblTopbarBrand"
+                   styleClass="topbar-brand"
+                   text="🍽  Cali Delights"
+                   visible="false"
+                   managed="false" />
+
+            <!-- Buscador global con icono -->
+            <HBox alignment="CENTER_LEFT" styleClass="topbar-search-wrapper" spacing="6">
+                <Label styleClass="topbar-search-icon" text="🔍" />
+                <MFXTextField fx:id="txtBusqueda"
+                              floatMode="DISABLED"
+                              promptText="Buscar..."
+                              styleClass="topbar-search" />
+            </HBox>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Avatar + nombre + rol -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <StackPane styleClass="avatar-circle">
+                    <Label fx:id="lblAvatar" styleClass="avatar-initials" text="?" />
+                </StackPane>
+
+                <VBox alignment="CENTER_LEFT" spacing="2">
+                    <Label fx:id="lblNombreUsuario" styleClass="topbar-username" text="Usuario" />
+                    <Label fx:id="lblRolUsuario"    styleClass="topbar-rol"      text="Cargando…" />
+                </VBox>
+            </HBox>
+
+            <!-- Botón Cerrar Sesión -->
+            <MFXButton fx:id="btnCerrarSesion"
+                       onAction="#cerrarSesion"
+                       styleClass="btn-logout"
+                       text="⏻  Salir">
+                <HBox.margin><Insets left="8" right="8" /></HBox.margin>
+            </MFXButton>
+
+        </HBox>
+    </top>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CENTRO: Sidebar + Contenido
+         ══════════════════════════════════════════════════════════════ -->
+    <center>
+        <HBox VBox.vgrow="ALWAYS">
+
+            <!-- ── SIDEBAR ── -->
+            <VBox fx:id="sidebar"
+                  styleClass="sidebar"
+                  VBox.vgrow="ALWAYS">
+
+                <!-- Cabecera de marca -->
+                <VBox fx:id="sidebarBrandBox"
+                      alignment="CENTER"
+                      spacing="6"
+                      styleClass="sidebar-brand">
+                    <StackPane styleClass="sidebar-logo-circle">
+                        <Label styleClass="sidebar-logo-icon" text="🍽" />
+                    </StackPane>
+                    <Label fx:id="lblSidebarBrand"
+                           styleClass="sidebar-brand-name"
+                           text="Cali Delights" />
+                    <Label fx:id="lblSidebarSub"
+                           styleClass="sidebar-brand-sub"
+                           text="Gestión de restaurante" />
+                </VBox>
+
+                <!-- Menú con scroll MFX -->
+                <MFXScrollPane fx:id="sidebarScroll"
+                               fitToWidth="true"
+                               styleClass="sidebar-scroll"
+                               VBox.vgrow="ALWAYS">
+
+                    <VBox spacing="2">
+                        <padding><Insets bottom="20" left="8" right="8" top="8" /></padding>
+
+                        <!-- ─ PRINCIPAL ─ -->
+                        <Label styleClass="menu-section" text="PRINCIPAL" />
+                        <MFXButton fx:id="btnDashboard"
+                                   maxWidth="Infinity"
+                                   onAction="#mostrarDashboard"
+                                   styleClass="menu-btn"
+                                   text="📊  Dashboard" />
+
+                        <!-- ─ OPERACIONES ─ -->
+                        <Label styleClass="menu-section" text="OPERACIONES">
+                            <VBox.margin><Insets top="8" /></VBox.margin>
+                        </Label>
+                        <MFXButton fx:id="btnMesas"
+                                   maxWidth="Infinity"
+                                   onAction="#mostrarVistaMesas"
+                                   styleClass="menu-btn"
+                                   text="🪑  Mesas" />
+                        <MFXButton fx:id="btnPedidos"
+                                   maxWidth="Infinity"
+                                   onAction="#mostrarVistaPedidos"
+                                   styleClass="menu-btn"
+                                   text="📋  Pedidos" />
+                        <MFXButton fx:id="btnPlatos"
+                                   maxWidth="Infinity"
+                                   onAction="#mostrarVistaPlatos"
+                                   styleClass="menu-btn"
+                                   text="🍕  Carta / Menú" />
+
+                        <Separator>
+                            <VBox.margin><Insets bottom="4" top="10" /></VBox.margin>
+                        </Separator>
+
+                        <!-- ─ ADMINISTRACIÓN ─ -->
+                        <Label fx:id="seccionAdmin"
+                               styleClass="menu-section"
+                               text="ADMINISTRACIÓN" />
+                        <MFXButton fx:id="btnUsuarios"
+                                   maxWidth="Infinity"
+                                   styleClass="menu-btn"
+                                   text="👥  Usuarios" />
+                        <MFXButton fx:id="btnPerfiles"
+                                   maxWidth="Infinity"
+                                   styleClass="menu-btn"
+                                   text="🔐  Perfiles" />
+                        <MFXButton fx:id="btnInsumos"
+                                   maxWidth="Infinity"
+                                   styleClass="menu-btn"
+                                   text="📦  Insumos" />
+                        <MFXButton fx:id="btnEgresos"
+                                   maxWidth="Infinity"
+                                   styleClass="menu-btn"
+                                   text="💸  Egresos" />
+                        <MFXButton fx:id="btnSedes"
+                                   maxWidth="Infinity"
+                                   styleClass="menu-btn"
+                                   text="🏠  Sedes" />
+
+                        <Separator>
+                            <VBox.margin><Insets bottom="4" top="10" /></VBox.margin>
+                        </Separator>
+
+                        <!-- ─ REPORTES ─ -->
+                        <Label styleClass="menu-section" text="REPORTES" />
+                        <MFXButton fx:id="btnPQRS"
+                                   maxWidth="Infinity"
+                                   onAction="#mostrarVistaPQRS"
+                                   styleClass="menu-btn"
+                                   text="📩  PQRS" />
+
+                    </VBox>
+                </MFXScrollPane>
+
+            </VBox>
+
+            <!-- ── ÁREA DE CONTENIDO ── -->
+            <StackPane fx:id="contenidoPrincipal"
+                       styleClass="content-area"
+                       HBox.hgrow="ALWAYS"
+                       VBox.vgrow="ALWAYS">
+
+                <!-- Panel de bienvenida por defecto -->
+                <VBox alignment="CENTER" spacing="20" styleClass="welcome-panel">
+                    <Label fx:id="lblBienvenida"
+                           styleClass="welcome-title"
+                           text="¡Bienvenido!" />
+                    <Label fx:id="lblRol"
+                           styleClass="welcome-subtitle"
+                           text="" />
+                    <Label styleClass="welcome-hint"
+                           text="Selecciona una opción del menú lateral" />
+                </VBox>
+
+            </StackPane>
+
+        </HBox>
+    </center>
+
+</BorderPane>

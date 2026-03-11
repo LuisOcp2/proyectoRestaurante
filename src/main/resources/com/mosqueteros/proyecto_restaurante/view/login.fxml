@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXCheckbox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.mosqueteros.proyecto_restaurante.controller.LoginController"
+           styleClass="login-root"
+           stylesheets="@../login-v5.css">
+
+    <VBox fx:id="contenedorFormulario"
+          styleClass="login-card"
+          alignment="TOP_CENTER"
+          maxWidth="400" maxHeight="640"
+          spacing="0">
+
+        <VBox styleClass="card-header" alignment="CENTER" spacing="12">
+            <StackPane styleClass="logo-circle">
+                <Label text="🍽" styleClass="logo-icon"/>
+            </StackPane>
+            <Label text="Cali Delights" styleClass="brand-name"/>
+            <Label text="Sistema de gestión de restaurante" styleClass="brand-sub"/>
+        </VBox>
+
+        <Region styleClass="header-divider" prefHeight="1" maxWidth="Infinity"/>
+
+        <VBox styleClass="card-body" spacing="20">
+
+            <VBox spacing="6">
+                <Label text="Usuario" styleClass="field-label"/>
+                <StackPane styleClass="input-wrapper">
+                    <MFXTextField fx:id="texUsuario"
+                                  floatMode="DISABLED"
+                                  promptText="Ingresa tu usuario"
+                                  styleClass="mfx-field"
+                                  maxWidth="Infinity"
+                                  onKeyReleased="#validarCampoAlEscribir">
+                        <padding><Insets left="40" right="14" top="0" bottom="0"/></padding>
+                    </MFXTextField>
+                    <Label text="👤" styleClass="field-icon-left"
+                           StackPane.alignment="CENTER_LEFT">
+                        <StackPane.margin><Insets left="12"/></StackPane.margin>
+                    </Label>
+                </StackPane>
+                <Label fx:id="etiErrorUsuario"
+                       styleClass="field-error"
+                       text="⚠  Requerido"
+                       visible="false" managed="false"/>
+            </VBox>
+
+            <VBox spacing="6">
+                <Label text="Contraseña" styleClass="field-label"/>
+                <StackPane styleClass="input-wrapper">
+                    <MFXPasswordField fx:id="texContrasena"
+                                      floatMode="DISABLED"
+                                      promptText="••••••••"
+                                      styleClass="mfx-field"
+                                      maxWidth="Infinity"
+                                      onKeyReleased="#validarCampoAlEscribir">
+                        <padding><Insets top="0" right="45" bottom="0" left="40"/></padding>
+                    </MFXPasswordField>
+                    <MFXTextField fx:id="texContrasenaVisible"
+                                  floatMode="DISABLED"
+                                  promptText="••••••••"
+                                  styleClass="mfx-field"
+                                  maxWidth="Infinity"
+                                  visible="false" managed="false"
+                                  onKeyReleased="#validarCampoAlEscribir">
+                        <padding><Insets top="0" right="45" bottom="0" left="40"/></padding>
+                    </MFXTextField>
+                    <Label text="🔒" styleClass="field-icon-left"
+                           StackPane.alignment="CENTER_LEFT">
+                        <StackPane.margin><Insets left="12"/></StackPane.margin>
+                    </Label>
+                    <MFXButton fx:id="botAlternarContrasena"
+                               text="👁"
+                               styleClass="eye-btn"
+                               StackPane.alignment="CENTER_RIGHT"
+                               onAction="#toggleContrasena">
+                        <StackPane.margin><Insets right="8"/></StackPane.margin>
+                    </MFXButton>
+                </StackPane>
+                <Label fx:id="etiErrorContrasena"
+                       styleClass="field-error"
+                       text="⚠  Requerido"
+                       visible="false" managed="false"/>
+            </VBox>
+
+            <HBox alignment="CENTER_LEFT">
+                <MFXCheckbox fx:id="casRecordar"
+                             text="Recordarme"
+                             styleClass="mfx-check"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="¿Olvidó su contraseña?"
+                       styleClass="forgot-link"
+                       onMouseClicked="#olvidoContrasena"/>
+            </HBox>
+
+            <Label fx:id="etiErrorGeneral"
+                   styleClass="error-banner"
+                   text="" wrapText="true"
+                   visible="false" managed="false"/>
+
+            <MFXButton fx:id="botIngreso"
+                       text="Ingresar  →"
+                       styleClass="btn-login"
+                       maxWidth="Infinity"
+                       onAction="#iniciarSesion"
+                       defaultButton="true"/>
+
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+        <HBox styleClass="card-footer" alignment="CENTER">
+            <Label text="SOLO PERSONAL AUTORIZADO · CALI DELIGHTS"
+                   styleClass="footer-label"/>
+        </HBox>
+
+    </VBox>
+
+</StackPane>

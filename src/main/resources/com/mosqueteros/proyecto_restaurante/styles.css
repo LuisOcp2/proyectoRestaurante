@@ -1,0 +1,421 @@
+/* ═══════════════════════════════════════════════════════════════════
+   vista-mesas.css  v4  —  Cali Delights Pro
+   Alineado con Google Stitch mockup.
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── RAÍZ ── */
+.root-container {
+    -fx-background-color: #F5F7FA;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* ── CARDS ── */
+.main-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 14, 0, 0, 3);
+}
+
+/* ScrollPane del panel derecho: sin estilo propio */
+.form-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.form-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Divisores */
+.divider { -fx-background-color: #F3F4F6; }
+
+/* ── TEXTOS ── */
+.titulo-texto {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #111827;
+}
+.header-icon  { -fx-icon-color: #1F2937; }
+.icon-muted   { -fx-icon-color: #9CA3AF; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   BARRA DE FILTROS
+═══════════════════════════════════════════════════════════════════ */
+
+/* Buscador */
+.search-wrapper {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 3, 0, 0, 1);
+}
+.search-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-prompt-text-fill: #9CA3AF;
+    -fx-font-size: 13px;
+    -fx-border-width: 0;
+    -fx-min-height: 20;
+}
+.search-field > .line,
+.search-field > .focused-line,
+.search-field > .unfocused-line { -fx-stroke: transparent; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   COMBOS NATIVOS DE FILTRO  (.filtro-combo-nativo)
+   
+   Al usar ComboBox nativo de JavaFX tenemos control total del CSS.
+   No hay temas MFX que sobreescriban nuestros estilos.
+   
+   Estructura interna de ComboBox nativo:
+     .combo-box
+       ├── .combo-box-base          → el contenedor principal
+       ├── .list-cell               → celda que muestra el valor/placeholder
+       └── .arrow-button
+             └── .arrow             → el triángulo ▼
+═══════════════════════════════════════════════════════════════════ */
+
+/* Contenedor base */
+.filtro-combo-nativo {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 13px;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 3, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+/* Celda que muestra el valor seleccionado o el placeholder */
+.filtro-combo-nativo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-font-size: 13px;
+    -fx-padding: 0 4;
+}
+
+/* Placeholder (cuando no hay valor seleccionado) */
+.filtro-combo-nativo .list-cell:empty {
+    -fx-text-fill: #6B7280;
+}
+
+/* Foco: borde primario, sin sombra azul del SO */
+.filtro-combo-nativo:focused {
+    -fx-border-color: #5457CD;
+    -fx-background-color: #FFFFFF;
+}
+
+/* Hover */
+.filtro-combo-nativo:hover {
+    -fx-border-color: #9CA3AF;
+}
+
+/* Botón de la flecha */
+.filtro-combo-nativo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 0;
+}
+.filtro-combo-nativo .arrow-button .arrow {
+    -fx-background-color: #6B7280;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+    -fx-scale-shape: false;
+}
+
+/* Popup de opciones */
+.filtro-combo-nativo .combo-box-popup > .list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0, 0, 4);
+}
+
+.filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-font-size: 13px;
+    -fx-padding: 8 14;
+}
+
+.filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow
+    > .clipped-container > .sheet > .list-cell:hover {
+    -fx-background-color: #F5F3FF;
+    -fx-text-fill: #5457CD;
+}
+
+.filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow
+    > .clipped-container > .sheet > .list-cell:selected {
+    -fx-background-color: #EEF2FF;
+    -fx-text-fill: #5457CD;
+    -fx-font-weight: 600;
+}
+
+
+/* Botón Buscar */
+.btn-buscar-raised {
+    -fx-background-color: #5457CD;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
+    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.25), 6, 0, 0, 2);
+}
+.btn-buscar-raised:hover { -fx-background-color: #4346BA; }
+
+/* Botón Limpiar */
+.btn-limpiar-flat {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6B7280;
+    -fx-font-weight: 500;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 6;
+}
+.btn-limpiar-flat:hover { -fx-text-fill: #374151; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CABECERA DE TABLA CUSTOM
+═══════════════════════════════════════════════════════════════════ */
+.table-header-row {
+    -fx-background-color: #F9FAFB;
+    -fx-padding: 10 20 10 20;
+}
+.col-header {
+    -fx-font-weight: 700;
+    -fx-font-size: 11px;
+    -fx-text-fill: #6B7280;
+    -fx-padding: 0 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   MFXTABLEVIEW — ocultar cabecera nativa (usamos la custom)
+═══════════════════════════════════════════════════════════════════ */
+.mesas-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.mesas-table .column-header,
+.mesas-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    visibility: hidden;
+}
+.mesas-table .table-cell {
+    -fx-text-fill: #4B5563;
+    -fx-font-size: 13px;
+    -fx-padding: 13 16;
+}
+.mesas-table .table-row-cell {
+    -fx-border-color: transparent transparent #F3F4F6 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.mesas-table .table-row-cell:selected {
+    -fx-background-color: #EEF2FF;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════════════════════════════ */
+.empty-state-container {
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER;
+}
+.placeholder-text {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4B5563;
+    -fx-alignment: CENTER;
+}
+.placeholder-subtext {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #9CA3AF;
+    -fx-alignment: CENTER;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   FOOTER DE LA CARD  (bg-gray-50)
+═══════════════════════════════════════════════════════════════════ */
+.footer-bar {
+    -fx-background-color: #F9FAFB;
+    -fx-background-radius: 0 0 12 12;
+}
+.conteo-label {
+    -fx-text-fill: #6B7280;
+    -fx-font-weight: 500;
+    -fx-font-size: 13px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   HEADER DEL FORMULARIO DERECHO
+═══════════════════════════════════════════════════════════════════ */
+.form-header-badge {
+    -fx-background-color: rgba(84, 87, 205, 0.12);
+    -fx-background-radius: 8;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-alignment: CENTER;
+}
+.form-header-badge-icon { -fx-icon-color: #5457CD; }
+.form-header-titulo {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1F2937;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   LABELS DE CAMPO
+═══════════════════════════════════════════════════════════════════ */
+.input-label {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #374151;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   INPUT WRAPPERS DEL FORMULARIO
+═══════════════════════════════════════════════════════════════════ */
+.input-wrapper {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 3, 0, 0, 1);
+}
+.input-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+    -fx-prompt-text-fill: #9CA3AF;
+}
+.input-field > .line,
+.input-field > .focused-line,
+.input-field > .unfocused-line { -fx-stroke: transparent; }
+
+/* MFXComboBox del formulario */
+.input-combo {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+    -fx-padding: 0;
+}
+.input-combo > .arrow-button { -fx-background-color: transparent; }
+.input-combo .arrow          { -fx-background-color: #9CA3AF; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   FOOTER DEL FORMULARIO
+═══════════════════════════════════════════════════════════════════ */
+.form-footer {
+    -fx-background-color: #F9FAFB;
+    -fx-background-radius: 0 0 12 12;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   BOTONES
+═══════════════════════════════════════════════════════════════════ */
+.btn-raised-primary {
+    -fx-background-color: #5457CD;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-padding: 11 16;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 8;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.25), 6, 0, 0, 2);
+}
+.btn-raised-primary:hover { -fx-background-color: #4346BA; }
+
+.btn-outline-primary,
+.btn-outline-primary-form {
+    -fx-background-color: transparent;
+    -fx-border-color: #5457CD;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #5457CD;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-padding: 9 14;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
+    -fx-alignment: CENTER;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary-form:hover { -fx-background-color: #EEF2FF; }
+
+.btn-outline-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #4F46E5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #4F46E5;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-padding: 9 14;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
+}
+.btn-outline-secondary:hover { -fx-background-color: #EEF2FF; }
+
+.btn-outline-danger,
+.btn-outline-danger-form {
+    -fx-background-color: transparent;
+    -fx-border-color: #EF4444;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #EF4444;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-padding: 9 14;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
+    -fx-alignment: CENTER;
+}
+.btn-outline-danger:hover,
+.btn-outline-danger-form:hover { -fx-background-color: #FEF2F2; }
+
+.btn-outline-secondary:disabled,
+.btn-outline-danger:disabled,
+.btn-outline-danger-form:disabled {
+    -fx-opacity: 0.45;
+    -fx-cursor: default;
+}
+
+.form-mensaje {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #5457CD;
+    -fx-font-weight: 500;
+}

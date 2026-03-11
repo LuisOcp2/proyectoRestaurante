@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Vista de gestión de carta — MaterialFX Edition -->
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mosqueteros.proyecto_restaurante.controller.PlatoController"
+      spacing="16" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+      stylesheets="@../styles.css,@../styles/restaurante-tailwind.css">
+
+    <!-- ── PANEL IZQUIERDO: Tabla + filtros ───────────────────── -->
+    <VBox spacing="12" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+
+        <Label text="🍕  Carta / Menú" styleClass="vista-titulo"/>
+
+        <!-- Barra de filtros -->
+        <HBox spacing="8" alignment="CENTER_LEFT" styleClass="filtros-bar">
+            <MFXTextField fx:id="txtBuscarPlato"
+                          floatingText="Buscar por nombre o categoría…"
+                          styleClass="filtro-input" HBox.hgrow="ALWAYS"/>
+            <MFXComboBox fx:id="cmbFiltroCategoriaPlato"
+                         floatingText="Categoría"
+                         styleClass="filtro-combo"
+                         prefWidth="150"/>
+            <MFXComboBox fx:id="cmbFiltroEstadoPlato"
+                         floatingText="Estado"
+                         styleClass="filtro-combo"
+                         prefWidth="130"/>
+            <MFXButton text="🔍  Buscar" styleClass="btn-accion-secundario"
+                    fx:id="btnBuscarPlato" onAction="#buscarPlatoMock"/>
+            <MFXButton text="↺  Limpiar" styleClass="btn-accion-limpiar"
+                    fx:id="btnLimpiarFiltroPlato" onAction="#limpiarFiltrosPlatoMock"/>
+        </HBox>
+
+        <!-- Tabla principal de platos -->
+        <TableView fx:id="tblListaPlatos" VBox.vgrow="ALWAYS" styleClass="crud-table">
+            <placeholder><Label text="No hay platos en la carta"/></placeholder>
+            <columns>
+                <TableColumn fx:id="colPlatId"          text="ID"          prefWidth="50"/>
+                <TableColumn fx:id="colPlatCategoria"   text="Categoría"   prefWidth="120"/>
+                <TableColumn fx:id="colPlatNombre"      text="Nombre"      prefWidth="160"/>
+                <TableColumn fx:id="colPlatDescripcion" text="Descripción" prefWidth="180"/>
+                <TableColumn fx:id="colPlatPrecio"      text="Precio"      prefWidth="90"/>
+                <TableColumn fx:id="colPlatEstado"      text="Estado"      prefWidth="110"/>
+            </columns>
+        </TableView>
+
+        <!-- Barra de acciones CRUD inferior -->
+        <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="acciones-bar">
+            <Label fx:id="lblConteoPlatos" text="0 platos en carta"
+                   styleClass="conteo-label" HBox.hgrow="ALWAYS"/>
+            <MFXButton text="🆕  Nuevo Plato" styleClass="btn-accion-primario btn-premium"
+                    fx:id="btnNuevoPlato" onAction="#prepararNuevoPlatoMock"/>
+            <MFXButton text="✏️  Editar" styleClass="btn-accion-secundario"
+                    fx:id="btnEditarPlato" onAction="#editarPlatoMock"/>
+            <MFXButton text="🗑️  Eliminar" styleClass="btn-accion-peligro"
+                    fx:id="btnEliminarPlato" onAction="#eliminarPlatoMock"/>
+        </HBox>
+    </VBox>
+
+    <!-- ── PANEL DERECHO: Formulario ─────────────────────────── -->
+    <VBox spacing="14" styleClass="formulario-panel" minWidth="280" maxWidth="310">
+
+        <Label text="🍽  Detalle de Plato" styleClass="form-titulo"/>
+
+        <VBox spacing="4">
+            <Label text="Nombre del plato" styleClass="form-label"/>
+            <MFXTextField fx:id="txtPlatNombre" floatingText="Ej: Bandeja Paisa"
+                          styleClass="form-input"/>
+        </VBox>
+
+        <VBox spacing="4">
+            <Label text="Descripción" styleClass="form-label"/>
+            <TextArea fx:id="txtPlatDescripcion"
+                      promptText="Descripción breve del plato…"
+                      prefRowCount="3" wrapText="true"
+                      styleClass="form-textarea"/>
+        </VBox>
+
+        <VBox spacing="4">
+            <Label text="Precio (COP)" styleClass="form-label"/>
+            <MFXTextField fx:id="txtPlatPrecio" floatingText="Ej: 25000"
+                          styleClass="form-input"/>
+        </VBox>
+
+        <VBox spacing="4">
+            <Label text="Categoría" styleClass="form-label"/>
+            <MFXComboBox fx:id="cmbCategoriaPlato" floatingText="Seleccionar categoría…"
+                      maxWidth="Infinity" styleClass="form-combo"/>
+        </VBox>
+
+        <VBox spacing="4">
+            <Label text="Estado" styleClass="form-label"/>
+            <MFXComboBox fx:id="cmbEstadoPlato" floatingText="Seleccionar estado…"
+                      maxWidth="Infinity" styleClass="form-combo"/>
+        </VBox>
+
+        <!-- Imagen del plato -->
+        <VBox spacing="4">
+            <Label text="Imagen del plato" styleClass="form-label"/>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Label fx:id="lblImagenPlato"
+                       text="📷  Sin imagen seleccionada"
+                       styleClass="imagen-placeholder" HBox.hgrow="ALWAYS"/>
+                <MFXButton text="📂  Seleccionar"
+                        fx:id="btnSeleccionarImagenPlato"
+                        styleClass="btn-accion-secundario"
+                        onAction="#seleccionarImagenPlatoMock"/>
+            </HBox>
+        </VBox>
+
+        <Separator/>
+
+        <MFXButton text="💾  Guardar Plato" styleClass="btn-accion-primario btn-premium"
+                fx:id="btnGuardarPlato" onAction="#guardarPlatoMock"
+                maxWidth="Infinity"/>
+        <MFXButton text="🆕  Nuevo Plato" styleClass="btn-accion-secundario"
+                fx:id="btnNuevoPlatoForm" onAction="#prepararNuevoPlatoMock"
+                maxWidth="Infinity"/>
+        <MFXButton text="🗑️  Eliminar Plato" styleClass="btn-accion-peligro"
+                fx:id="btnEliminarPlatoForm" onAction="#eliminarPlatoMock"
+                maxWidth="Infinity"/>
+
+        <Label fx:id="lblMensajePlato" text="" wrapText="true"
+               styleClass="form-mensaje"/>
+
+    </VBox>
+
+</HBox>
