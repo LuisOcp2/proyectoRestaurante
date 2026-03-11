@@ -1,183 +1,167 @@
 package com.mosqueteros.proyecto_restaurante.util;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
-import java.util.Optional;
-
-
+/**
+ * Clase utilitaria para mostrar diálogos personalizados en la app.
+ *
+ * SOLUCIÓN AL BUG DE MINIMIZACIÓN EN LINUX/GNOME:
+ * - Se usa StageStyle.TRANSPARENT en lugar de UNDECORATED.
+ * - UNDECORATED en GTK genera "gtk_window_resize: assertion 'height > 0' failed"
+ *   que hace que GNOME colapse la ventana padre al cerrar el diálogo.
+ * - Se guarda/restaura el estado maximizado del padre explícitamente.
+ * - Se usa Platform.runLater para devolver el foco al padre tras cerrar.
+ */
 public final class Alertas {
 
-    // ── Paleta de colores del sistema "Cali Delights" ───────────────
-    private static final String COLOR_EXITO    = "#10B981"; // emerald-500
-    private static final String COLOR_ERROR    = "#EF4444"; // red-500
-    private static final String COLOR_AVISO    = "#F59E0B"; // amber-500
-    private static final String COLOR_INFO     = "#6366F1"; // indigo-500
+    // ── Paleta de colores del sistema "Cali Delights" ───────────────────
+    private static final String COLOR_EXITO    = "#10B981";
+    private static final String COLOR_ERROR    = "#EF4444";
+    private static final String COLOR_AVISO    = "#F59E0B";
+    private static final String COLOR_INFO     = "#6366F1";
     private static final String COLOR_FONDO    = "#FFFFFF";
     private static final String COLOR_TEXTO    = "#1E293B";
     private static final String COLOR_SUBTEXTO = "#64748B";
     private static final String COLOR_BORDE    = "#E2E8F0";
 
-    // Constructor privado: clase utilitaria, no instanciable (patrón Utility Class)
+    /** Constructor privado: clase utilitaria, no instanciable. */
     private Alertas() {
         throw new UnsupportedOperationException("Clase utilitaria, no instanciable");
     }
 
-    // ══════════════════════════════════════════════════════════════════
-    // API PÚBLICA — Métodos estáticos de conveniencia
-    // ══════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
+    // API PÚblica — Métodos estáticos de conveniencia
+    // ════════════════════════════════════════════════════════════════
 
-    /**
-     * Muestra un diálogo de ÉXITO (ícono ✓ verde).
-     *
-     * BUENA PRÁCTICA: siempre pasar el nodo origen para obtener el Stage
-     * y evitar que la ventana principal se restaure/minimice.
-     *
-     * @param nodoOrigen  Cualquier nodo visible de la vista actual (ej: un Button)
-     * @param titulo      Título del diálogo
-     * @param contenido   Mensaje descriptivo
-     */
+    /** Muestra un diálogo de ÉXITO (ícono ✓ verde). */
     public static void exito(Node nodoOrigen, String titulo, String contenido) {
         mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.EXITO, titulo, contenido);
     }
 
-    /**
-     * Muestra un diálogo de ERROR (ícono ✕ rojo).
-     */
+    /** Muestra un diálogo de ERROR (ícono ✕ rojo). */
     public static void error(Node nodoOrigen, String titulo, String contenido) {
         mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.ERROR, titulo, contenido);
     }
 
-    /**
-     * Muestra un diálogo de ADVERTENCIA (ícono ⚠ ámbar).
-     */
+    /** Muestra un diálogo de ADVERTENCIA (ícono ⚠ ámbar). */
     public static void aviso(Node nodoOrigen, String titulo, String contenido) {
         mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.AVISO, titulo, contenido);
     }
 
-    /**
-     * Muestra un diálogo de INFORMACIÓN (ícono ℹ índigo).
-     */
+    /** Muestra un diálogo de INFORMACIÓN (ícono ℹ índigo). */
     public static void informacion(Node nodoOrigen, String titulo, String contenido) {
         mostrarDialogo(obtenerStage(nodoOrigen), TipoAlerta.INFO, titulo, contenido);
     }
 
     /**
-     * Muestra un diálogo de CONFIRMACIÓN con botones "Aceptar" y "Cancelar".
-     *
-     * @return true si el usuario presionó "Aceptar", false si canceló
+     * Muestra un diálogo de CONFIRMACIÓN con botones Aceptar y Cancelar.
+     * @return true si el usuario presionó Aceptar, false si canceló.
      */
     public static boolean confirmar(Node nodoOrigen, String titulo, String contenido) {
         return mostrarConfirmacion(obtenerStage(nodoOrigen), titulo, contenido);
     }
 
-    // ── Sobrecargas sin nodo (usa el stage activo — menos recomendado) ─
+    // ── Sobrecargas sin nodo (usa el stage activo — menos recomendado) ──
 
-    /**
-     * Versión sin nodo origen: busca el Stage activo automáticamente.
-     * ADVERTENCIA: puede no funcionar correctamente en todas las situaciones.
-     * Preferir las versiones con nodoOrigen.
-     */
+    /** Muestra éxito buscando el Stage activo automáticamente. */
     public static void exito(String titulo, String contenido) {
         mostrarDialogo(obtenerStageActivo(), TipoAlerta.EXITO, titulo, contenido);
     }
 
+    /** Muestra error buscando el Stage activo automáticamente. */
     public static void error(String titulo, String contenido) {
         mostrarDialogo(obtenerStageActivo(), TipoAlerta.ERROR, titulo, contenido);
     }
 
+    /** Muestra aviso buscando el Stage activo automáticamente. */
     public static void aviso(String titulo, String contenido) {
         mostrarDialogo(obtenerStageActivo(), TipoAlerta.AVISO, titulo, contenido);
     }
 
+    /** Muestra información buscando el Stage activo automáticamente. */
     public static void informacion(String titulo, String contenido) {
         mostrarDialogo(obtenerStageActivo(), TipoAlerta.INFO, titulo, contenido);
     }
 
+    /** Muestra confirmación buscando el Stage activo automáticamente. */
     public static boolean confirmar(String titulo, String contenido) {
         return mostrarConfirmacion(obtenerStageActivo(), titulo, contenido);
     }
 
-    // ══════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
     // LÓGICA INTERNA PRIVADA
-    // ══════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
 
     /**
      * Enum interno que define cada tipo de alerta con su ícono y color.
-     * Patrón: cada tipo lleva su propia configuración visual (Strategy implícito).
+     * Patrón Strategy implícito: cada tipo lleva su propia configuración visual.
      */
     private enum TipoAlerta {
-        EXITO ("✓",  COLOR_EXITO,  "Éxito"),
-        ERROR ("✕",  COLOR_ERROR,  "Error"),
-        AVISO ("⚠",  COLOR_AVISO,  "Advertencia"),
-        INFO  ("ℹ",  COLOR_INFO,   "Información");
+        EXITO("✓",  COLOR_EXITO, "Éxito"),
+        ERROR("✕",  COLOR_ERROR, "Error"),
+        AVISO("⚠",  COLOR_AVISO, "Advertencia"),
+        INFO ("ℹ",  COLOR_INFO,  "Información");
 
         final String icono;
         final String color;
         final String etiquetaDefecto;
 
         TipoAlerta(String icono, String color, String etiquetaDefecto) {
-            this.icono          = icono;
-            this.color          = color;
+            this.icono           = icono;
+            this.color           = color;
             this.etiquetaDefecto = etiquetaDefecto;
         }
     }
 
     /**
-     * Crea y muestra un diálogo modal personalizado que NO afecta el
-     * estado de maximización de la ventana padre.
+     * Crea y muestra un diálogo modal personalizado sin afectar el estado
+     * de maximización de la ventana padre.
      *
-     * Clave técnica:
-     *   - initOwner(stagePadre)      → vincula el diálogo al padre
-     *   - initModality(APPLICATION_MODAL) → bloquea la app sin mover la ventana
-     *   - StageStyle.UNDECORATED     → sin barra de título nativa del SO
-     *   - showAndWait()              → espera a que el usuario cierre
+     * CLAVES TÉCNICAS (Linux/GTK):
+     * - StageStyle.TRANSPARENT: evita el bug gtk_window_resize height>0
+     *   que StageStyle.UNDECORATED provoca en GNOME/GTK al cerrar el diálogo.
+     * - Se guarda si el padre estaba maximizado antes de mostrar el diálogo.
+     * - Con Platform.runLater se devuelve el foco y maximización al padre
+     *   después de que GTK termine de procesar el cierre del diálogo.
      */
     private static void mostrarDialogo(Stage stagePadre,
-                                        TipoAlerta tipo,
-                                        String titulo,
-                                        String contenido) {
+                                       TipoAlerta tipo,
+                                       String titulo,
+                                       String contenido) {
         Stage dialogo = crearStageDialogo(stagePadre);
 
-        // ── Construcción visual del diálogo ────────────────────────
         VBox raiz = construirLayoutDialogo(tipo, titulo, contenido, false);
 
-        // ── Botón "Aceptar" ────────────────────────────────────────
         Button btnAceptar = crearBoton("Aceptar", tipo.color, true);
-        btnAceptar.setOnAction(e -> dialogo.close());
+        btnAceptar.setOnAction(e -> cerrarDialogoYRestaurarPadre(dialogo, stagePadre));
 
         HBox piePagina = new HBox(btnAceptar);
         piePagina.setAlignment(Pos.CENTER_RIGHT);
         piePagina.setPadding(new Insets(0, 28, 24, 28));
         raiz.getChildren().add(piePagina);
 
-        // ── Configurar y mostrar ───────────────────────────────────
+        // Scene con fondo transparente: necesario para StageStyle.TRANSPARENT
         Scene escena = new Scene(raiz);
-        escena.setFill(null); // Fondo transparente para el efecto de sombra
+        escena.setFill(Color.TRANSPARENT);
 
         dialogo.setScene(escena);
         centrarSobrePadre(dialogo, stagePadre);
-
-        /*
-         * PUNTO CRÍTICO:
-         * showAndWait() bloquea el hilo de JavaFX hasta que el usuario
-         * cierre el diálogo, pero como el Stage tiene un owner y modality
-         * correctos, NO causa que la ventana padre cambie de tamaño.
-         */
         dialogo.showAndWait();
     }
 
@@ -186,30 +170,26 @@ public final class Alertas {
      * Retorna true si el usuario confirmó.
      */
     private static boolean mostrarConfirmacion(Stage stagePadre,
-                                                String titulo,
-                                                String contenido) {
+                                               String titulo,
+                                               String contenido) {
         Stage dialogo = crearStageDialogo(stagePadre);
-
-        // Usamos un array para capturar el resultado desde el lambda
         final boolean[] resultado = {false};
 
         VBox raiz = construirLayoutDialogo(TipoAlerta.AVISO, titulo, contenido, true);
 
-        // Botón Aceptar
         Button btnAceptar = crearBoton("Aceptar", COLOR_ERROR, true);
         btnAceptar.setOnAction(e -> {
             resultado[0] = true;
-            dialogo.close();
+            cerrarDialogoYRestaurarPadre(dialogo, stagePadre);
         });
 
-        // Botón Cancelar
         Button btnCancelar = crearBoton("Cancelar", COLOR_BORDE, false);
         btnCancelar.setStyle(
             btnCancelar.getStyle()
             + "-fx-text-fill: " + COLOR_SUBTEXTO + ";"
             + "-fx-border-color: " + COLOR_BORDE + ";"
         );
-        btnCancelar.setOnAction(e -> dialogo.close());
+        btnCancelar.setOnAction(e -> cerrarDialogoYRestaurarPadre(dialogo, stagePadre));
 
         Region espaciador = new Region();
         HBox.setHgrow(espaciador, Priority.ALWAYS);
@@ -220,7 +200,7 @@ public final class Alertas {
         raiz.getChildren().add(piePagina);
 
         Scene escena = new Scene(raiz);
-        escena.setFill(null);
+        escena.setFill(Color.TRANSPARENT);
         dialogo.setScene(escena);
         centrarSobrePadre(dialogo, stagePadre);
         dialogo.showAndWait();
@@ -229,28 +209,50 @@ public final class Alertas {
     }
 
     /**
-     * Crea el Stage base del diálogo con la configuración correcta para
-     * evitar el problema de minimización de la ventana padre.
+     * Cierra el diálogo y usa Platform.runLater para devolver el foco
+     * y estado de maximización al padre DESPUÉS de que GTK termine de
+     * procesar el cierre. Esto evita que GNOME colapse la ventana.
+     *
+     * Sin este método, en Linux el orden de eventos de GTK puede hacer
+     * que la ventana padre quede desfocada o colapsada.
+     */
+    private static void cerrarDialogoYRestaurarPadre(Stage dialogo, Stage padre) {
+        // Guardar estado antes de cerrar
+        boolean estabaMaximizado = (padre != null) && padre.isMaximized();
+
+        dialogo.close();
+
+        if (padre != null) {
+            // Platform.runLater garantiza que el cierre del diálogo se procese
+            // completamente en GTK antes de intentar restaurar el padre
+            Platform.runLater(() -> {
+                padre.toFront();
+                padre.requestFocus();
+                // Si estaba maximizado y GTK lo colapsó, lo restauramos
+                if (estabaMaximizado && !padre.isMaximized()) {
+                    padre.setMaximized(true);
+                }
+            });
+        }
+    }
+
+    /**
+     * Crea el Stage base del diálogo con la configuración correcta.
+     *
+     * CAMBIO CLAVE: StageStyle.TRANSPARENT en lugar de UNDECORATED.
+     * En Linux/GTK, UNDECORATED provoca gtk_window_resize height>0
+     * al cerrar, lo que hace que GNOME colapse la ventana padre.
+     * TRANSPARENT no tiene ese bug y mantiene el diseño personalizado.
      */
     private static Stage crearStageDialogo(Stage stagePadre) {
         Stage dialogo = new Stage();
 
-        /*
-         * SOLUCIÓN AL PROBLEMA DE MINIMIZACIÓN:
-         *
-         * 1. initOwner() → El diálogo queda "vinculado" al Stage padre.
-         *    Esto garantiza que la ventana padre mantenga su estado.
-         *
-         * 2. initModality(APPLICATION_MODAL) → Bloquea TODA la aplicación
-         *    mientras el diálogo está abierto, sin afectar la posición
-         *    o tamaño de ninguna ventana.
-         *
-         * 3. StageStyle.UTILITY → Ventana pequeña sin botones de min/max.
-         *    Alternativa: UNDECORATED para control total del diseño.
-         */
+        // initOwner: vincula el diálogo al Stage padre
         dialogo.initOwner(stagePadre);
+        // APPLICATION_MODAL: bloquea toda la app sin mover ventanas
         dialogo.initModality(Modality.APPLICATION_MODAL);
-        dialogo.initStyle(StageStyle.UNDECORATED);  // Sin decoración nativa del SO
+        // TRANSPARENT: compatble con Linux/GTK, no genera el bug de height>0
+        dialogo.initStyle(StageStyle.TRANSPARENT);
         dialogo.setResizable(false);
 
         return dialogo;
@@ -258,21 +260,19 @@ public final class Alertas {
 
     /**
      * Construye el layout visual (VBox principal) del diálogo.
-     * Incluye: barra de color superior, ícono, título y contenido.
+     * Incluye: barra de color superior, ícono circular, título y contenido.
      *
-     * @param esConfirmacion  si es true, agrega texto más formal
+     * @param esConfirmacion  si es true agrega texto de confirmación adicional
      */
     private static VBox construirLayoutDialogo(TipoAlerta tipo,
-                                                String titulo,
-                                                String contenido,
-                                                boolean esConfirmacion) {
-        // ── Barra superior de color ─────────────────────────────────
+                                               String titulo,
+                                               String contenido,
+                                               boolean esConfirmacion) {
         Region barraSuperior = new Region();
         barraSuperior.setPrefHeight(6);
         barraSuperior.setMaxWidth(Double.MAX_VALUE);
         barraSuperior.setStyle("-fx-background-color: " + tipo.color + ";");
 
-        // ── Ícono circular ──────────────────────────────────────────
         Label lblIcono = new Label(tipo.icono);
         lblIcono.setStyle(
             "-fx-font-size: 22px;"
@@ -288,9 +288,7 @@ public final class Alertas {
             + "-fx-background-radius: 50;"
         );
 
-        // ── Título ──────────────────────────────────────────────────
-        String tituloFinal = (titulo == null || titulo.isBlank())
-                             ? tipo.etiquetaDefecto : titulo;
+        String tituloFinal = (titulo == null || titulo.isBlank()) ? tipo.etiquetaDefecto : titulo;
         Label lblTitulo = new Label(tituloFinal);
         lblTitulo.setStyle(
             "-fx-font-size: 17px;"
@@ -299,7 +297,6 @@ public final class Alertas {
             + "-fx-wrap-text: true;"
         );
 
-        // ── Contenido ───────────────────────────────────────────────
         Label lblContenido = new Label(contenido);
         lblContenido.setStyle(
             "-fx-font-size: 13.5px;"
@@ -310,7 +307,6 @@ public final class Alertas {
         lblContenido.setWrapText(true);
         lblContenido.setMaxWidth(320);
 
-        // ── Texto extra para confirmación ───────────────────────────
         if (esConfirmacion) {
             Label lblPregunta = new Label("¿Deseas continuar con esta acción?");
             lblPregunta.setStyle(
@@ -326,11 +322,11 @@ public final class Alertas {
         return construirRaiz(barraSuperior, cuerpo);
     }
 
-    /** Ensambla el cuerpo principal del diálogo. */
+    /** Ensambla el cuerpo principal del diálogo con ícono, título y contenido. */
     private static VBox construirCuerpo(StackPane icono,
-                                         Label titulo,
-                                         Label contenido,
-                                         Label extra) {
+                                        Label titulo,
+                                        Label contenido,
+                                        Label extra) {
         VBox cuerpo = new VBox(16);
         cuerpo.setPadding(new Insets(28, 28, 20, 28));
         cuerpo.setAlignment(Pos.TOP_LEFT);
@@ -339,13 +335,15 @@ public final class Alertas {
         filaIconoTitulo.setAlignment(Pos.CENTER_LEFT);
 
         cuerpo.getChildren().addAll(filaIconoTitulo, contenido);
-        if (extra != null) {
-            cuerpo.getChildren().add(extra);
-        }
+        if (extra != null) cuerpo.getChildren().add(extra);
         return cuerpo;
     }
 
-    /** Ensambla el layout raíz del diálogo con la barra superior. */
+    /**
+     * Ensambla el layout raíz del diálogo con la barra superior.
+     * Nota: el fondo blanco sólido se define aquí en CSS para que
+     * el área transparente del Stage solo rodee el borde redondeado.
+     */
     private static VBox construirRaiz(Region barraSuperior, VBox cuerpo) {
         VBox raiz = new VBox();
         raiz.setMinWidth(400);
@@ -366,8 +364,8 @@ public final class Alertas {
      * Crea un botón estilizado consistente con el diseño de Cali Delights.
      *
      * @param texto      Texto del botón
-     * @param colorFondo Color de fondo (hex)
-     * @param esPrimario Si es primario tiene fondo sólido, si no, outline
+     * @param colorFondo Color de fondo en hex
+     * @param esPrimario Si es true tiene fondo sólido, si no es outline
      */
     private static Button crearBoton(String texto, String colorFondo, boolean esPrimario) {
         Button boton = new Button(texto);
@@ -403,7 +401,7 @@ public final class Alertas {
 
     /**
      * Centra el diálogo encima de la ventana padre.
-     * Si el padre está maximizado, lo centra en la pantalla.
+     * Si el padre está maximizado, calcula el centro de la pantalla.
      */
     private static void centrarSobrePadre(Stage dialogo, Stage padre) {
         dialogo.setOnShown(e -> {
@@ -418,17 +416,15 @@ public final class Alertas {
 
     /**
      * Obtiene el Stage a partir de cualquier nodo de la vista.
-     *
-     * BUENA PRÁCTICA: usar el nodo origen es más confiable que buscar
-     * el stage activo, especialmente en aplicaciones multi-ventana.
+     * Más confiable que buscar el stage activo, especialmente en
+     * aplicaciones multi-ventana.
      *
      * @param nodo  Cualquier nodo visible en la escena actual
      * @return      El Stage principal, o null si no se puede obtener
      */
     private static Stage obtenerStage(Node nodo) {
         if (nodo == null) return obtenerStageActivo();
-        Window ventana = nodo.getScene() != null
-                         ? nodo.getScene().getWindow() : null;
+        Window ventana = nodo.getScene() != null ? nodo.getScene().getWindow() : null;
         return (ventana instanceof Stage) ? (Stage) ventana : obtenerStageActivo();
     }
 
@@ -445,7 +441,6 @@ public final class Alertas {
                     .map(w -> (Stage) w)
                     .filter(Stage::isFocused)
                     .findFirst()
-                    // Fallback: primer stage visible aunque no tenga foco
                     .orElseGet(() -> Stage.getWindows()
                                          .stream()
                                          .filter(Window::isShowing)
