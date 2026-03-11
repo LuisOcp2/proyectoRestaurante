@@ -18,14 +18,21 @@ import javafx.util.Duration;
  * Clase utilitaria para mostrar diálogos personalizados en la app.
  *
  * Arquitectura: overlay inyectado en el StackPane raiz del Stage principal.
- * NUNCA abre un Stage secundario, eliminando el bug GTK height>0 en Linux.
+ * NUNCA abre un Stage secundario (elimina el bug GTK height>0 en Linux).
  *
- * El fondo oscuro se implementa con Region + CSS (NO con Rectangle + bind)
- * para evitar el loop de layout infinito que causaba el estiramiento del contenido.
+ * PATRON DE CONFIRMACION:
+ * Se usa callback (Runnable) en lugar de retornar boolean, porque
+ * confirmar() se llama desde el hilo de JavaFX y Object.wait() bloquearía
+ * ese hilo causando que la UI se congele y nunca responda al usuario.
+ *
+ * Uso correcto:
+ *   Alertas.confirmar(nodo, "Titulo", "Mensaje", () -> {
+ *       // accion que se ejecuta SOLO si el usuario presiona Aceptar
+ *   });
  */
 public final class Alertas {
 
-    // ── Paleta de colores ────────────────────────────────────────────────────────────────
+    // ── Paleta de colores ─────────────────────────────────────────────────
     private static final String COLOR_EXITO    = "#10B981";
     private static final String COLOR_ERROR    = "#EF4444";
     private static final String COLOR_AVISO    = "#F59E0B";
@@ -45,7 +52,7 @@ public final class Alertas {
         throw new UnsupportedOperationException("Clase utilitaria");
     }
 
-    // ══ REGISTRO ══════════════════════════════════════════════════════════════════
+    // ── REGISTRO ─────────────────────────────────────────────────────────
 
     /**
      * Registra el StackPane raiz donde se inyectaran los overlays.
@@ -55,41 +62,76 @@ public final class Alertas {
         contenedorRaiz = contenedor;
     }
 
-    // ══ API PUBLICA ══════════════════════════════════════════════════════════════
+    // ── API PUBLICA — INFORMATIVOS ────────────────────────────────────────
 
+    /** Muestra un dialogo de EXITO. */
     public static void exito(Node n, String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.EXITO, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.EXITO, titulo, contenido, null);
     }
+    /** Muestra un dialogo de ERROR. */
     public static void error(Node n, String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.ERROR, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.ERROR, titulo, contenido, null);
     }
+    /** Muestra un dialogo de ADVERTENCIA. */
     public static void aviso(Node n, String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.AVISO, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.AVISO, titulo, contenido, null);
     }
+    /** Muestra un dialogo de INFORMACION. */
     public static void informacion(Node n, String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.INFO, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.INFO, titulo, contenido, null);
     }
+    /** Muestra un dialogo de EXITO sin nodo origen. */
     public static void exito(String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.EXITO, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.EXITO, titulo, contenido, null);
     }
+    /** Muestra un dialogo de ERROR sin nodo origen. */
     public static void error(String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.ERROR, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.ERROR, titulo, contenido, null);
     }
+    /** Muestra un dialogo de ADVERTENCIA sin nodo origen. */
     public static void aviso(String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.AVISO, titulo, contenido, false, null);
+        mostrarOverlay(TipoAlerta.AVISO, titulo, contenido, null);
     }
+    /** Muestra un dialogo de INFORMACION sin nodo origen. */
     public static void informacion(String titulo, String contenido) {
-        mostrarOverlay(TipoAlerta.INFO, titulo, contenido, false, null);
-    }
-    public static boolean confirmar(Node n, String titulo, String contenido) {
-        return mostrarOverlayConfirmacion(titulo, contenido);
-    }
-    public static boolean confirmar(String titulo, String contenido) {
-        return mostrarOverlayConfirmacion(titulo, contenido);
+        mostrarOverlay(TipoAlerta.INFO, titulo, contenido, null);
     }
 
-    // ══ LOGICA INTERNA ══════════════════════════════════════════════════════════════
+    // ── API PUBLICA — CONFIRMACION CON CALLBACK ───────────────────────────
 
+    /**
+     * Muestra un dialogo de CONFIRMACION.
+     *
+     * El parametro onAceptar es un Runnable que se ejecuta SOLO si el
+     * usuario presiona "Aceptar". Si presiona "Cancelar", no ocurre nada.
+     *
+     * IMPORTANTE: NO retorna boolean. Usa el patron callback porque este
+     * metodo se llama desde el hilo de JavaFX (FX Application Thread) y
+     * bloquear ese hilo con Object.wait() congelaría toda la UI.
+     *
+     * Ejemplo de uso:
+     *   Alertas.confirmar(nodo, "Eliminar", "¿Seguro?", () -> {
+     *       dao.eliminar(id);
+     *       cargarListado();
+     *   });
+     *
+     * @param nodo       Nodo de la vista (puede ser null)
+     * @param titulo     Titulo del dialogo
+     * @param contenido  Mensaje del dialogo
+     * @param onAceptar  Accion a ejecutar si el usuario confirma
+     */
+    public static void confirmar(Node nodo, String titulo, String contenido, Runnable onAceptar) {
+        mostrarOverlayConfirmacion(titulo, contenido, onAceptar);
+    }
+
+    /** Sobrecarga sin nodo origen. */
+    public static void confirmar(String titulo, String contenido, Runnable onAceptar) {
+        mostrarOverlayConfirmacion(titulo, contenido, onAceptar);
+    }
+
+    // ── LOGICA INTERNA ────────────────────────────────────────────────────
+
+    /** Enum con icono y color por tipo de alerta. */
     private enum TipoAlerta {
         EXITO("✓", COLOR_EXITO, "Éxito"),
         ERROR("✕", COLOR_ERROR, "Error"),
@@ -108,35 +150,27 @@ public final class Alertas {
     }
 
     /**
-     * Muestra un dialogo informativo (1 boton) como overlay.
-     *
-     * CLAVE: el fondo oscuro es una Region con -fx-background-color CSS y
-     * setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE). Esto hace que el StackPane
-     * lo estire a su tamaño natural SIN crear un binding reactivo que dispare
-     * recalculos de layout en cascada (loop infinito con Rectangle + bind).
+     * Muestra un dialogo informativo (1 boton Aceptar) como overlay.
+     * Usa Region+CSS para el fondo oscuro, evitando el loop de layout
+     * que causaba Rectangle+bind.
      */
     private static void mostrarOverlay(TipoAlerta tipo,
                                        String titulo,
                                        String contenido,
-                                       boolean esConfirmacion,
                                        Runnable callbackAceptar) {
         Platform.runLater(() -> {
             StackPane raiz = obtenerContenedor();
             if (raiz == null) return;
 
-            // Fondo oscuro: Region CSS, NO Rectangle+bind
             Region fondo = crearFondoOscuro();
-
             VBox tarjeta = construirTarjeta(tipo, titulo, contenido);
 
             Button btnAceptar = crearBoton("Aceptar", tipo.color, true);
-
             HBox pie = new HBox(btnAceptar);
             pie.setAlignment(Pos.CENTER_RIGHT);
             pie.setPadding(new Insets(0, 28, 24, 28));
             tarjeta.getChildren().add(pie);
 
-            // El overlay es un StackPane que ocupa todo el espacio disponible
             StackPane overlay = new StackPane(fondo, tarjeta);
             overlay.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             StackPane.setAlignment(tarjeta, Pos.CENTER);
@@ -145,34 +179,36 @@ public final class Alertas {
             raiz.getChildren().add(overlay);
             overlay.toFront();
 
-            FadeTransition entrada = new FadeTransition(Duration.millis(180), overlay);
-            entrada.setFromValue(0);
-            entrada.setToValue(1);
-            entrada.play();
+            animar(overlay, 0, 1, 180, null);
 
-            btnAceptar.setOnAction(e -> cerrarOverlay(overlay, raiz, callbackAceptar));
+            btnAceptar.setOnAction(e ->
+                cerrarOverlay(overlay, raiz, callbackAceptar)
+            );
         });
     }
 
     /**
      * Muestra un dialogo de confirmacion como overlay.
-     * Bloquea el hilo llamante con Object.wait hasta que el usuario responde.
+     *
+     * onAceptar se ejecuta en el hilo de JavaFX cuando el usuario
+     * presiona Aceptar, despues de que el overlay desaparece con fade-out.
+     * Cancelar cierra el overlay sin ejecutar nada.
      */
-    private static boolean mostrarOverlayConfirmacion(String titulo, String contenido) {
-        final boolean[] resultado = {false};
-        final Object bloqueo = new Object();
-
+    private static void mostrarOverlayConfirmacion(String titulo,
+                                                   String contenido,
+                                                   Runnable onAceptar) {
         Platform.runLater(() -> {
             StackPane raiz = obtenerContenedor();
             if (raiz == null) {
-                synchronized (bloqueo) { bloqueo.notify(); }
+                // Sin contenedor registrado: ejecutar directamente sin confirmacion
+                if (onAceptar != null) onAceptar.run();
                 return;
             }
 
             Region fondo = crearFondoOscuro();
-
             VBox tarjeta = construirTarjeta(TipoAlerta.AVISO, titulo, contenido);
 
+            // Texto adicional
             Label lblExtra = new Label("¿Deseas continuar con esta acción?");
             lblExtra.setStyle(
                 "-fx-font-size: 12px;"
@@ -181,6 +217,7 @@ public final class Alertas {
             );
             tarjeta.getChildren().add(lblExtra);
 
+            // Botones
             Button btnAceptar  = crearBoton("Aceptar",  COLOR_ERROR, true);
             Button btnCancelar = crearBoton("Cancelar", COLOR_BORDE, false);
 
@@ -199,68 +236,52 @@ public final class Alertas {
             raiz.getChildren().add(overlay);
             overlay.toFront();
 
-            FadeTransition entrada = new FadeTransition(Duration.millis(180), overlay);
-            entrada.setFromValue(0);
-            entrada.setToValue(1);
-            entrada.play();
+            animar(overlay, 0, 1, 180, null);
 
-            Runnable cerrar = () -> cerrarOverlay(overlay, raiz, () -> {
-                synchronized (bloqueo) { bloqueo.notify(); }
-            });
-
-            btnAceptar.setOnAction(e -> {
-                resultado[0] = true;
-                cerrar.run();
-            });
-            btnCancelar.setOnAction(e -> cerrar.run());
+            // Aceptar: cierra y ejecuta el callback
+            btnAceptar.setOnAction(e ->
+                cerrarOverlay(overlay, raiz, onAceptar)
+            );
+            // Cancelar: solo cierra, sin ejecutar nada
+            btnCancelar.setOnAction(e ->
+                cerrarOverlay(overlay, raiz, null)
+            );
         });
-
-        if (!Platform.isFxApplicationThread()) {
-            synchronized (bloqueo) {
-                try { bloqueo.wait(30_000); }
-                catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
-            }
-        }
-        return resultado[0];
     }
 
     /**
-     * Crea el fondo oscuro del overlay usando Region + CSS.
-     *
-     * POR QUE Region y NO Rectangle + bind:
-     *  - Rectangle.widthProperty().bind(raiz.widthProperty()) crea una
-     *    dependencia reactiva: cada vez que el StackPane cambia de tamano,
-     *    el Rectangle cambia, lo que fuerza otro layout pass del StackPane,
-     *    que vuelve a cambiar el Rectangle → loop infinito que estira todo.
-     *  - Region con setMaxSize(MAX, MAX) se estira pasivamente al tamano
-     *    que el StackPane le asigna en el layout pass, SIN crear ninguna
-     *    dependencia reactiva. No hay loop.
+     * Fondo oscuro como Region + CSS.
+     * NO usa Rectangle+bind para evitar el loop de layout infinito.
      */
     private static Region crearFondoOscuro() {
         Region fondo = new Region();
         fondo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        // rgba via CSS hex no soporta alpha directamente; usamos -fx-opacity en el propio overlay
         fondo.setStyle("-fx-background-color: rgba(0, 0, 0, 0.45);");
         return fondo;
     }
 
-    /** Cierra el overlay con fade-out y lo remueve del StackPane raiz. */
+    /** Cierra el overlay con fade-out y ejecuta el callback tras el cierre. */
     private static void cerrarOverlay(StackPane overlay, StackPane raiz, Runnable callback) {
-        FadeTransition salida = new FadeTransition(Duration.millis(150), overlay);
-        salida.setFromValue(1);
-        salida.setToValue(0);
-        salida.setOnFinished(ev -> {
+        animar(overlay, 1, 0, 150, () -> {
             raiz.getChildren().remove(overlay);
             if (callback != null) callback.run();
         });
-        salida.play();
+    }
+
+    /** Animacion de fade genérica. */
+    private static void animar(StackPane nodo, double desde, double hasta,
+                                int ms, Runnable alTerminar) {
+        FadeTransition ft = new FadeTransition(Duration.millis(ms), nodo);
+        ft.setFromValue(desde);
+        ft.setToValue(hasta);
+        if (alTerminar != null) ft.setOnFinished(e -> alTerminar.run());
+        ft.play();
     }
 
     /**
      * Construye la tarjeta visual del dialogo.
-     *
-     * IMPORTANTE: setMaxWidth(460) + setMinWidth(420) en la tarjeta evita
-     * que el StackPane la estire al ancho completo de la pantalla.
+     * Dimensiones fijas (min/max 420-460px) para que el StackPane
+     * no la estire al ancho completo de la pantalla.
      */
     private static VBox construirTarjeta(TipoAlerta tipo, String titulo, String contenido) {
         Region barra = new Region();
@@ -298,7 +319,6 @@ public final class Alertas {
         cuerpo.setAlignment(Pos.TOP_LEFT);
 
         VBox tarjeta = new VBox(barra, cuerpo);
-        // Tamaño fijo de la tarjeta: impide que el StackPane la estire
         tarjeta.setMinWidth(420);
         tarjeta.setMaxWidth(460);
         tarjeta.setPrefWidth(460);
@@ -315,7 +335,7 @@ public final class Alertas {
         return tarjeta;
     }
 
-    /** Crea un boton estilizado del sistema. */
+    /** Crea un boton estilizado del sistema Cali Delights. */
     private static Button crearBoton(String texto, String colorFondo, boolean esPrimario) {
         Button boton = new Button(texto);
         boton.setMinWidth(100);
@@ -338,7 +358,7 @@ public final class Alertas {
         return boton;
     }
 
-    /** Obtiene el contenedor raiz registrado o busca uno como fallback. */
+    /** Obtiene el StackPane raiz registrado o busca uno como fallback. */
     private static StackPane obtenerContenedor() {
         if (contenedorRaiz != null) return contenedorRaiz;
         return javafx.stage.Stage.getWindows().stream()

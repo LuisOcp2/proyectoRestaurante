@@ -54,13 +54,11 @@ public class PlatoController {
         cargarCategorias();
         cargarEstados();
 
-        // Registrar listener ANTES de cargar datos para detectar el estado inicial
         platosObservable.addListener((javafx.collections.ListChangeListener<Plato>) c -> {
             actualizarPlaceholder();
         });
 
         cargarListado();
-        // Forzar estado inicial por si el listener no disparó
         actualizarPlaceholder();
 
         tblListaPlatos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -70,7 +68,6 @@ public class PlatoController {
             }
         });
 
-        // Filtros en tiempo real
         txtBuscarPlato.textProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroCategoriaPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroEstadoPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
@@ -83,7 +80,7 @@ public class PlatoController {
         boxPlaceholder.setManaged(vacio);
     }
 
-    /** Configura las columnas de la tabla con sus PropertyValueFactory. */
+    /** Configura las columnas de la tabla. */
     private void configurarTabla() {
         colPlatId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colPlatNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -167,7 +164,6 @@ public class PlatoController {
                 return;
             }
 
-            // 7 = Activo por defecto si no se seleccionó estado
             Integer estadoId = (est != null) ? est.getId() : 7;
 
             boolean exito;
@@ -193,30 +189,36 @@ public class PlatoController {
     }
 
     /**
-     * Solicita confirmación al usuario y cambia el estado del plato a Inactivo.
+     * Solicita confirmación y cambia el estado del plato a Inactivo.
      *
-     * CORRECCIÓN: se reemplazó el Alert nativo de JavaFX por Alertas.confirmar()
-     * pasando el nodoOrigen. Esto evita que la ventana principal se minimice,
-     * ya que el diálogo queda vinculado al Stage padre mediante initOwner()
-     * y Modality.APPLICATION_MODAL.
+     * USA EL PATRON CALLBACK de Alertas.confirmar():
+     * La logica de inactivacion se pasa como Runnable al metodo confirmar().
+     * El Runnable se ejecuta SOLO si el usuario presiona Aceptar.
+     * Este patron es necesario porque confirmar() opera en el hilo de JavaFX
+     * y no puede bloquear con Object.wait().
      */
     @FXML
     private void desactivarPlato() {
         if (platoSeleccionado == null) return;
 
-        Node nodo = obtenerNodoParaAlerta();
-        boolean confirmado = Alertas.confirmar(
-            nodo,
-            "Confirmar Inactivación",
-            "¿Desea inactivar el plato \"" + platoSeleccionado.getNombre() + "\"?"
-        );
+        // Capturamos el plato en una variable final para usarla en el lambda
+        final Plato plato = platoSeleccionado;
 
-        if (confirmado) {
-            if (PlatoDAO.cambiarEstado(platoSeleccionado.getId(), 9)) {
-                cargarListado();
-                prepararNuevoPlato();
+        Alertas.confirmar(
+            obtenerNodoParaAlerta(),
+            "Confirmar Inactivación",
+            "¿Desea inactivar el plato \"" + plato.getNombre() + "\"?",
+            () -> {
+                // Este bloque se ejecuta SOLO si el usuario presiona Aceptar
+                if (PlatoDAO.cambiarEstado(plato.getId(), 9)) {
+                    cargarListado();
+                    prepararNuevoPlato();
+                    mostrarAlerta("Éxito", "Plato inactivado correctamente.");
+                } else {
+                    mostrarAlerta("Error", "No se pudo inactivar el plato.");
+                }
             }
-        }
+        );
     }
 
     /** Limpia los filtros de búsqueda y recarga la lista completa. */
@@ -251,11 +253,7 @@ public class PlatoController {
         prepararNuevoPlato();
     }
 
-    /**
-     * Determina el tipo de alerta según el título y delega a la clase Alertas,
-     * pasando siempre un nodo origen para que el Stage del diálogo quede
-     * vinculado al Stage padre (evita minimización).
-     */
+    /** Muestra el tipo de alerta correcto según el titulo. */
     private void mostrarAlerta(String titulo, String contenido) {
         Node nodo = obtenerNodoParaAlerta();
         String t  = titulo.toLowerCase();
@@ -271,16 +269,11 @@ public class PlatoController {
         }
     }
 
-    /**
-     * Obtiene el primer nodo @FXML disponible para localizar el Stage padre.
-     * El orden de prioridad va de lo más específico (botón de acción) a lo
-     * más general (tabla, campo de texto). Alertas usa este nodo para
-     * llamar a initOwner() y evitar la minimización de la ventana.
-     */
+    /** Obtiene el primer nodo FXML disponible para localizar el Stage padre. */
     private Node obtenerNodoParaAlerta() {
         if (btnGuardarPlato != null) return btnGuardarPlato;
         if (tblListaPlatos  != null) return tblListaPlatos;
         if (txtPlatNombre   != null) return txtPlatNombre;
-        return null; // Alertas busca el Stage activo como fallback
+        return null;
     }
 }
