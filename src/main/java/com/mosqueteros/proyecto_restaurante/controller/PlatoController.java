@@ -6,6 +6,7 @@ import com.mosqueteros.proyecto_restaurante.dao.PlatoDAO;
 import com.mosqueteros.proyecto_restaurante.model.CategoriaPlato;
 import com.mosqueteros.proyecto_restaurante.model.Estado;
 import com.mosqueteros.proyecto_restaurante.model.Plato;
+import com.mosqueteros.proyecto_restaurante.util.Alertas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.math.BigDecimal;
 import java.util.List;
+import javafx.scene.Node;
 
 public class PlatoController {
 
@@ -223,11 +225,26 @@ public class PlatoController {
         prepararNuevoPlato();
     }
 
-    private void mostrarAlerta(String titulo, String contenido) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+      private void mostrarAlerta(String titulo, String contenido) {
+    Node nodo = obtenerNodoParaAlerta();
+    String t  = titulo.toLowerCase();
+
+    if (t.contains("éxito") || t.contains("correcto") || t.contains("guardado")) {
+        Alertas.exito(nodo, titulo, contenido);
+    } else if (t.contains("error") || t.contains("fallo") || t.contains("falló")) {
+        Alertas.error(nodo, titulo, contenido);
+    } else if (t.contains("advertencia") || t.contains("aviso") || t.contains("atención")) {
+        Alertas.aviso(nodo, titulo, contenido);
+    } else {
+        Alertas.informacion(nodo, titulo, contenido);
     }
+}
+   /** Obtiene el primer nodo disponible para localizar el Stage padre. */
+private Node obtenerNodoParaAlerta() {
+    // Ajusta los nombres a los @FXML que existan en CADA controlador
+    if (btnGuardarPlato  != null) return btnGuardarPlato;
+    if (tblListaPlatos   != null) return tblListaPlatos;
+    if (txtPlatNombre    != null) return txtPlatNombre;
+    return null; // Alertas busca el Stage activo como fallback
+}
 }

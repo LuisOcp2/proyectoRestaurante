@@ -16,7 +16,8 @@ import javafx.scene.layout.VBox;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-
+import com.mosqueteros.proyecto_restaurante.util.Alertas;
+import javafx.scene.Node;
 import java.util.List;
 
 public class MesaController {
@@ -264,11 +265,26 @@ public class MesaController {
         mesasObservable.setAll(listaFiltrada);
     }
 
-    private void mostrarAlerta(String titulo, String contenido) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+   private void mostrarAlerta(String titulo, String contenido) {
+    Node nodo = obtenerNodoParaAlerta();
+    String t  = titulo.toLowerCase();
+
+    if (t.contains("éxito") || t.contains("correcto") || t.contains("guardado")) {
+        Alertas.exito(nodo, titulo, contenido);
+    } else if (t.contains("error") || t.contains("fallo") || t.contains("falló")) {
+        Alertas.error(nodo, titulo, contenido);
+    } else if (t.contains("advertencia") || t.contains("aviso") || t.contains("atención")) {
+        Alertas.aviso(nodo, titulo, contenido);
+    } else {
+        Alertas.informacion(nodo, titulo, contenido);
     }
+}
+   /** Obtiene el primer nodo disponible para localizar el Stage padre. */
+private Node obtenerNodoParaAlerta() {
+    // Ajusta los nombres a los @FXML que existan en CADA controlador
+    if (btnGuardarMesa  != null) return btnGuardarMesa;
+    if (tblListaMesas   != null) return tblListaMesas;
+    if (txtMesNumero    != null) return txtMesNumero;
+    return null; // Alertas busca el Stage activo como fallback
+}
 }
