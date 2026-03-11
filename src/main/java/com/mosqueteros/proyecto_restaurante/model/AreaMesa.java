@@ -1,49 +1,27 @@
 package com.mosqueteros.proyecto_restaurante.model;
 
 /**
- * Modelo de datos para Área de Mesa
+ * Modelo para AreaMesa (Standardized)
  */
 public class AreaMesa {
-    private Integer armid;
-    private String armnombre;
-    private String armdescripcion;
+    private Long id;
+    private String nombre;
 
-    // Constructores
-    public AreaMesa() {
+    public AreaMesa() {}
+
+    public AreaMesa(Long id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
     }
 
-    public AreaMesa(Integer armid, String armnombre) {
-        this.armid = armid;
-        this.armnombre = armnombre;
-    }
+    public Long obtenerId() { return id; }
+    public void establecerId(Long id) { this.id = id; }
 
-    // Getters y Setters
-    public Integer getArmid() {
-        return armid;
-    }
-
-    public void setArmid(Integer armid) {
-        this.armid = armid;
-    }
-
-    public String getArmnombre() {
-        return armnombre;
-    }
-
-    public void setArmnombre(String armnombre) {
-        this.armnombre = armnombre;
-    }
-
-    public String getArmdescripcion() {
-        return armdescripcion;
-    }
-
-    public void setArmdescripcion(String armdescripcion) {
-        this.armdescripcion = armdescripcion;
-    }
+    public String obtenerNombre() { return nombre; }
+    public void establecerNombre(String nombre) { this.nombre = nombre; }
 
     @Override
     public String toString() {
-        return armnombre;
+        return nombre;
     }
 }

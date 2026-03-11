@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mosqueteros.proyecto_restaurante.controller.ConceptoEgresoController"
+      styleClass="welcome-panel">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    
+    <Label text="📌 Conceptos de Egreso" styleClass="welcome-title" />
+    <Label text="Definición de tipos de gastos y egresos de caja." styleClass="welcome-subtitle" />
+    <Label text="Vista en desarrollo - Sebastián" styleClass="welcome-hint" />
+    
+</VBox>

@@ -291,6 +291,19 @@
     -fx-background-color: rgba(255, 105, 51, 0.14);
 }
 
+/* ── Estilos para Iconos ────────────────────────────────────── */
+.menu-icon {
+    -fx-icon-color: #475569;
+}
+
+.menu-btn:hover .menu-icon {
+    -fx-icon-color: #FF6933;
+}
+
+.menu-btn-active .menu-icon {
+    -fx-icon-color: #FF6933;
+}
+
 /* ── Separadores dentro del sidebar ─────────────────────────── */
 .sidebar .separator>*.line {
     -fx-background-color: #EEF2F7;

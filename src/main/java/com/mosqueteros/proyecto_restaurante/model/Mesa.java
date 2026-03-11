@@ -1,84 +1,84 @@
 package com.mosqueteros.proyecto_restaurante.model;
 
-/**
- * Modelo de datos para Mesa
- */
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Mesa {
-    private Integer mesid;
-    private Integer mesnumero;
-    private Integer mescapacidad;
-    private AreaMesa areaMesa;
-    private Sede sede;
-    private Estado estado;
 
-    // Constructores
-    public Mesa() {
+    private long   id;
+    private int    numero;
+    private int    capacidad;
+    private long   areaMesaId;    // FK → areamesa
+    private String areaDesc;      // Descripción del área (JOIN)
+    private long   sedeId;        // FK → sede
+    private String sedeNombre;    // Nombre de la sede (JOIN)
+    private long   estId;         // FK → estado
+    private String estadoDesc;    // Descripción del estado (JOIN)
+
+    public Mesa() {}
+
+    public Mesa(long id, int numero, int capacidad,
+                long areaMesaId, String areaDesc,
+                long sedeId, String sedeNombre,
+                long estId, String estadoDesc) {
+        this.id         = id;
+        this.numero     = numero;
+        this.capacidad  = capacidad;
+        this.areaMesaId = areaMesaId;
+        this.areaDesc   = areaDesc;
+        this.sedeId     = sedeId;
+        this.sedeNombre = sedeNombre;
+        this.estId      = estId;
+        this.estadoDesc = estadoDesc;
     }
 
-    public Mesa(Integer mesid, Integer mesnumero, Integer mescapacidad) {
-        this.mesid = mesid;
-        this.mesnumero = mesnumero;
-        this.mescapacidad = mescapacidad;
+    /** Construye una Mesa desde un ResultSet con alias estándar. */
+    public static Mesa crearDesdeResultSet(ResultSet rs) throws SQLException {
+        return new Mesa(
+            rs.getLong("mes_id"),
+            rs.getInt("mes_numero"),
+            rs.getInt("mes_capacidad"),
+            rs.getLong("arem_id"),
+            rs.getString("arem_descripcion"),
+            rs.getLong("sede_id"),
+            rs.getString("sede_nombre"),
+            rs.getLong("est_id"),
+            rs.getString("est_descripcion")
+        );
     }
 
-    // Getters y Setters
-    public Integer getMesid() {
-        return mesid;
-    }
+    // ── Getters y Setters ─────────────────────────────────────────────────────
 
-    public void setMesid(Integer mesid) {
-        this.mesid = mesid;
-    }
+    public long   obtenerId()                      { return id; }
+    public void   establecerId(long id)            { this.id = id; }
 
-    public Integer getMesnumero() {
-        return mesnumero;
-    }
+    public int    obtenerNumero()                  { return numero; }
+    public void   establecerNumero(int n)          { this.numero = n; }
 
-    public void setMesnumero(Integer mesnumero) {
-        this.mesnumero = mesnumero;
-    }
+    public int    obtenerCapacidad()               { return capacidad; }
+    public void   establecerCapacidad(int c)       { this.capacidad = c; }
 
-    public Integer getMescapacidad() {
-        return mescapacidad;
-    }
+    public long   obtenerAreaMesaId()              { return areaMesaId; }
+    public void   establecerAreaMesaId(long a)     { this.areaMesaId = a; }
 
-    public void setMescapacidad(Integer mescapacidad) {
-        this.mescapacidad = mescapacidad;
-    }
+    public String obtenerAreaDesc()                { return areaDesc; }
+    public void   establecerAreaDesc(String a)     { this.areaDesc = a; }
 
-    public AreaMesa getAreaMesa() {
-        return areaMesa;
-    }
+    public long   obtenerSedeId()                  { return sedeId; }
+    public void   establecerSedeId(long s)         { this.sedeId = s; }
 
-    public void setAreaMesa(AreaMesa areaMesa) {
-        this.areaMesa = areaMesa;
-    }
+    public String obtenerSedeNombre()              { return sedeNombre; }
+    public void   establecerSedeNombre(String s)   { this.sedeNombre = s; }
 
-    public Sede getSede() {
-        return sede;
-    }
+    public long   obtenerEstId()                   { return estId; }
+    public void   establecerEstId(long e)          { this.estId = e; }
 
-    public void setSede(Sede sede) {
-        this.sede = sede;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
+    public String obtenerEstadoDesc()              { return estadoDesc; }
+    public void   establecerEstadoDesc(String e)   { this.estadoDesc = e; }
 
     @Override
     public String toString() {
-        return "Mesa{" +
-                "mesid=" + mesid +
-                ", mesnumero=" + mesnumero +
-                ", mescapacidad=" + mescapacidad +
-                ", areaMesa=" + (areaMesa != null ? areaMesa.getArmnombre() : "null") +
-                ", sede=" + (sede != null ? sede.getSednombre() : "null") +
-                ", estado=" + (estado != null ? estado.getEstnombre() : "null") +
-                '}';
+        return String.format("Mesa{id=%d, numero=%d, sede='%s', estado='%s'}",
+                             id, numero, sedeNombre, estadoDesc);
     }
 }

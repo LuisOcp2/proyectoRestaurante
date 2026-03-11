@@ -1,134 +1,293 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Vista principal de pedidos — MaterialFX Edition -->
-
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox spacing="12" stylesheets="@../styles.css,@../styles/restaurante-tailwind.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mosqueteros.proyecto_restaurante.controller.PedidoController">
+<StackPane
+    styleClass="root-container"
+    stylesheets="@../vista-mesas.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.mosqueteros.proyecto_restaurante.controller.PedidoController">
 
-    <!-- ── PANEL CENTRAL ─────────────────────────────────────── -->
-    <VBox spacing="12" HBox.hgrow="ALWAYS">
+    <padding><Insets bottom="28" left="28" right="28" top="28" /></padding>
 
-        <Label styleClass="vista-titulo" text="📋  Pedidos" />
+    <HBox
+        alignment="TOP_LEFT"
+        fillHeight="true"
+        maxHeight="Infinity"
+        maxWidth="Infinity"
+        spacing="24">
 
-        <!-- Barra de filtros -->
-        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filtros-bar">
-            <MFXDatePicker fx:id="dpFechaPedido" prefWidth="145" styleClass="filtro-combo" />
-            <MFXComboBox fx:id="cmbFiltroMesaPedido" floatingText="Mesa" prefWidth="100" styleClass="filtro-combo" />
-            <MFXComboBox fx:id="cmbFiltroEstadoPedido" floatingText="Estado" prefWidth="130" styleClass="filtro-combo" />
-            <MFXComboBox fx:id="cmbFiltroSedePedido" floatingText="Sede" prefWidth="130" styleClass="filtro-combo" />
-            <MFXButton fx:id="btnBuscarPedido" onAction="#buscarPedidoMock" styleClass="btn-accion-secundario" text="🔍  Buscar" />
-            <MFXButton fx:id="btnLimpiarFiltroPedido" onAction="#limpiarFiltrosPedidoMock" styleClass="btn-accion-limpiar" text="↺  Limpiar" />
-        </HBox>
+        <!-- ═══════════════════════════════════════════════════════════════
+             COLUMNA IZQUIERDA  —  Tablas de Pedidos y Detalles
+        ════════════════════════════════════════════════════════════════ -->
+        <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
 
-        <!-- Tabla principal de pedidos -->
-        <TableView fx:id="tblListaPedidos" styleClass="crud-table" VBox.vgrow="ALWAYS">
-            <placeholder><Label text="No hay pedidos para los filtros seleccionados" /></placeholder>
-            <columns>
-                <TableColumn fx:id="colPedId" prefWidth="55" text="ID" />
-                <TableColumn fx:id="colPedMesero" prefWidth="110" text="Mesero" />
-                <TableColumn fx:id="colPedMesa" prefWidth="70" text="Mesa" />
-                <TableColumn fx:id="colPedFecha" prefWidth="140" text="Fecha" />
-                <TableColumn fx:id="colPedObs" prefWidth="160" text="Observaciones" />
-                <TableColumn fx:id="colPedEstado" prefWidth="110" text="Estado" />
-            </columns>
-        </TableView>
+            <!-- HEADER PRINCIPAL -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <FontIcon iconLiteral="fas-clipboard-list" iconSize="24" styleClass="header-icon" />
+                <Label styleClass="titulo-texto" text="Pedidos y Comandas" />
+            </HBox>
 
-        <!-- Acciones sobre pedido -->
-        <HBox alignment="CENTER_RIGHT" spacing="8" styleClass="acciones-bar">
-            <Label fx:id="lblConteoPedidos" styleClass="conteo-label" text="0 pedidos" HBox.hgrow="ALWAYS" />
-            <MFXButton fx:id="btnNuevoPedido" onAction="#prepararNuevoPedidoMock" styleClass="btn-accion-primario btn-premium" text="🆕  Nuevo Pedido" />
-            <MFXButton fx:id="btnCambiarEstadoPedido" onAction="#cambiarEstadoPedidoMock" styleClass="btn-accion-secundario" text="✏️  Cambiar Estado" />
-            <MFXButton fx:id="btnCancelarPedido" onAction="#cancelarPedidoMock" styleClass="btn-accion-peligro" text="❌  Cancelar Pedido" />
-        </HBox>
+            <!-- CARD SUPERIOR: LISTA DE PEDIDOS -->
+            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
 
-        <Separator />
+                <!-- BARRA DE FILTROS PEDIDOS -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <padding><Insets top="16" right="20" bottom="16" left="20" /></padding>
 
-        <!-- Subtítulo detalle -->
-        <HBox alignment="CENTER_LEFT" spacing="8">
-            <Label styleClass="subtitulo-seccion" text="📝  Detalle del pedido seleccionado" />
-            <HBox HBox.hgrow="ALWAYS" />
-            <MFXButton fx:id="btnAgregarDetalle" onAction="#agregarDetalleMock" styleClass="btn-accion-primario" text="➕  Agregar Plato" />
-            <MFXButton fx:id="btnQuitarDetalle" onAction="#quitarDetalleMock" styleClass="btn-accion-peligro" text="🗑️  Quitar" />
-        </HBox>
+                    <DatePicker fx:id="dpFechaPedido"
+                                promptText="Fecha"
+                                prefWidth="140"
+                                styleClass="filtro-combo-nativo" />
 
-        <!-- Tabla detalle del pedido -->
-        <TableView fx:id="tblDetallePedido" prefHeight="180">
-            <styleClass><String fx:value="crud-table" /><String fx:value="detalle-table" /></styleClass>
-            <placeholder><Label text="Selecciona un pedido para ver su detalle" /></placeholder>
-            <columns>
-                <TableColumn fx:id="colDtPlato" prefWidth="170" text="Plato" />
-                <TableColumn fx:id="colDtCantidad" prefWidth="60" text="Cant." />
-                <TableColumn fx:id="colDtPrecio" prefWidth="90" text="Precio" />
-                <TableColumn fx:id="colDtObs" prefWidth="160" text="Observación" />
-                <TableColumn fx:id="colDtEstado" prefWidth="120" text="Estado" />
-            </columns>
-        </TableView>
+                    <Region HBox.hgrow="ALWAYS" />
 
-        <!-- Total del pedido -->
-        <HBox alignment="CENTER_RIGHT" spacing="8">
-            <Label styleClass="form-label" text="Total del pedido:" />
-            <Label fx:id="lblTotalPedido" styleClass="total-pedido-label" text="COP 0.00" />
-        </HBox>
+                    <ComboBox fx:id="cmbFiltroSedePedido"
+                              promptText="Sede"
+                              prefWidth="130"
+                              styleClass="filtro-combo-nativo" />
 
-    </VBox>
+                    <ComboBox fx:id="cmbFiltroMesaPedido"
+                              promptText="Mesa"
+                              prefWidth="130"
+                              styleClass="filtro-combo-nativo" />
 
-    <!-- ── PANEL DERECHO: Cocina / Comandas ──────────────────── -->
-    <VBox maxWidth="326.0" minWidth="240" prefHeight="844.0" prefWidth="326.0" spacing="10" styleClass="formulario-panel">
+                    <ComboBox fx:id="cmbFiltroEstadoPedido"
+                              promptText="Estado"
+                              prefWidth="130"
+                              styleClass="filtro-combo-nativo" />
 
-        <Label styleClass="form-titulo" text="🍳  Cocina — Comandas" />
-        <Label styleClass="form-label" text="Platos en preparación" />
+                    <MFXButton fx:id="btnBuscarPedido"
+                               onAction="#buscarPedidoMock"
+                               styleClass="btn-buscar-raised"
+                               text="Buscar">
+                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12" iconColor="white"/></graphic>
+                    </MFXButton>
 
-        <TableView fx:id="tblComandas" VBox.vgrow="ALWAYS">
-            <styleClass><String fx:value="crud-table" /><String fx:value="comanda-table" /></styleClass>
-            <placeholder><Label text="Sin comandas pendientes" /></placeholder>
-            <columns>
-                <TableColumn fx:id="colComMesa" prefWidth="55" text="Mesa" />
-                <TableColumn fx:id="colComPlato" prefWidth="100" text="Plato" />
-                <TableColumn fx:id="colComCant" prefWidth="45" text="Cant." />
-            </columns>
-        </TableView>
+                    <MFXButton fx:id="btnLimpiarFiltroPedido"
+                               onAction="#limpiarFiltrosPedidoMock"
+                               styleClass="btn-limpiar-flat"
+                               text="Limpiar">
+                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12" styleClass="icon-muted"/></graphic>
+                    </MFXButton>
+                </HBox>
 
-        <Separator />
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
 
-        <Label styleClass="subtitulo-seccion" text="➕  Agregar plato al pedido" />
+                <!-- TABLA PEDIDOS -->
+                <StackPane VBox.vgrow="ALWAYS">
+                    <TableView fx:id="tblListaPedidos" styleClass="mesas-table" VBox.vgrow="ALWAYS">
+                        <placeholder>
+                            <VBox alignment="CENTER" spacing="10">
+                                <FontIcon iconLiteral="fas-clipboard" iconSize="48" styleClass="icon-muted"/>
+                                <Label text="No hay pedidos para los filtros seleccionados" style="-fx-text-fill: #9CA3AF;"/>
+                            </VBox>
+                        </placeholder>
+                        <columns>
+                            <TableColumn fx:id="colPedId" prefWidth="60" text="ID" />
+                            <TableColumn fx:id="colPedMesero" prefWidth="120" text="Mesero" />
+                            <TableColumn fx:id="colPedMesa" prefWidth="80" text="Mesa" />
+                            <TableColumn fx:id="colPedFecha" prefWidth="130" text="Fecha" />
+                            <TableColumn fx:id="colPedObs" prefWidth="180" text="Observaciones" />
+                            <TableColumn fx:id="colPedEstado" prefWidth="100" text="Estado" />
+                        </columns>
+                    </TableView>
+                </StackPane>
 
-        <VBox spacing="4">
-            <Label styleClass="form-label" text="Plato" />
-            <MFXComboBox fx:id="cmbPlatoDetalle" floatingText="Seleccionar plato…" maxWidth="Infinity" styleClass="form-combo" />
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- FOOTER DE TABLA PEDIDOS -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="footer-bar">
+                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+                    <Label fx:id="lblConteoPedidos" styleClass="conteo-label"
+                           text="0 pedidos" HBox.hgrow="ALWAYS" />
+                    <MFXButton fx:id="btnNuevoPedido" onAction="#prepararNuevoPedidoMock"
+                               styleClass="btn-outline-primary" text="Nuevo Pedido">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="11" iconColor="#5457CD"/></graphic>
+                    </MFXButton>
+                    <MFXButton fx:id="btnCambiarEstadoPedido" onAction="#cambiarEstadoPedidoMock"
+                               styleClass="btn-outline-secondary" text="Cambiar Estado">
+                        <graphic><FontIcon iconLiteral="fas-exchange-alt" iconSize="11" iconColor="#4F46E5"/></graphic>
+                    </MFXButton>
+                    <MFXButton fx:id="btnCancelarPedido" onAction="#cancelarPedidoMock"
+                               styleClass="btn-outline-danger" text="Cancelar Pedido">
+                        <graphic><FontIcon iconLiteral="fas-times" iconSize="11" iconColor="#EF4444"/></graphic>
+                    </MFXButton>
+                </HBox>
+            </VBox>
+
+            <!-- CARD INFERIOR: DETALLE DEL PEDIDO -->
+            <VBox styleClass="main-card" VBox.vgrow="NEVER" maxHeight="300" spacing="0">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+                    <FontIcon iconLiteral="fas-list-ul" iconSize="16" styleClass="icon-muted" />
+                    <Label styleClass="subtitulo-seccion" text="Detalle del pedido" HBox.hgrow="ALWAYS"/>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <MFXButton fx:id="btnAgregarDetalle" onAction="#agregarDetalleMock"
+                               styleClass="btn-outline-primary" text="Agregar Plato">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="11" iconColor="#5457CD"/></graphic>
+                    </MFXButton>
+                    <MFXButton fx:id="btnQuitarDetalle" onAction="#quitarDetalleMock"
+                               styleClass="btn-outline-danger" text="Quitar Plato">
+                        <graphic><FontIcon iconLiteral="fas-minus" iconSize="11" iconColor="#EF4444"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- TABLA DETALLE -->
+                <TableView fx:id="tblDetallePedido" styleClass="mesas-table" prefHeight="160">
+                    <placeholder>
+                        <Label text="Selecciona un pedido para ver su detalle" style="-fx-text-fill: #9CA3AF;"/>
+                    </placeholder>
+                    <columns>
+                        <TableColumn fx:id="colDtPlato" prefWidth="180" text="Plato" />
+                        <TableColumn fx:id="colDtCantidad" prefWidth="80" text="Cantidad" />
+                        <TableColumn fx:id="colDtPrecio" prefWidth="100" text="Precio" />
+                        <TableColumn fx:id="colDtObs" prefWidth="180" text="Observación" />
+                        <TableColumn fx:id="colDtEstado" prefWidth="100" text="Estado" />
+                    </columns>
+                </TableView>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <HBox alignment="CENTER_RIGHT" spacing="15" styleClass="footer-bar">
+                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+                    <Label styleClass="form-label" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Total del pedido:" />
+                    <Label fx:id="lblTotalPedido" styleClass="total-pedido-label" style="-fx-font-size: 16px; -fx-text-fill: #10B981; -fx-font-weight: bold;" text="COP 0.00" />
+                </HBox>
+            </VBox>
         </VBox>
 
-        <VBox spacing="4">
-            <Label styleClass="form-label" text="Cantidad" />
-            <MFXTextField fx:id="txtCantidadDetalle" floatingText="1" styleClass="form-input" />
-        </VBox>
+        <!-- ═══════════════════════════════════════════════════════════════
+             COLUMNA DERECHA  —  Formulario Cocina/Comandas
+        ════════════════════════════════════════════════════════════════ -->
+        <ScrollPane
+            fitToWidth="true"
+            fitToHeight="false"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            styleClass="form-scroll"
+            HBox.hgrow="NEVER"
+            minWidth="340"
+            maxWidth="360">
 
-        <VBox spacing="4">
-            <Label styleClass="form-label" text="Observación" />
-            <TextArea fx:id="txtObservacionDetalle" prefRowCount="2" promptText="Sin cebolla, extra salsa…" styleClass="form-textarea" wrapText="true" />
-        </VBox>
+            <VBox spacing="0" styleClass="main-card" minWidth="338">
+                <!-- Header del form -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                    <StackPane styleClass="form-header-badge">
+                        <FontIcon iconLiteral="fas-fire" iconSize="15"
+                                  styleClass="form-header-badge-icon" />
+                    </StackPane>
+                    <Label styleClass="form-header-titulo" text="Cocina / Comandas" />
+                </HBox>
 
-        <MFXButton fx:id="btnConfirmarAgregarDetalle" maxWidth="Infinity" onAction="#confirmarAgregarDetalleMock" styleClass="btn-accion-primario btn-premium" text="➕  Agregar al pedido" />
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
 
-        <Separator />
+                <!-- Sección Comandas en vivo -->
+                <VBox spacing="10">
+                    <padding><Insets top="16" right="22" bottom="16" left="22" /></padding>
+                    <Label styleClass="input-label" text="Platos en preparación" />
+                    <TableView fx:id="tblComandas" styleClass="mesas-table" prefHeight="200">
+                        <placeholder>
+                            <Label text="Sin comandas pendientes" style="-fx-text-fill: #9CA3AF;"/>
+                        </placeholder>
+                        <columns>
+                            <TableColumn fx:id="colComMesa" prefWidth="60" text="Mesa" />
+                            <TableColumn fx:id="colComPlato" prefWidth="130" text="Plato" />
+                            <TableColumn fx:id="colComCant" prefWidth="70" text="Cant." />
+                        </columns>
+                    </TableView>
+                    
+                    <Region style="-fx-padding: 8px;" />
+                    
+                    <Label styleClass="input-label" style="-fx-font-weight: bold;" text="Actualizar estado de comanda" />
+                    
+                    <VBox spacing="5">
+                        <HBox alignment="CENTER_LEFT" spacing="10" prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-tasks" iconSize="14" styleClass="icon-muted" />
+                            <ComboBox fx:id="cmbEstadoDetalle" promptText="Nuevo estado..."
+                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        </HBox>
+                    </VBox>
+                    <MFXButton fx:id="btnMarcarEstadoDetalle" maxWidth="Infinity"
+                               onAction="#marcarEstadoDetalleMock" styleClass="btn-outline-primary-form" text="Actualizar estado">
+                        <graphic><FontIcon iconLiteral="fas-check-circle" iconSize="13" iconColor="#5457CD"/></graphic>
+                    </MFXButton>
+                </VBox>
 
-        <Label styleClass="subtitulo-seccion" text="🔄  Estado de línea" />
-        <MFXComboBox fx:id="cmbEstadoDetalle" floatingText="Nuevo estado…" maxWidth="Infinity" styleClass="form-combo" />
-        <MFXButton fx:id="btnMarcarEstadoDetalle" maxWidth="Infinity" onAction="#marcarEstadoDetalleMock" styleClass="btn-accion-secundario" text="✅  Marcar estado" />
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
 
-        <Label fx:id="lblMensajePedido" styleClass="form-mensaje" text="" wrapText="true" />
+                <!-- Sección Agregar Plato Manual -->
+                <VBox spacing="16">
+                    <padding><Insets top="20" right="22" bottom="22" left="22" /></padding>
+                    <Label styleClass="input-label" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Agregar al Pedido Manualmente" />
 
-    </VBox>
+                    <!-- Menú/Plato -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Plato" />
+                        <HBox alignment="CENTER_LEFT" spacing="10" prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-utensils" iconSize="14" styleClass="icon-muted" />
+                            <ComboBox fx:id="cmbPlatoDetalle" promptText="Seleccionar plato..."
+                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        </HBox>
+                    </VBox>
 
-</HBox>
+                    <!-- Cantidad -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Cantidad" />
+                        <HBox alignment="CENTER_LEFT" spacing="10" prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-hashtag" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtCantidadDetalle" promptText="1"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Observación -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Observación" />
+                        <HBox alignment="TOP_LEFT" spacing="10" styleClass="input-wrapper">
+                            <padding><Insets top="12" right="6" bottom="12" left="10" /></padding>
+                            <FontIcon iconLiteral="fas-comment-alt" iconSize="14" styleClass="icon-muted" />
+                            <TextArea fx:id="txtObservacionDetalle" promptText="Ej: Sin cebolla..."
+                                      prefRowCount="2" wrapText="true"
+                                      style="-fx-background-color: transparent; -fx-control-inner-background: transparent; -fx-text-box-border: transparent; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-padding: 0; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #374151;"
+                                      HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <Label fx:id="lblMensajePedido" styleClass="form-mensaje"
+                           text="" wrapText="true" managed="false" visible="false"/>
+                </VBox>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- Footer Formulario -->
+                <VBox spacing="10" styleClass="form-footer">
+                    <padding><Insets top="18" right="22" bottom="22" left="22" /></padding>
+                    <MFXButton fx:id="btnConfirmarAgregarDetalle" maxWidth="Infinity"
+                               onAction="#confirmarAgregarDetalleMock" styleClass="btn-raised-primary" text="Agregar Plato al Pedido">
+                        <graphic><FontIcon iconLiteral="fas-cart-plus" iconSize="13" iconColor="white"/></graphic>
+                    </MFXButton>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </HBox>
+</StackPane>

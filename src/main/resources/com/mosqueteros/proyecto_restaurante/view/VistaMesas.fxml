@@ -2,7 +2,8 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
@@ -117,14 +118,14 @@
                               styleClass="filtro-combo-nativo" />
 
                     <MFXButton fx:id="btnBuscarMesa"
-                               onAction="#buscarMesaMock"
+                               onAction="#buscarMesa"
                                styleClass="btn-buscar-raised"
                                text="Buscar">
                         <graphic><FontIcon iconLiteral="fas-search" iconSize="12" iconColor="white"/></graphic>
                     </MFXButton>
 
                     <MFXButton fx:id="btnLimpiarFiltroMesa"
-                               onAction="#limpiarFiltrosMesaMock"
+                               onAction="#limpiarFiltrosMesa"
                                styleClass="btn-limpiar-flat"
                                text="Limpiar">
                         <graphic><FontIcon iconLiteral="fas-sync" iconSize="12" styleClass="icon-muted"/></graphic>
@@ -148,11 +149,18 @@
                 <!-- Tabla + Empty state apilados -->
                 <StackPane VBox.vgrow="ALWAYS">
 
-                    <MFXTableView
+                    <TableView
                         fx:id="tblListaMesas"
-                        visible="false"
-                        managed="false"
-                        styleClass="mesas-table" />
+                        styleClass="mesas-table">
+                        <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="colNumero" prefWidth="60"  minWidth="60"  />
+                            <TableColumn fx:id="colSede" prefWidth="140" />
+                            <TableColumn fx:id="colArea" prefWidth="120" />
+                            <TableColumn fx:id="colCapacidad" prefWidth="100" minWidth="100" />
+                            <TableColumn fx:id="colEstado" prefWidth="90"  minWidth="90"  />
+                        </columns>
+                    </TableView>
 
                     <VBox fx:id="boxPlaceholder"
                           alignment="CENTER"
@@ -192,7 +200,7 @@
                            HBox.hgrow="ALWAYS" />
 
                     <MFXButton fx:id="btnNuevoMesa"
-                               onAction="#prepararNuevaMesaMock"
+                               onAction="#prepararNuevaMesa"
                                styleClass="btn-outline-primary"
                                text="Nueva Mesa">
                         <graphic><FontIcon iconLiteral="fas-plus" iconSize="11" iconColor="#5457CD"/></graphic>
@@ -200,7 +208,7 @@
 
                     <MFXButton fx:id="btnEditarMesa"
                                disable="true"
-                               onAction="#editarMesaMock"
+                               onAction="#editarMesa"
                                styleClass="btn-outline-secondary"
                                text="Editar">
                         <graphic><FontIcon iconLiteral="fas-pencil-alt" iconSize="11" iconColor="#4F46E5"/></graphic>
@@ -208,7 +216,7 @@
 
                     <MFXButton fx:id="btnEliminarMesa"
                                disable="true"
-                               onAction="#eliminarMesaMock"
+                               onAction="#eliminarMesa"
                                styleClass="btn-outline-danger"
                                text="Eliminar">
                         <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="11" iconColor="#EF4444"/></graphic>
@@ -310,20 +318,20 @@
                     <padding><Insets top="18" right="22" bottom="22" left="22" /></padding>
 
                     <MFXButton fx:id="btnGuardarMesa" maxWidth="Infinity"
-                               onAction="#guardarMesaMock"
+                               onAction="#guardarMesa"
                                styleClass="btn-raised-primary" text="Guardar Mesa">
                         <graphic><FontIcon iconLiteral="fas-save" iconSize="13" iconColor="white"/></graphic>
                     </MFXButton>
 
                     <MFXButton fx:id="btnNuevoMesaForm" maxWidth="Infinity"
-                               onAction="#prepararNuevaMesaMock"
+                               onAction="#prepararNuevaMesa"
                                styleClass="btn-outline-primary-form" text="Nueva Mesa">
                         <graphic><FontIcon iconLiteral="fas-plus" iconSize="13" iconColor="#5457CD"/></graphic>
                     </MFXButton>
 
                     <MFXButton fx:id="btnEliminarMesaForm" disable="true"
                                maxWidth="Infinity"
-                               onAction="#eliminarMesaMock"
+                               onAction="#eliminarMesa"
                                styleClass="btn-outline-danger-form" text="Eliminar">
                         <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="13" iconColor="#EF4444"/></graphic>
                     </MFXButton>

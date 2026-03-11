@@ -1,49 +1,27 @@
 package com.mosqueteros.proyecto_restaurante.model;
 
 /**
- * Modelo de datos para Estado
+ * Modelo de datos para Estado (Standardized)
  */
 public class Estado {
-    private Integer estid;
-    private String estnombre;
-    private String estdescripcion;
+    private Integer id;
+    private String nombre;
 
-    // Constructores
-    public Estado() {
+    public Estado() {}
+
+    public Estado(Integer id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
     }
 
-    public Estado(Integer estid, String estnombre) {
-        this.estid = estid;
-        this.estnombre = estnombre;
-    }
+    public Integer obtenerId() { return id; }
+    public void establecerId(Integer id) { this.id = id; }
 
-    // Getters y Setters
-    public Integer getEstid() {
-        return estid;
-    }
-
-    public void setEstid(Integer estid) {
-        this.estid = estid;
-    }
-
-    public String getEstnombre() {
-        return estnombre;
-    }
-
-    public void setEstnombre(String estnombre) {
-        this.estnombre = estnombre;
-    }
-
-    public String getEstdescripcion() {
-        return estdescripcion;
-    }
-
-    public void setEstdescripcion(String estdescripcion) {
-        this.estdescripcion = estdescripcion;
-    }
+    public String obtenerNombre() { return nombre; }
+    public void establecerNombre(String nombre) { this.nombre = nombre; }
 
     @Override
     public String toString() {
-        return estnombre;
+        return nombre;
     }
 }
