@@ -5,19 +5,19 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.mosqueteros.proyecto_restaurante.controller.ConceptoEgresoController"
+      fx:controller="com.mosqueteros.proyecto_restaurante.controller.InsumoController"
       styleClass="welcome-panel" VBox.vgrow="ALWAYS">
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
     
     <StackPane style="-fx-background-color: rgba(84, 87, 205, 0.1); -fx-background-radius: 60; -fx-min-width: 120; -fx-min-height: 120; -fx-max-width: 120; -fx-max-height: 120;">
-        <FontIcon iconLiteral="fas-tag" iconSize="54" iconColor="#5457CD" />
+        <FontIcon iconLiteral="fas-leaf" iconSize="54" iconColor="#5457CD" />
     </StackPane>
     
     <VBox alignment="CENTER" spacing="8.0">
-        <Label text="Conceptos de Egreso" styleClass="welcome-title" />
+        <Label text="Gestión de Insumos" styleClass="welcome-title" />
         <Label text="Módulo en Desarrollo" style="-fx-text-fill: #5457CD; -fx-font-weight: bold; -fx-font-size: 18px;" />
-        <Label text="Clasificación y categorización de los gastos del restaurante." styleClass="welcome-subtitle" />
+        <Label text="Control detallado de materias primas e ingredientes." styleClass="welcome-subtitle" />
     </VBox>
 </VBox>

@@ -229,18 +229,17 @@ public class MesaController {
         }
 
         Node nodo = obtenerNodoParaAlerta();
-        boolean confirmado = Alertas.confirmar(
+        Alertas.confirmar(
             nodo,
             "Confirmar Inactivación",
-            "¿Desea inactivar la mesa #" + mesaSeleccionada.getNumero() + "?"
-        );
-
-        if (confirmado) {
-            if (MesaDAO.cambiarEstado(mesaSeleccionada.getId(), "Inactiva")) {
-                cargarListado();
-                prepararNuevaMesa();
+            "¿Desea inactivar la mesa #" + mesaSeleccionada.getNumero() + "?",
+            () -> {
+                if (MesaDAO.cambiarEstado(mesaSeleccionada.getId(), "Inactiva")) {
+                    cargarListado();
+                    prepararNuevaMesa();
+                }
             }
-        }
+        );
     }
 
     /** Carga los datos de la mesa seleccionada en el formulario para editar. */

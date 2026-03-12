@@ -134,7 +134,7 @@
                         <!-- ══════════════════════════════════════════
                              SECCIÓN: LUIS — Pedidos y Comandas
                              ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionLuis" text="PEDIDOS Y COMANDAS"
+                        <Label fx:id="seccionPedidos" text="PEDIDOS Y COMANDAS"
                                styleClass="menu-section"/>
 
                         <MFXButton fx:id="btnMesas"
@@ -200,7 +200,7 @@
                         <!-- ══════════════════════════════════════════
                              SECCIÓN: SEBASTIÁN — Egresos y Seguridad
                              ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionSebastian" text="EGRESOS"
+                        <Label fx:id="seccionEgresos" text="EGRESOS"
                                styleClass="menu-section"/>
 
                         <MFXButton fx:id="btnEgresos"
@@ -236,7 +236,7 @@
                         <!-- ══════════════════════════════════════════
                              SECCIÓN: ANGIE — Facturación y Roles
                              ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionAngie" text="FACTURACIÓN"
+                        <Label fx:id="seccionFacturacion" text="FACTURACIÓN"
                                styleClass="menu-section"/>
 
                         <MFXButton fx:id="btnReciboCaja"
@@ -282,7 +282,7 @@
                         <!-- ══════════════════════════════════════════
                              SECCIÓN: NICOLÁS — Inventario / PQRS
                              ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionNicolas" text="INVENTARIO / PQRS"
+                        <Label fx:id="seccionInventario" text="INVENTARIO / PQRS"
                                styleClass="menu-section"/>
 
                         <MFXButton fx:id="btnInventarioLog"

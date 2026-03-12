@@ -42,8 +42,8 @@
                         <MFXTextField fx:id="txtBuscarPlato" promptText="Buscar nombre o código..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
                     </HBox>
 
-                    <ComboBox fx:id="cmbFiltroCategoriaPlato" promptText="Categoría" prefWidth="150" prefHeight="36" styleClass="filtro-combo-nativo"/>
-                    <ComboBox fx:id="cmbFiltroEstadoPlato" promptText="Estado" prefWidth="130" prefHeight="36" styleClass="filtro-combo-nativo"/>
+                    <MFXComboBox fx:id="cmbFiltroCategoriaPlato" promptText="Categoría" prefWidth="160" prefHeight="36" styleClass="filtro-combo"/>
+                    <MFXComboBox fx:id="cmbFiltroEstadoPlato" promptText="Estado" prefWidth="140" prefHeight="36" styleClass="filtro-combo"/>
                     
                     <MFXButton fx:id="btnLimpiarFiltro" onAction="#limpiarFiltros" styleClass="btn-limpiar-flat" text="Limpiar">
                         <graphic><FontIcon iconLiteral="fas-sync-alt" iconSize="12" styleClass="icon-muted"/></graphic>

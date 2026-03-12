@@ -19,12 +19,20 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.math.BigDecimal;
 import java.util.List;
 import javafx.scene.Node;
+import javafx.fxml.Initializable;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class PlatoController {
+/**
+ * Controller for managing Plates (Platos) in the restaurant system.
+ * Handles database interactions via PlatoDAO and UI updates.
+ */
+public class PlatoController implements Initializable {
 
     @FXML private MFXTextField txtBuscarPlato;
-    @FXML private ComboBox<CategoriaPlato> cmbFiltroCategoriaPlato;
-    @FXML private ComboBox<Estado> cmbFiltroEstadoPlato;
+    @FXML private MFXComboBox<CategoriaPlato> cmbFiltroCategoriaPlato;
+    @FXML private MFXComboBox<Estado> cmbFiltroEstadoPlato;
+    @FXML private MFXButton btnLimpiarFiltro;
     
     @FXML private TableView<Plato> tblListaPlatos;
     @FXML private TableColumn<Plato, Integer> colPlatId;
@@ -33,29 +41,39 @@ public class PlatoController {
     @FXML private TableColumn<Plato, BigDecimal> colPlatPrecio;
     @FXML private TableColumn<Plato, String> colPlatEstado;
 
-    @FXML private MFXTextField txtPlatCodigo;
-    @FXML private MFXTextField txtPlatNombre;
-    @FXML private MFXTextField txtPlatPrecio;
-    @FXML private MFXTextField txtPlatCosto;
+    @FXML private MFXTextField txtPlatCodigo, txtPlatNombre, txtPlatPrecio, txtPlatCosto;
+    @FXML private TextArea txtPlatDescripcion;
     @FXML private MFXComboBox<CategoriaPlato> cmbCategoriaPlato;
     @FXML private MFXComboBox<Estado> cmbEstadoPlato;
     
     @FXML private MFXButton btnGuardarPlato;
     @FXML private MFXButton btnCancelarPlato;
     @FXML private MFXButton btnDesactivarPlato;
+    
     @FXML private VBox boxPlaceholder;
+    @FXML private Label lblConteoPlatos;
+    @FXML private Label lblTituloFormulario;
+    @FXML private Label lblMensajePlato;
 
     private final ObservableList<Plato> platosObservable = FXCollections.observableArrayList();
     private Plato platoSeleccionado;
 
-    @FXML
-    public void initialize() {
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the FXML file has been loaded.
+     *
+     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param rb The resources used to localize the root object, or null if the root object was not localized.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
         cargarCategorias();
         cargarEstados();
 
-        platosObservable.addListener((javafx.collections.ListChangeListener<Plato>) c -> {
+        platosObservable.addListener((javafx.collections.ListChangeListener.Change<? extends Plato> c) -> {
             actualizarPlaceholder();
+            actualizarContador();
         });
 
         cargarListado();
@@ -72,15 +90,16 @@ public class PlatoController {
         cmbFiltroCategoriaPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroEstadoPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
     }
-
-    /** Muestra u oculta el placeholder cuando la tabla está vacía. */
     private void actualizarPlaceholder() {
         boolean vacio = platosObservable.isEmpty();
         boxPlaceholder.setVisible(vacio);
         boxPlaceholder.setManaged(vacio);
     }
 
-    /** Configura las columnas de la tabla. */
+    private void actualizarContador() {
+        lblConteoPlatos.setText("Mostrando " + platosObservable.size() + " platos");
+    }
+
     private void configurarTabla() {
         colPlatId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colPlatNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -90,14 +109,11 @@ public class PlatoController {
         tblListaPlatos.setItems(platosObservable);
     }
 
-    /** Carga las categorías de plato en los combos de filtro y formulario. */
     private void cargarCategorias() {
         List<CategoriaPlato> categorias = CategoriaPlatoDAO.listarTodas();
         cmbFiltroCategoriaPlato.setItems(FXCollections.observableArrayList(categorias));
         cmbCategoriaPlato.setItems(FXCollections.observableArrayList(categorias));
     }
-
-    /** Carga los estados de tipo plato (tipo 3) en los combos. */
     private void cargarEstados() {
         List<Estado> estados = EstadoDAO.listarPorTipo(3);
         ObservableList<Estado> estadosObservable = FXCollections.observableArrayList(estados);
@@ -105,48 +121,51 @@ public class PlatoController {
         cmbEstadoPlato.setItems(estadosObservable);
     }
 
-    /** Recarga la lista completa de platos desde la base de datos. */
     private void cargarListado() {
         List<Plato> lista = PlatoDAO.listarTodos();
         platosObservable.setAll(lista);
     }
 
-    /** Rellena el formulario con los datos del plato seleccionado. */
     private void mostrarDetallePlato(Plato plato) {
+        lblTituloFormulario.setText("Editar Plato");
         txtPlatCodigo.setText(plato.getCodigo());
         txtPlatNombre.setText(plato.getNombre());
         txtPlatPrecio.setText(plato.getPrecio().toString());
         txtPlatCosto.setText(plato.getCosto() != null ? plato.getCosto().toString() : "0.00");
+        txtPlatDescripcion.setText(plato.getDescripcion());
         
         for (CategoriaPlato cat : cmbCategoriaPlato.getItems()) {
-            if (cat.getId().equals(plato.getCategoriaPlatoId())) {
+            if (cat.getId() != null && cat.getId().equals(plato.getCategoriaPlatoId())) {
                 cmbCategoriaPlato.selectItem(cat);
                 break;
             }
         }
 
         for (Estado est : cmbEstadoPlato.getItems()) {
-            if (est.getId().equals((int) plato.getEstId())) {
+            if (est.getId() != null && est.getId().longValue() == plato.getEstId()) {
                 cmbEstadoPlato.selectItem(est);
                 break;
             }
         }
     }
 
-    /** Limpia el formulario y prepara los campos para crear un nuevo plato. */
     @FXML
     private void prepararNuevoPlato() {
+        lblTituloFormulario.setText("Nuevo Plato");
         platoSeleccionado = null;
         txtPlatCodigo.setText(PlatoDAO.obtenerSiguienteCodigo());
         txtPlatNombre.clear();
         txtPlatPrecio.clear();
         txtPlatCosto.clear();
-        cmbCategoriaPlato.getSelectionModel().clearSelection();
-        cmbEstadoPlato.getSelectionModel().clearSelection();
+        txtPlatDescripcion.clear();
+        cmbCategoriaPlato.clearSelection();
+        cmbEstadoPlato.clearSelection();
         tblListaPlatos.getSelectionModel().clearSelection();
     }
 
-    /** Valida los campos y guarda o actualiza el plato en la base de datos. */
+    /**
+     * Saves a new plate or updates an existing one.
+     */
     @FXML
     private void guardarPlato() {
         try {
@@ -188,15 +207,6 @@ public class PlatoController {
         }
     }
 
-    /**
-     * Solicita confirmación y cambia el estado del plato a Inactivo.
-     *
-     * USA EL PATRON CALLBACK de Alertas.confirmar():
-     * La logica de inactivacion se pasa como Runnable al metodo confirmar().
-     * El Runnable se ejecuta SOLO si el usuario presiona Aceptar.
-     * Este patron es necesario porque confirmar() opera en el hilo de JavaFX
-     * y no puede bloquear con Object.wait().
-     */
     @FXML
     private void desactivarPlato() {
         if (platoSeleccionado == null) return;
@@ -221,12 +231,11 @@ public class PlatoController {
         );
     }
 
-    /** Limpia los filtros de búsqueda y recarga la lista completa. */
     @FXML
     private void limpiarFiltros() {
         txtBuscarPlato.clear();
-        cmbFiltroCategoriaPlato.getSelectionModel().clearSelection();
-        cmbFiltroEstadoPlato.getSelectionModel().clearSelection();
+        cmbFiltroCategoriaPlato.clearSelection();
+        cmbFiltroEstadoPlato.clearSelection();
         filtrar();
     }
 
@@ -247,13 +256,11 @@ public class PlatoController {
         platosObservable.setAll(listaFiltrada);
     }
 
-    /** Cancela la edición y limpia el formulario. */
     @FXML
     private void cancelarEdicion() {
         prepararNuevoPlato();
     }
 
-    /** Muestra el tipo de alerta correcto según el titulo. */
     private void mostrarAlerta(String titulo, String contenido) {
         Node nodo = obtenerNodoParaAlerta();
         String t  = titulo.toLowerCase();
@@ -269,7 +276,6 @@ public class PlatoController {
         }
     }
 
-    /** Obtiene el primer nodo FXML disponible para localizar el Stage padre. */
     private Node obtenerNodoParaAlerta() {
         if (btnGuardarPlato != null) return btnGuardarPlato;
         if (tblListaPlatos  != null) return tblListaPlatos;
