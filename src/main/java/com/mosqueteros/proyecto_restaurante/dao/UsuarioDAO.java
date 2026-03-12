@@ -1,7 +1,8 @@
 package com.mosqueteros.proyecto_restaurante.dao;
 
 import com.mosqueteros.proyecto_restaurante.model.Usuario;
-import com.mosqueteros.proyecto_restaurante.util.Conexion;
+import com.mosqueteros.proyecto_restaurante.model.Perfil;
+import com.mosqueteros.proyecto_restaurante.util.ConexionDB;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -32,16 +33,16 @@ public class UsuarioDAO {
 
         // Consulta con JOIN para obtener el nombre del perfil
         String sql = """
-                SELECT u.usuid, u.usunombre, u.usuapellido, u.usudireccion,
-                       u.usutelefono, u.usucorreo, u.perfid,
-                       COALESCE(p.perfdescripcion, 'Sin perfil') AS perfilDescripcion,
-                       u.usulogin, u.usupass, u.usuestado
+                SELECT u.usu_id, u.usu_nombre, u.usu_apellido, u.usu_direccion,
+                       u.usu_telefono, u.usu_correo, u.perf_id,
+                       COALESCE(p.perf_descripcion, 'Sin perfil') AS perfilDescripcion,
+                       u.usu_login, u.usu_pass, u.usu_estado
                 FROM usuario u
-                LEFT JOIN perfil p ON u.perfid = p.perfid
-                ORDER BY u.usunombre, u.usuapellido
+                LEFT JOIN perfil p ON u.perf_id = p.perf_id
+                ORDER BY u.usu_nombre, u.usu_apellido
                 """;
 
-        try (Connection con = Conexion.getConexion();
+        try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -73,12 +74,12 @@ public class UsuarioDAO {
 
         // Construcción dinámica del WHERE con parámetros opcionales
         StringBuilder sql = new StringBuilder("""
-                SELECT u.usuid, u.usunombre, u.usuapellido, u.usudireccion,
-                       u.usutelefono, u.usucorreo, u.perfid,
-                       COALESCE(p.perfdescripcion, 'Sin perfil') AS perfilDescripcion,
-                       u.usulogin, u.usupass, u.usuestado
+                SELECT u.usu_id, u.usu_nombre, u.usu_apellido, u.usu_direccion,
+                       u.usu_telefono, u.usu_correo, u.perf_id,
+                       COALESCE(p.perf_descripcion, 'Sin perfil') AS perfilDescripcion,
+                       u.usu_login, u.usu_pass, u.usu_estado
                 FROM usuario u
-                LEFT JOIN perfil p ON u.perfid = p.perfid
+                LEFT JOIN perfil p ON u.perf_id = p.perf_id
                 WHERE 1=1
                 """);
 
@@ -86,7 +87,7 @@ public class UsuarioDAO {
 
         // Filtro por texto libre (nombre, apellido o login)
         if (busqueda != null && !busqueda.isBlank()) {
-            sql.append(" AND (u.usunombre LIKE ? OR u.usuapellido LIKE ? OR u.usulogin LIKE ?)");
+            sql.append(" AND (u.usu_nombre LIKE ? OR u.usu_apellido LIKE ? OR u.usu_login LIKE ?)");
             String like = "%" + busqueda.trim() + "%";
             params.add(like);
             params.add(like);
@@ -95,19 +96,19 @@ public class UsuarioDAO {
 
         // Filtro por perfil
         if (perfil != null && !perfil.isBlank()) {
-            sql.append(" AND p.perfdescripcion = ?");
+            sql.append(" AND p.perf_descripcion = ?");
             params.add(perfil);
         }
 
         // Filtro por estado
         if (estado != null && !estado.isBlank()) {
-            sql.append(" AND u.usuestado = ?");
+            sql.append(" AND u.usu_estado = ?");
             params.add(estado);
         }
 
-        sql.append(" ORDER BY u.usunombre, u.usuapellido");
+        sql.append(" ORDER BY u.usu_nombre, u.usu_apellido");
 
-        try (Connection con = Conexion.getConexion();
+        try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql.toString())) {
 
             // Asignar parámetros dinámicamente
@@ -139,12 +140,12 @@ public class UsuarioDAO {
     public static boolean insertar(Usuario usuario) throws SQLException {
         String sql = """
                 INSERT INTO usuario
-                (usunombre, usuapellido, usudireccion, usutelefono,
-                 usucorreo, perfid, usulogin, usupass, usuestado)
+                (usu_nombre, usu_apellido, usu_direccion, usu_telefono,
+                 usu_correo, perf_id, usu_login, usu_pass, usu_estado)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        try (Connection con = Conexion.getConexion();
+        try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, usuario.getUsunombre());
@@ -187,18 +188,18 @@ public class UsuarioDAO {
         String sql = actualizarPass
                 ? """
                   UPDATE usuario SET
-                    usunombre=?, usuapellido=?, usudireccion=?, usutelefono=?,
-                    usucorreo=?, perfid=?, usulogin=?, usupass=?, usuestado=?
-                  WHERE usuid=?
+                    usu_nombre=?, usu_apellido=?, usu_direccion=?, usu_telefono=?,
+                    usu_correo=?, perf_id=?, usu_login=?, usu_pass=?, usu_estado=?
+                  WHERE usu_id=?
                   """
                 : """
                   UPDATE usuario SET
-                    usunombre=?, usuapellido=?, usudireccion=?, usutelefono=?,
-                    usucorreo=?, perfid=?, usulogin=?, usuestado=?
-                  WHERE usuid=?
+                    usu_nombre=?, usu_apellido=?, usu_direccion=?, usu_telefono=?,
+                    usu_correo=?, perf_id=?, usu_login=?, usu_estado=?
+                  WHERE usu_id=?
                   """;
 
-        try (Connection con = Conexion.getConexion();
+        try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, usuario.getUsunombre());
@@ -244,9 +245,9 @@ public class UsuarioDAO {
      * @throws SQLException si hay error de BD o restricción FK
      */
     public static boolean eliminar(long usuid) throws SQLException {
-        String sql = "DELETE FROM usuario WHERE usuid = ?";
+        String sql = "DELETE FROM usuario WHERE usu_id = ?";
 
-        try (Connection con = Conexion.getConexion();
+        try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, usuid);
@@ -267,20 +268,52 @@ public class UsuarioDAO {
      */
     public static List<Perfil> listarPerfiles() throws SQLException {
         List<Perfil> perfiles = new ArrayList<>();
-        String sql = "SELECT perfid, perfdescripcion FROM perfil WHERE perfestado='Activo' ORDER BY perfdescripcion";
+        String sql = "SELECT perf_id, perf_descripcion FROM perfil WHERE perf_estado='Activo' ORDER BY perf_descripcion";
 
-        try (Connection con = Conexion.getConexion();
+        try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Perfil p = new Perfil();
-                p.setPerfid(rs.getLong("perfid"));
-                p.setPerfdescripcion(rs.getString("perfdescripcion"));
+                p.setPerfId(rs.getLong("perf_id"));
+                p.setPerfDescripcion(rs.getString("perf_descripcion"));
                 perfiles.add(p);
             }
         }
         return perfiles;
+    }
+
+    /**
+     * Busca un usuario por login para proceso de autenticación.
+     * La verificación de contraseña se hace comparando hashes.
+     *
+     * @param login Login del usuario
+     * @return Objeto {@link Usuario} si existe y está activo, null en caso contrario
+     * @throws SQLException si hay error de BD
+     */
+    public static Usuario autenticar(String login) throws SQLException {
+        String sql = """
+                SELECT u.usu_id, u.usu_nombre, u.usu_apellido, u.usu_direccion,
+                       u.usu_telefono, u.usu_correo, u.perf_id,
+                       COALESCE(p.perf_descripcion, 'Sin perfil') AS perfilDescripcion,
+                       u.usu_login, u.usu_pass, u.usu_estado
+                FROM usuario u
+                LEFT JOIN perfil p ON u.perf_id = p.perf_id
+                WHERE u.usu_login = ? AND u.usu_estado = 'Activo'
+                """;
+
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, login);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearFila(rs);
+                }
+            }
+        }
+        return null;
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -297,21 +330,21 @@ public class UsuarioDAO {
      */
     private static Usuario mapearFila(ResultSet rs) throws SQLException {
         Usuario u = new Usuario();
-        u.setUsuid(rs.getLong("usuid"));
-        u.setUsunombre(rs.getString("usunombre"));
-        u.setUsuapellido(rs.getString("usuapellido"));
-        u.setUsudireccion(rs.getString("usudireccion"));
-        u.setUsutelefono(rs.getString("usutelefono"));
-        u.setUsucorreo(rs.getString("usucorreo"));
+        u.setUsuid(rs.getLong("usu_id"));
+        u.setUsunombre(rs.getString("usu_nombre"));
+        u.setUsuapellido(rs.getString("usu_apellido"));
+        u.setUsudireccion(rs.getString("usu_direccion"));
+        u.setUsutelefono(rs.getString("usu_telefono"));
+        u.setUsucorreo(rs.getString("usu_correo"));
 
-        // perfid puede ser null (LEFT JOIN)
-        long perfid = rs.getLong("perfid");
+        // perf_id puede ser null (LEFT JOIN)
+        long perfid = rs.getLong("perf_id");
         u.setPerfid(rs.wasNull() ? null : perfid);
 
         u.setPerfilDescripcion(rs.getString("perfilDescripcion"));
-        u.setUsulogin(rs.getString("usulogin"));
-        u.setUsupass(rs.getString("usupass"));
-        u.setUsuestado(rs.getString("usuestado"));
+        u.setUsulogin(rs.getString("usu_login"));
+        u.setUsupass(rs.getString("usu_pass"));
+        u.setUsuestado(rs.getString("usu_estado"));
         return u;
     }
 }
