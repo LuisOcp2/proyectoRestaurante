@@ -1,23 +1,376 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.mosqueteros.proyecto_restaurante.controller.UsuarioController"
-      styleClass="welcome-panel" VBox.vgrow="ALWAYS">
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-    </padding>
-    
-    <StackPane style="-fx-background-color: rgba(84, 87, 205, 0.1); -fx-background-radius: 60; -fx-min-width: 120; -fx-min-height: 120; -fx-max-width: 120; -fx-max-height: 120;">
-        <FontIcon iconLiteral="fas-users" iconSize="54" iconColor="#5457CD" />
-    </StackPane>
-    
-    <VBox alignment="CENTER" spacing="8.0">
-        <Label text="Gestión de Usuarios" styleClass="welcome-title" />
-        <Label text="Módulo en Desarrollo" style="-fx-text-fill: #5457CD; -fx-font-weight: bold; -fx-font-size: 18px;" />
-        <Label text="Muy pronto podrás administrar los accesos y personal del sistema." styleClass="welcome-subtitle" />
-    </VBox>
-</VBox>
+<!--
+╔══════════════════════════════════════════════════════════════════════════╗
+║  VistaUsuarios.fxml  —  CRUD Usuarios del Sistema                       ║
+║                                                                          ║
+║  Estructura basada en VistaMesas.fxml (misma paleta y layout)           ║
+║  Campos mapeados a tabla: usuario (BD restaurante_2026)                 ║
+║                                                                          ║
+║  CONTRATO CONTROLADOR (UsuarioController):                              ║
+║    txtBuscarUsuario    → MFXTextField  búsqueda por nombre/login        ║
+║    cmbFiltroPerfil     → ComboBox<String> filtro por perfil             ║
+║    cmbFiltroEstado     → ComboBox<String> filtro por estado             ║
+║    tblListaUsuarios    → MFXTableView<Usuario>                          ║
+║    lblConteoUsuarios   → Label conteo de resultados                     ║
+║    txtUsuNombre        → MFXTextField  usunombre                        ║
+║    txtUsuApellido      → MFXTextField  usuapellido                      ║
+║    txtUsuLogin         → MFXTextField  usulogin                         ║
+║    txtUsuCorreo        → MFXTextField  usucorreo                        ║
+║    txtUsuTelefono      → MFXTextField  usutelefono                      ║
+║    txtUsuDireccion     → MFXTextField  usudireccion                     ║
+║    txtUsuPass          → MFXPasswordField usupass                       ║
+║    cmbUsuPerfil        → MFXComboBox<String> perfil FK                  ║
+║    cmbUsuEstado        → MFXComboBox<String> usuestado                  ║
+║    lblMensajeUsuario   → Label mensajes de validación/resultado         ║
+╚══════════════════════════════════════════════════════════════════════════╝
+-->
+<StackPane
+    styleClass="root-container"
+    stylesheets="@../vista-mesas.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.mosqueteros.proyecto_restaurante.controller.UsuarioController">
+
+    <padding><Insets bottom="28" left="28" right="28" top="28" /></padding>
+
+    <HBox
+        alignment="TOP_LEFT"
+        fillHeight="true"
+        maxHeight="Infinity"
+        maxWidth="Infinity"
+        spacing="24">
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             COLUMNA IZQUIERDA  —  Título + Card con tabla
+        ════════════════════════════════════════════════════════════════ -->
+        <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
+
+            <!-- Encabezado de sección con ícono -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <FontIcon iconLiteral="fas-users" iconSize="24" styleClass="header-icon" />
+                <Label styleClass="titulo-texto" text="Usuarios" />
+            </HBox>
+
+            <!-- Card principal que contiene filtros + tabla -->
+            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+
+                <!-- ══════════════════════════════════════════════════════
+                     BARRA DE FILTROS
+                     Usa ComboBox nativos para control 100% desde CSS.
+                ══════════════════════════════════════════════════════════ -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <padding><Insets top="16" right="20" bottom="16" left="20" /></padding>
+
+                    <!-- Campo de búsqueda por nombre o login -->
+                    <HBox styleClass="search-wrapper"
+                          prefHeight="36"
+                          HBox.hgrow="ALWAYS" minWidth="180" maxWidth="360">
+                        <FontIcon iconLiteral="fas-search" iconSize="13" styleClass="icon-muted" />
+                        <MFXTextField
+                            fx:id="txtBuscarUsuario"
+                            promptText="Buscar por nombre o login..."
+                            styleClass="search-field"
+                            HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Filtro por perfil/rol del usuario -->
+                    <ComboBox fx:id="cmbFiltroPerfil"
+                              promptText="Perfil"
+                              prefWidth="130" minWidth="110"
+                              prefHeight="36"
+                              styleClass="filtro-combo-nativo" />
+
+                    <!-- Filtro por estado Activo / Inactivo -->
+                    <ComboBox fx:id="cmbFiltroEstado"
+                              promptText="Estado"
+                              prefWidth="120" minWidth="100"
+                              prefHeight="36"
+                              styleClass="filtro-combo-nativo" />
+
+                    <!-- Botón para ejecutar la búsqueda -->
+                    <MFXButton fx:id="btnBuscarUsuario"
+                               onAction="#buscarUsuario"
+                               styleClass="btn-buscar-raised"
+                               text="Buscar">
+                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12" iconColor="white"/></graphic>
+                    </MFXButton>
+
+                    <!-- Botón para limpiar los filtros -->
+                    <MFXButton fx:id="btnLimpiarFiltroUsuario"
+                               onAction="#limpiarFiltros"
+                               styleClass="btn-limpiar-flat"
+                               text="Limpiar">
+                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12" styleClass="icon-muted"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+                <!-- Línea separadora visual -->
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- Cabecera de columnas de la tabla (custom, sin MFXTableView header) -->
+                <HBox styleClass="table-header-row">
+                    <Label text="ID"       styleClass="col-header" prefWidth="55"  minWidth="55" />
+                    <Label text="Nombre"   styleClass="col-header" prefWidth="130" HBox.hgrow="ALWAYS" />
+                    <Label text="Apellido" styleClass="col-header" prefWidth="120" HBox.hgrow="ALWAYS" />
+                    <Label text="Login"    styleClass="col-header" prefWidth="110" minWidth="110" />
+                    <Label text="Correo"   styleClass="col-header" prefWidth="170" HBox.hgrow="ALWAYS" />
+                    <Label text="Perfil"   styleClass="col-header" prefWidth="100" minWidth="100" />
+                    <Label text="Estado"   styleClass="col-header" prefWidth="85"  minWidth="85" />
+                </HBox>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- Área de tabla con estado vacío -->
+                <StackPane VBox.vgrow="ALWAYS">
+
+                    <!-- Tabla de usuarios (MFXTableView poblada desde el controlador) -->
+                    <io.github.palexdev.materialfx.controls.MFXTableView
+                        fx:id="tblListaUsuarios"
+                        visible="false"
+                        managed="false"
+                        styleClass="mesas-table" />
+
+                    <!-- Estado vacío: imagen + textos informativos -->
+                    <VBox fx:id="boxPlaceholder"
+                          alignment="CENTER"
+                          spacing="10"
+                          visible="true"
+                          managed="true"
+                          styleClass="empty-state-container">
+                        <FontIcon iconLiteral="fas-user-slash" iconSize="64" styleClass="icon-muted" />
+                        <Label styleClass="placeholder-text"
+                               text="No hay usuarios registrados" />
+                        <Label styleClass="placeholder-subtext"
+                               text="Ajusta los filtros o agrega un nuevo usuario." />
+                    </VBox>
+
+                </StackPane>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- Footer de la card: conteo + botones de acción CRUD -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="footer-bar">
+                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+
+                    <!-- Etiqueta con total de usuarios encontrados -->
+                    <Label fx:id="lblConteoUsuarios"
+                           styleClass="conteo-label"
+                           text="0 usuarios encontrados"
+                           HBox.hgrow="ALWAYS" />
+
+                    <!-- Botón para preparar formulario de nuevo usuario -->
+                    <MFXButton fx:id="btnNuevoUsuario"
+                               onAction="#prepararNuevoUsuario"
+                               styleClass="btn-outline-primary"
+                               text="Nuevo Usuario">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="11" iconColor="#5457CD"/></graphic>
+                    </MFXButton>
+
+                    <!-- Botón editar (habilitado solo con selección) -->
+                    <MFXButton fx:id="btnEditarUsuario"
+                               disable="true"
+                               onAction="#editarUsuario"
+                               styleClass="btn-outline-secondary"
+                               text="Editar">
+                        <graphic><FontIcon iconLiteral="fas-pencil-alt" iconSize="11" iconColor="#4F46E5"/></graphic>
+                    </MFXButton>
+
+                    <!-- Botón eliminar (habilitado solo con selección) -->
+                    <MFXButton fx:id="btnEliminarUsuario"
+                               disable="true"
+                               onAction="#eliminarUsuario"
+                               styleClass="btn-outline-danger"
+                               text="Eliminar">
+                        <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="11" iconColor="#EF4444"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+            </VBox>
+        </VBox>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             COLUMNA DERECHA  —  Formulario de detalle / edición
+        ════════════════════════════════════════════════════════════════ -->
+        <ScrollPane
+            fitToWidth="true"
+            fitToHeight="false"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            styleClass="form-scroll"
+            HBox.hgrow="NEVER"
+            minWidth="320"
+            maxWidth="340">
+
+            <VBox spacing="0" styleClass="main-card" minWidth="318">
+
+                <!-- Encabezado del formulario con badge e ícono -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                    <StackPane styleClass="form-header-badge">
+                        <FontIcon iconLiteral="fas-user-cog" iconSize="15"
+                                  styleClass="form-header-badge-icon" />
+                    </StackPane>
+                    <Label styleClass="form-header-titulo" text="Detalle de Usuario" />
+                </HBox>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- Campos del formulario alineados con la BD -->
+                <VBox spacing="16">
+                    <padding><Insets top="22" right="22" bottom="22" left="22" /></padding>
+
+                    <!-- Campo: Nombre (usunombre) -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Nombre" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-user" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtUsuNombre" promptText="Ej. Luis"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Apellido (usuapellido) -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Apellido" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-user" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtUsuApellido" promptText="Ej. Ocampo"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Login (usulogin) - único en BD -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Login" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-id-badge" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtUsuLogin" promptText="Ej. luis.ocampo"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Correo (usucorreo) - único en BD -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Correo electrónico" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-envelope" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtUsuCorreo" promptText="correo@email.com"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Teléfono (usutelefono) -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Teléfono" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-phone" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtUsuTelefono" promptText="Ej. 3001234567"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Dirección (usudireccion) -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Dirección" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-map-marker-alt" iconSize="14" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtUsuDireccion" promptText="Ej. Calle 37N #2Bn-93"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Contraseña (usupass) - solo se muestra al crear/cambiar -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Contraseña" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-lock" iconSize="14" styleClass="icon-muted" />
+                            <MFXPasswordField fx:id="txtUsuPass" promptText="Min. 6 caracteres"
+                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Perfil/Rol (perfid FK → perfil) -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Perfil / Rol" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-user-shield" iconSize="14" styleClass="icon-muted" />
+                            <MFXComboBox fx:id="cmbUsuPerfil" promptText="Seleccionar perfil"
+                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Campo: Estado (usuestado: Activo/Inactivo) -->
+                    <VBox spacing="5">
+                        <Label styleClass="input-label" text="Estado" />
+                        <HBox alignment="CENTER_LEFT" spacing="10"
+                              prefHeight="44" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted" />
+                            <MFXComboBox fx:id="cmbUsuEstado" promptText="Seleccionar estado"
+                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Etiqueta de mensajes de validación o confirmación -->
+                    <Label fx:id="lblMensajeUsuario" styleClass="form-mensaje"
+                           text="" wrapText="true" managed="false" visible="false"/>
+                </VBox>
+
+                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+
+                <!-- Footer del formulario: botones Guardar / Nuevo / Eliminar -->
+                <VBox spacing="10" styleClass="form-footer">
+                    <padding><Insets top="18" right="22" bottom="22" left="22" /></padding>
+
+                    <!-- Guarda el usuario (INSERT si nuevo, UPDATE si edición) -->
+                    <MFXButton fx:id="btnGuardarUsuario" maxWidth="Infinity"
+                               onAction="#guardarUsuario"
+                               styleClass="btn-raised-primary" text="Guardar Usuario">
+                        <graphic><FontIcon iconLiteral="fas-save" iconSize="13" iconColor="white"/></graphic>
+                    </MFXButton>
+
+                    <!-- Limpia el formulario para ingresar un nuevo usuario -->
+                    <MFXButton fx:id="btnNuevoUsuarioForm" maxWidth="Infinity"
+                               onAction="#prepararNuevoUsuario"
+                               styleClass="btn-outline-primary-form" text="Nuevo Usuario">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="13" iconColor="#5457CD"/></graphic>
+                    </MFXButton>
+
+                    <!-- Elimina el usuario seleccionado (requiere selección en tabla) -->
+                    <MFXButton fx:id="btnEliminarUsuarioForm" disable="true"
+                               maxWidth="Infinity"
+                               onAction="#eliminarUsuario"
+                               styleClass="btn-outline-danger-form" text="Eliminar">
+                        <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="13" iconColor="#EF4444"/></graphic>
+                    </MFXButton>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+
+    </HBox>
+</StackPane>
