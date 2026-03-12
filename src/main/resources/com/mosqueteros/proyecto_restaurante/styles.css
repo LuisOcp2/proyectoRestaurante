@@ -1,25 +1,28 @@
 /* ═══════════════════════════════════════════════════════════════════
-   vista-mesas.css  v4  —  Cali Delights Pro
-   Alineado con Google Stitch mockup.
+   styles.css  v5  —  Cali Delights Pro
+   Paleta ColorHunt Profesional Restaurante:
+   #2C3E50 (Navy) · #C0392B (Crimson) · #E8D5B7 (Beige) · #F5F0E8 (Crema)
 ═══════════════════════════════════════════════════════════════════ */
 
-/* ── RAÍZ ── */
+/* ── CONTENEDOR RAÍZ ── */
+/* Fondo principal de todas las vistas del módulo de Luis */
 .root-container {
-    -fx-background-color: #F5F7FA;
+    -fx-background-color: #F5F0E8;
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-/* ── CARDS ── */
+/* ── TARJETAS / CARDS ── */
+/* Contenedor blanco con bordes redondeados para agrupar contenido */
 .main-card {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
-    -fx-border-color: #E5E7EB;
+    -fx-border-color: #E8D5B7;
     -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 14, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.08), 14, 0, 0, 3);
 }
 
-/* ScrollPane del panel derecho: sin estilo propio */
+/* ScrollPane del panel derecho del formulario */
 .form-scroll {
     -fx-background-color: transparent;
     -fx-background: transparent;
@@ -30,38 +33,40 @@
     -fx-background-color: transparent;
 }
 
-/* Divisores */
-.divider { -fx-background-color: #F3F4F6; }
+/* Líneas divisoras entre secciones */
+.divider { -fx-background-color: #E8D5B7; }
 
-/* ── TEXTOS ── */
+/* ── TEXTOS DE CABECERA ── */
+/* Título principal de cada vista */
 .titulo-texto {
     -fx-font-size: 26px;
     -fx-font-weight: 800;
-    -fx-text-fill: #111827;
+    -fx-text-fill: #2C3E50;
 }
-.header-icon  { -fx-icon-color: #1F2937; }
-.icon-muted   { -fx-icon-color: #9CA3AF; }
+.header-icon  { -fx-icon-color: #2C3E50; }
+.icon-muted   { -fx-icon-color: #95A5A6; }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   BARRA DE FILTROS
+   BARRA DE FILTROS — BUSCADOR
 ═══════════════════════════════════════════════════════════════════ */
 
-/* Buscador */
+/* Contenedor del campo de búsqueda */
 .search-wrapper {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #D1D5DB;
+    -fx-border-color: #D5C9B5;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 0 12;
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.05), 3, 0, 0, 1);
 }
+/* Campo de texto para buscar registros */
 .search-field {
     -fx-background-color: transparent;
-    -fx-text-fill: #374151;
-    -fx-prompt-text-fill: #9CA3AF;
+    -fx-text-fill: #2C3E50;
+    -fx-prompt-text-fill: #95A5A6;
     -fx-font-size: 13px;
     -fx-border-width: 0;
     -fx-min-height: 20;
@@ -73,144 +78,140 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    COMBOS NATIVOS DE FILTRO  (.filtro-combo-nativo)
-   
-   Al usar ComboBox nativo de JavaFX tenemos control total del CSS.
-   No hay temas MFX que sobreescriban nuestros estilos.
-   
-   Estructura interna de ComboBox nativo:
-     .combo-box
-       ├── .combo-box-base          → el contenedor principal
-       ├── .list-cell               → celda que muestra el valor/placeholder
-       └── .arrow-button
-             └── .arrow             → el triángulo ▼
 ═══════════════════════════════════════════════════════════════════ */
 
-/* Contenedor base */
+/* ComboBox nativo para filtros de la tabla */
 .filtro-combo-nativo {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #D1D5DB;
+    -fx-border-color: #D5C9B5;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-font-size: 13px;
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.05), 3, 0, 0, 1);
     -fx-cursor: hand;
 }
 
-/* Celda que muestra el valor seleccionado o el placeholder */
+/* Celda que muestra el valor seleccionado */
 .filtro-combo-nativo .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #374151;
+    -fx-text-fill: #2C3E50;
     -fx-font-size: 13px;
     -fx-padding: 0 4;
 }
 
-/* Placeholder (cuando no hay valor seleccionado) */
+/* Placeholder vacío del combo */
 .filtro-combo-nativo .list-cell:empty {
-    -fx-text-fill: #6B7280;
+    -fx-text-fill: #95A5A6;
 }
 
-/* Foco: borde primario, sin sombra azul del SO */
+/* Borde crimson al enfocar el combo */
 .filtro-combo-nativo:focused {
-    -fx-border-color: #5457CD;
+    -fx-border-color: #C0392B;
     -fx-background-color: #FFFFFF;
 }
 
-/* Hover */
+/* Hover: borde gris oscuro */
 .filtro-combo-nativo:hover {
-    -fx-border-color: #9CA3AF;
+    -fx-border-color: #95A5A6;
 }
 
-/* Botón de la flecha */
+/* Botón de flecha del combo */
 .filtro-combo-nativo .arrow-button {
     -fx-background-color: transparent;
     -fx-padding: 0 8 0 0;
 }
 .filtro-combo-nativo .arrow-button .arrow {
-    -fx-background-color: #6B7280;
+    -fx-background-color: #7F8C8D;
     -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
     -fx-scale-shape: false;
 }
 
-/* Popup de opciones */
+/* Popup de opciones del combo */
 .filtro-combo-nativo .combo-box-popup > .list-view {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #E5E7EB;
+    -fx-border-color: #E8D5B7;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.14), 12, 0, 0, 4);
 }
 
 .filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #374151;
+    -fx-text-fill: #2C3E50;
     -fx-font-size: 13px;
     -fx-padding: 8 14;
 }
 
+/* Hover sobre opción del popup */
 .filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow
     > .clipped-container > .sheet > .list-cell:hover {
-    -fx-background-color: #F5F3FF;
-    -fx-text-fill: #5457CD;
+    -fx-background-color: #FEF0EE;
+    -fx-text-fill: #C0392B;
 }
 
+/* Opción seleccionada del popup */
 .filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow
     > .clipped-container > .sheet > .list-cell:selected {
-    -fx-background-color: #EEF2FF;
-    -fx-text-fill: #5457CD;
+    -fx-background-color: #FCDBD8;
+    -fx-text-fill: #96281B;
     -fx-font-weight: 600;
 }
 
 
-/* Botón Buscar */
+/* ── Botón principal de acción (buscar, guardar) ── */
 .btn-buscar-raised {
-    -fx-background-color: #5457CD;
-    -fx-text-fill: white;
+    -fx-background-color: #2C3E50;
+    -fx-text-fill: #F5F0E8;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-background-radius: 8;
     -fx-padding: 8 16;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 7;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.25), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.30), 6, 0, 0, 2);
 }
-.btn-buscar-raised:hover { -fx-background-color: #4346BA; }
+.btn-buscar-raised:hover { -fx-background-color: #1a252f; }
 
-/* Botón Limpiar */
+/* ── Botón secundario plano (limpiar filtros) ── */
 .btn-limpiar-flat {
     -fx-background-color: transparent;
-    -fx-text-fill: #6B7280;
+    -fx-text-fill: #7F8C8D;
     -fx-font-weight: 500;
     -fx-font-size: 13px;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 6;
 }
-.btn-limpiar-flat:hover { -fx-text-fill: #374151; }
+.btn-limpiar-flat:hover { -fx-text-fill: #2C3E50; }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   CABECERA DE TABLA CUSTOM
+   CABECERA DE TABLA PERSONALIZADA
 ═══════════════════════════════════════════════════════════════════ */
+/* Fila de cabecera superior de la tabla */
 .table-header-row {
-    -fx-background-color: #F9FAFB;
+    -fx-background-color: #EDE8DF;
     -fx-padding: 10 20 10 20;
 }
+/* Cada columna de la cabecera de la tabla */
 .col-header {
     -fx-font-weight: 700;
     -fx-font-size: 11px;
-    -fx-text-fill: #6B7280;
+    -fx-text-fill: #7F8C8D;
     -fx-padding: 0 8;
     -fx-alignment: CENTER_LEFT;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   MFXTABLEVIEW — ocultar cabecera nativa (usamos la custom)
+   MFXTABLEVIEW — ocultar cabecera nativa
 ═══════════════════════════════════════════════════════════════════ */
+/* Tabla principal del módulo (MFXTableView) */
 .mesas-table {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+/* Ocultar cabecera nativa para usar la personalizada */
 .mesas-table .column-header,
 .mesas-table .column-header-background {
     -fx-background-color: transparent;
@@ -220,49 +221,57 @@
     -fx-min-height: 0;
     visibility: hidden;
 }
+/* Celda de datos de la tabla */
 .mesas-table .table-cell {
-    -fx-text-fill: #4B5563;
+    -fx-text-fill: #34495E;
     -fx-font-size: 13px;
     -fx-padding: 13 16;
 }
+/* Fila de la tabla con separador beige */
 .mesas-table .table-row-cell {
-    -fx-border-color: transparent transparent #F3F4F6 transparent;
+    -fx-border-color: transparent transparent #E8D5B7 transparent;
     -fx-border-width: 0 0 1 0;
 }
+/* Fila seleccionada: fondo crema suave */
 .mesas-table .table-row-cell:selected {
-    -fx-background-color: #EEF2FF;
+    -fx-background-color: #FCDBD8;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   EMPTY STATE
+   ESTADO VACÍO (sin registros)
 ═══════════════════════════════════════════════════════════════════ */
+/* Contenedor cuando la tabla no tiene datos */
 .empty-state-container {
     -fx-background-color: transparent;
     -fx-alignment: CENTER;
 }
+/* Mensaje principal del estado vacío */
 .placeholder-text {
     -fx-font-size: 15px;
     -fx-font-weight: 600;
-    -fx-text-fill: #4B5563;
+    -fx-text-fill: #34495E;
     -fx-alignment: CENTER;
 }
+/* Mensaje secundario del estado vacío */
 .placeholder-subtext {
     -fx-font-size: 12.5px;
-    -fx-text-fill: #9CA3AF;
+    -fx-text-fill: #95A5A6;
     -fx-alignment: CENTER;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   FOOTER DE LA CARD  (bg-gray-50)
+   FOOTER DE LA CARD
 ═══════════════════════════════════════════════════════════════════ */
+/* Pie de la tarjeta: conteo de registros */
 .footer-bar {
-    -fx-background-color: #F9FAFB;
+    -fx-background-color: #EDE8DF;
     -fx-background-radius: 0 0 12 12;
 }
+/* Etiqueta de conteo de registros en el footer */
 .conteo-label {
-    -fx-text-fill: #6B7280;
+    -fx-text-fill: #7F8C8D;
     -fx-font-weight: 500;
     -fx-font-size: 13px;
 }
@@ -271,8 +280,9 @@
 /* ═══════════════════════════════════════════════════════════════════
    HEADER DEL FORMULARIO DERECHO
 ═══════════════════════════════════════════════════════════════════ */
+/* Ícono/badge de color del encabezado del formulario */
 .form-header-badge {
-    -fx-background-color: rgba(84, 87, 205, 0.12);
+    -fx-background-color: rgba(192, 57, 43, 0.10);
     -fx-background-radius: 8;
     -fx-min-width: 36;
     -fx-min-height: 36;
@@ -280,74 +290,80 @@
     -fx-max-height: 36;
     -fx-alignment: CENTER;
 }
-.form-header-badge-icon { -fx-icon-color: #5457CD; }
+.form-header-badge-icon { -fx-icon-color: #C0392B; }
+/* Título del panel de formulario */
 .form-header-titulo {
     -fx-font-size: 17px;
     -fx-font-weight: 700;
-    -fx-text-fill: #1F2937;
+    -fx-text-fill: #2C3E50;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   LABELS DE CAMPO
+   LABELS DE CAMPO DEL FORMULARIO
 ═══════════════════════════════════════════════════════════════════ */
+/* Etiqueta de cada campo del formulario (nombre, capacidad, etc.) */
 .input-label {
     -fx-font-size: 12.5px;
     -fx-font-weight: 600;
-    -fx-text-fill: #374151;
+    -fx-text-fill: #2C3E50;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
    INPUT WRAPPERS DEL FORMULARIO
 ═══════════════════════════════════════════════════════════════════ */
+/* Contenedor de cada campo input con borde y sombra */
 .input-wrapper {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #D1D5DB;
+    -fx-border-color: #D5C9B5;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 0 12;
     -fx-alignment: CENTER_LEFT;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.05), 3, 0, 0, 1);
 }
+/* Campo de texto del formulario */
 .input-field {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-font-size: 13px;
-    -fx-text-fill: #374151;
-    -fx-prompt-text-fill: #9CA3AF;
+    -fx-text-fill: #2C3E50;
+    -fx-prompt-text-fill: #95A5A6;
 }
 .input-field > .line,
 .input-field > .focused-line,
 .input-field > .unfocused-line { -fx-stroke: transparent; }
 
-/* MFXComboBox del formulario */
+/* MFXComboBox del formulario (select nativo) */
 .input-combo {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-font-size: 13px;
-    -fx-text-fill: #374151;
+    -fx-text-fill: #2C3E50;
     -fx-padding: 0;
 }
 .input-combo > .arrow-button { -fx-background-color: transparent; }
-.input-combo .arrow          { -fx-background-color: #9CA3AF; }
+.input-combo .arrow          { -fx-background-color: #95A5A6; }
 
 
 /* ═══════════════════════════════════════════════════════════════════
    FOOTER DEL FORMULARIO
 ═══════════════════════════════════════════════════════════════════ */
+/* Área inferior del formulario con botones de acción */
 .form-footer {
-    -fx-background-color: #F9FAFB;
+    -fx-background-color: #EDE8DF;
     -fx-background-radius: 0 0 12 12;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   BOTONES
+   BOTONES DEL SISTEMA
 ═══════════════════════════════════════════════════════════════════ */
+/* Botón primario: fondo navy, texto crema */
 .btn-raised-primary {
-    -fx-background-color: #5457CD;
-    -fx-text-fill: white;
+    -fx-background-color: #2C3E50;
+    -fx-text-fill: #F5F0E8;
     -fx-background-radius: 8;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
@@ -355,17 +371,18 @@
     -fx-cursor: hand;
     -fx-graphic-text-gap: 8;
     -fx-alignment: CENTER;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.25), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.30), 6, 0, 0, 2);
 }
-.btn-raised-primary:hover { -fx-background-color: #4346BA; }
+.btn-raised-primary:hover { -fx-background-color: #1a252f; }
 
+/* Botón outline primario: borde y texto navy */
 .btn-outline-primary,
 .btn-outline-primary-form {
     -fx-background-color: transparent;
-    -fx-border-color: #5457CD;
+    -fx-border-color: #2C3E50;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #5457CD;
+    -fx-text-fill: #2C3E50;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-padding: 9 14;
@@ -374,29 +391,31 @@
     -fx-alignment: CENTER;
 }
 .btn-outline-primary:hover,
-.btn-outline-primary-form:hover { -fx-background-color: #EEF2FF; }
+.btn-outline-primary-form:hover { -fx-background-color: rgba(44,62,80,0.07); }
 
+/* Botón outline secundario: crimson */
 .btn-outline-secondary {
     -fx-background-color: transparent;
-    -fx-border-color: #4F46E5;
+    -fx-border-color: #C0392B;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #4F46E5;
+    -fx-text-fill: #C0392B;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-padding: 9 14;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 7;
 }
-.btn-outline-secondary:hover { -fx-background-color: #EEF2FF; }
+.btn-outline-secondary:hover { -fx-background-color: #FEF0EE; }
 
+/* Botón de peligro: rojo para eliminar registros */
 .btn-outline-danger,
 .btn-outline-danger-form {
     -fx-background-color: transparent;
-    -fx-border-color: #EF4444;
+    -fx-border-color: #E74C3C;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #EF4444;
+    -fx-text-fill: #E74C3C;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-padding: 9 14;
@@ -405,8 +424,9 @@
     -fx-alignment: CENTER;
 }
 .btn-outline-danger:hover,
-.btn-outline-danger-form:hover { -fx-background-color: #FEF2F2; }
+.btn-outline-danger-form:hover { -fx-background-color: #FEF5F5; }
 
+/* Estado deshabilitado de botones secundarios */
 .btn-outline-secondary:disabled,
 .btn-outline-danger:disabled,
 .btn-outline-danger-form:disabled {
@@ -414,8 +434,9 @@
     -fx-cursor: default;
 }
 
+/* Mensaje informativo en el formulario */
 .form-mensaje {
     -fx-font-size: 12.5px;
-    -fx-text-fill: #5457CD;
+    -fx-text-fill: #C0392B;
     -fx-font-weight: 500;
 }
