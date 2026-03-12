@@ -1,4 +1,4 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
-public class AreaMesaController {
+public class AreasMesaController {
 }

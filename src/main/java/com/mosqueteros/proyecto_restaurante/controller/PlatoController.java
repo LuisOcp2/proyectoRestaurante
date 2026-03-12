@@ -23,37 +23,56 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Controller for managing Plates (Platos) in the restaurant system.
- * Handles database interactions via PlatoDAO and UI updates.
- */
+
+
 public class PlatoController implements Initializable {
 
-    @FXML private MFXTextField txtBuscarPlato;
-    @FXML private MFXComboBox<CategoriaPlato> cmbFiltroCategoriaPlato;
-    @FXML private MFXComboBox<Estado> cmbFiltroEstadoPlato;
-    @FXML private MFXButton btnLimpiarFiltro;
-    
-    @FXML private TableView<Plato> tblListaPlatos;
-    @FXML private TableColumn<Plato, Integer> colPlatId;
-    @FXML private TableColumn<Plato, String> colPlatNombre;
-    @FXML private TableColumn<Plato, String> colPlatCategoria;
-    @FXML private TableColumn<Plato, BigDecimal> colPlatPrecio;
-    @FXML private TableColumn<Plato, String> colPlatEstado;
+    @FXML
+    private MFXTextField txtBuscarPlato;
+    @FXML
+    private MFXComboBox<CategoriaPlato> cmbFiltroCategoriaPlato;
+    @FXML
+    private MFXComboBox<Estado> cmbFiltroEstadoPlato;
+    @FXML
+    private MFXButton btnLimpiarFiltro;
 
-    @FXML private MFXTextField txtPlatCodigo, txtPlatNombre, txtPlatPrecio, txtPlatCosto;
-    @FXML private TextArea txtPlatDescripcion;
-    @FXML private MFXComboBox<CategoriaPlato> cmbCategoriaPlato;
-    @FXML private MFXComboBox<Estado> cmbEstadoPlato;
-    
-    @FXML private MFXButton btnGuardarPlato;
-    @FXML private MFXButton btnCancelarPlato;
-    @FXML private MFXButton btnDesactivarPlato;
-    
-    @FXML private VBox boxPlaceholder;
-    @FXML private Label lblConteoPlatos;
-    @FXML private Label lblTituloFormulario;
-    @FXML private Label lblMensajePlato;
+    @FXML
+    private TableView<Plato> tblListaPlatos;
+    @FXML
+    private TableColumn<Plato, Integer> colPlatId;
+    @FXML
+    private TableColumn<Plato, String> colPlatNombre;
+    @FXML
+    private TableColumn<Plato, String> colPlatCategoria;
+    @FXML
+    private TableColumn<Plato, BigDecimal> colPlatPrecio;
+    @FXML
+    private TableColumn<Plato, String> colPlatEstado;
+
+    @FXML
+    private MFXTextField txtPlatCodigo, txtPlatNombre, txtPlatPrecio, txtPlatCosto;
+    @FXML
+    private TextArea txtPlatDescripcion;
+    @FXML
+    private MFXComboBox<CategoriaPlato> cmbCategoriaPlato;
+    @FXML
+    private MFXComboBox<Estado> cmbEstadoPlato;
+
+    @FXML
+    private MFXButton btnGuardarPlato;
+    @FXML
+    private MFXButton btnCancelarPlato;
+    @FXML
+    private MFXButton btnDesactivarPlato;
+
+    @FXML
+    private VBox boxPlaceholder;
+    @FXML
+    private Label lblConteoPlatos;
+    @FXML
+    private Label lblTituloFormulario;
+    @FXML
+    private Label lblMensajePlato;
 
     private final ObservableList<Plato> platosObservable = FXCollections.observableArrayList();
     private Plato platoSeleccionado;
@@ -62,8 +81,10 @@ public class PlatoController implements Initializable {
      * Initializes the controller class. This method is automatically called
      * after the FXML file has been loaded.
      *
-     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param rb The resources used to localize the root object, or null if the root object was not localized.
+     * @param url The location used to resolve relative paths for the root
+     * object, or null if the location is not known.
+     * @param rb The resources used to localize the root object, or null if the
+     * root object was not localized.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -90,6 +111,7 @@ public class PlatoController implements Initializable {
         cmbFiltroCategoriaPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
         cmbFiltroEstadoPlato.valueProperty().addListener((obs, oldVal, newVal) -> filtrar());
     }
+
     private void actualizarPlaceholder() {
         boolean vacio = platosObservable.isEmpty();
         boxPlaceholder.setVisible(vacio);
@@ -114,6 +136,7 @@ public class PlatoController implements Initializable {
         cmbFiltroCategoriaPlato.setItems(FXCollections.observableArrayList(categorias));
         cmbCategoriaPlato.setItems(FXCollections.observableArrayList(categorias));
     }
+
     private void cargarEstados() {
         List<Estado> estados = EstadoDAO.listarPorTipo(3);
         ObservableList<Estado> estadosObservable = FXCollections.observableArrayList(estados);
@@ -133,7 +156,7 @@ public class PlatoController implements Initializable {
         txtPlatPrecio.setText(plato.getPrecio().toString());
         txtPlatCosto.setText(plato.getCosto() != null ? plato.getCosto().toString() : "0.00");
         txtPlatDescripcion.setText(plato.getDescripcion());
-        
+
         for (CategoriaPlato cat : cmbCategoriaPlato.getItems()) {
             if (cat.getId() != null && cat.getId().equals(plato.getCategoriaPlatoId())) {
                 cmbCategoriaPlato.selectItem(cat);
@@ -172,11 +195,11 @@ public class PlatoController implements Initializable {
             String codigo = txtPlatCodigo.getText();
             String nombre = txtPlatNombre.getText();
             BigDecimal precio = new BigDecimal(txtPlatPrecio.getText());
-            BigDecimal costo  = txtPlatCosto.getText().isEmpty()
-                                ? BigDecimal.ZERO
-                                : new BigDecimal(txtPlatCosto.getText());
+            BigDecimal costo = txtPlatCosto.getText().isEmpty()
+                    ? BigDecimal.ZERO
+                    : new BigDecimal(txtPlatCosto.getText());
             CategoriaPlato cat = cmbCategoriaPlato.getValue();
-            Estado est         = cmbEstadoPlato.getValue();
+            Estado est = cmbEstadoPlato.getValue();
 
             if (nombre.isEmpty() || cat == null) {
                 mostrarAlerta("Error", "El nombre y la categoría son obligatorias.");
@@ -190,8 +213,8 @@ public class PlatoController implements Initializable {
                 exito = PlatoDAO.insertar(nombre, codigo, precio, costo, cat.getId(), (long) estadoId);
             } else {
                 exito = PlatoDAO.actualizar(
-                    platoSeleccionado.getId(), nombre, codigo,
-                    precio, costo, cat.getId(), (long) estadoId
+                        platoSeleccionado.getId(), nombre, codigo,
+                        precio, costo, cat.getId(), (long) estadoId
                 );
             }
 
@@ -209,25 +232,27 @@ public class PlatoController implements Initializable {
 
     @FXML
     private void desactivarPlato() {
-        if (platoSeleccionado == null) return;
+        if (platoSeleccionado == null) {
+            return;
+        }
 
         // Capturamos el plato en una variable final para usarla en el lambda
         final Plato plato = platoSeleccionado;
 
         Alertas.confirmar(
-            obtenerNodoParaAlerta(),
-            "Confirmar Inactivación",
-            "¿Desea inactivar el plato \"" + plato.getNombre() + "\"?",
-            () -> {
-                // Este bloque se ejecuta SOLO si el usuario presiona Aceptar
-                if (PlatoDAO.cambiarEstado(plato.getId(), 9)) {
-                    cargarListado();
-                    prepararNuevoPlato();
-                    mostrarAlerta("Éxito", "Plato inactivado correctamente.");
-                } else {
-                    mostrarAlerta("Error", "No se pudo inactivar el plato.");
+                obtenerNodoParaAlerta(),
+                "Confirmar Inactivación",
+                "¿Desea inactivar el plato \"" + plato.getNombre() + "\"?",
+                () -> {
+                    // Este bloque se ejecuta SOLO si el usuario presiona Aceptar
+                    if (PlatoDAO.cambiarEstado(plato.getId(), 9)) {
+                        cargarListado();
+                        prepararNuevoPlato();
+                        mostrarAlerta("Éxito", "Plato inactivado correctamente.");
+                    } else {
+                        mostrarAlerta("Error", "No se pudo inactivar el plato.");
+                    }
                 }
-            }
         );
     }
 
@@ -239,17 +264,19 @@ public class PlatoController implements Initializable {
         filtrar();
     }
 
-    /** Filtra los platos en tiempo real según texto, categoría y estado. */
+    /**
+     * Filtra los platos en tiempo real según texto, categoría y estado.
+     */
     private void filtrar() {
-        String busqueda       = txtBuscarPlato.getText().toLowerCase();
+        String busqueda = txtBuscarPlato.getText().toLowerCase();
         CategoriaPlato catFiltro = cmbFiltroCategoriaPlato.getValue();
-        Estado estFiltro      = cmbFiltroEstadoPlato.getValue();
+        Estado estFiltro = cmbFiltroEstadoPlato.getValue();
 
         List<Plato> listaFiltrada = PlatoDAO.listarTodos().stream().filter(p -> {
             boolean coincideBusqueda = p.getNombre().toLowerCase().contains(busqueda)
-                                    || p.getCodigo().toLowerCase().contains(busqueda);
-            boolean coincideCat  = (catFiltro == null) || (p.getCategoriaPlatoId() == (long) catFiltro.getId());
-            boolean coincideEst  = (estFiltro == null) || (p.getEstId() == (long) estFiltro.getId());
+                    || p.getCodigo().toLowerCase().contains(busqueda);
+            boolean coincideCat = (catFiltro == null) || (p.getCategoriaPlatoId() == (long) catFiltro.getId());
+            boolean coincideEst = (estFiltro == null) || (p.getEstId() == (long) estFiltro.getId());
             return coincideBusqueda && coincideCat && coincideEst;
         }).toList();
 
@@ -263,7 +290,7 @@ public class PlatoController implements Initializable {
 
     private void mostrarAlerta(String titulo, String contenido) {
         Node nodo = obtenerNodoParaAlerta();
-        String t  = titulo.toLowerCase();
+        String t = titulo.toLowerCase();
 
         if (t.contains("éxito") || t.contains("correcto") || t.contains("guardado")) {
             Alertas.exito(nodo, titulo, contenido);
@@ -277,9 +304,15 @@ public class PlatoController implements Initializable {
     }
 
     private Node obtenerNodoParaAlerta() {
-        if (btnGuardarPlato != null) return btnGuardarPlato;
-        if (tblListaPlatos  != null) return tblListaPlatos;
-        if (txtPlatNombre   != null) return txtPlatNombre;
+        if (btnGuardarPlato != null) {
+            return btnGuardarPlato;
+        }
+        if (tblListaPlatos != null) {
+            return tblListaPlatos;
+        }
+        if (txtPlatNombre != null) {
+            return txtPlatNombre;
+        }
         return null;
     }
 }
