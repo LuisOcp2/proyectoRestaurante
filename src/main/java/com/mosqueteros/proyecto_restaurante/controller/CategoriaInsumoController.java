@@ -7,12 +7,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
 /**
  * Controlador del módulo Categorías de Insumo.
  * Gestiona el CRUD completo: listar, buscar, guardar (crear/editar) y eliminar.
+ *
+ * Nota: el binding de columnas se hace con lambda en initialize() porque
+ * PropertyValueFactory en FXML falla en proyectos JavaFX 21 con JPMS.
  *
  * Vinculado a: VistaCategoriaInsumo.fxml
  * Modelo:      CategoriaInsumo.java
@@ -20,37 +22,37 @@ import javafx.scene.layout.VBox;
  */
 public class CategoriaInsumoController {
 
-    // ── Barra de filtros ──────────────────────────────────────────────
-    @FXML private TextField               txtBuscarCategoria;
-    @FXML private ComboBox<String>        cmbFiltroEstado;
-    @FXML private Button                  btnBuscarCategoria;
-    @FXML private Button                  btnLimpiarFiltroCategoria;
+    // ── Barra de filtros ────────────────────────────────────────────
+    @FXML private io.github.palexdev.materialfx.controls.MFXTextField txtBuscarCategoria;
+    @FXML private ComboBox<String> cmbFiltroEstado;
+    @FXML private Button           btnBuscarCategoria;
+    @FXML private Button           btnLimpiarFiltroCategoria;
 
-    // ── Tabla ────────────────────────────────────────────────────────
+    // ── Tabla ──────────────────────────────────────────────────────
     @FXML private TableView<CategoriaInsumo>         tblListaCategorias;
     @FXML private TableColumn<CategoriaInsumo, Long>   colId;
     @FXML private TableColumn<CategoriaInsumo, String> colNombre;
     @FXML private TableColumn<CategoriaInsumo, String> colDescripcion;
     @FXML private TableColumn<CategoriaInsumo, String> colEstado;
-    @FXML private Label                               lblConteoCategorias;
-    @FXML private VBox                                boxPlaceholder;
+    @FXML private Label lblConteoCategorias;
+    @FXML private VBox  boxPlaceholder;
 
     // ── Formulario ──────────────────────────────────────────────────
-    @FXML private TextField    txtCatNombre;
-    @FXML private TextField    txtCatDescripcion;
+    @FXML private io.github.palexdev.materialfx.controls.MFXTextField txtCatNombre;
+    @FXML private io.github.palexdev.materialfx.controls.MFXTextField txtCatDescripcion;
     @FXML private ComboBox<String> cmbCatEstado;
-    @FXML private Label        lblMensajeCategoria;
+    @FXML private Label            lblMensajeCategoria;
 
-    // ── Botones ─────────────────────────────────────────────────────
+    // ── Botones del formulario ─────────────────────────────────────────
     @FXML private Button btnNuevoCategoria;
     @FXML private Button btnNuevoCategoriaForm;
     @FXML private Button btnGuardarCategoria;
     @FXML private Button btnEliminarCategoriaForm;
 
-    /** Categoría actualmente seleccionada en la tabla para editar */
+    /** Categoría seleccionada actualmente para edición (null = modo nuevo) */
     private CategoriaInsumo categoriaSeleccionada = null;
 
-    /** Lista observable vinculada a la tabla */
+    /** Lista observable enlazada a la tabla */
     private final ObservableList<CategoriaInsumo> listaCategorias =
             FXCollections.observableArrayList();
 
@@ -60,7 +62,7 @@ public class CategoriaInsumoController {
 
     /**
      * JavaFX llama este método automáticamente al cargar el FXML.
-     * Configura columnas de la tabla, pobla ComboBoxes y carga datos iniciales.
+     * Configura columnas, ComboBoxes, selección de tabla y carga datos iniciales.
      */
     @FXML
     public void initialize() {
@@ -71,21 +73,38 @@ public class CategoriaInsumoController {
     }
 
     /**
-     * Enlaza cada columna de la tabla con la Property correspondiente del modelo.
-     * PropertyValueFactory busca: get + NombreCampo() en el modelo.
+     * Enlaza cada TableColumn con la Property del modelo usando lambdas.
+     *
+     * RAZÓN: En JavaFX 21 con módulos JPMS, usar PropertyValueFactory dentro del
+     * FXML lanza "PropertyValueFactory is not a valid type" porque el FXMLLoader
+     * no puede resolver la clase desde el módulo. La solución definitiva es
+     * configurar el binding aquí en Java con setCellValueFactory + lambda.
      */
     private void configurarColumnas() {
-        colId          .setCellValueFactory(new PropertyValueFactory<>("idCategoriaInsumo"));
-        colNombre      .setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colDescripcion .setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        colEstado      .setCellValueFactory(new PropertyValueFactory<>("estado"));
+        // Enlaza la columna ID con la property idCategoriaInsumo del modelo
+        colId.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleLongProperty(
+                        data.getValue().getIdCategoriaInsumo()).asObject());
 
+        // Enlaza la columna Nombre con la property nombre
+        colNombre.setCellValueFactory(data ->
+                data.getValue().nombreProperty());
+
+        // Enlaza la columna Descripción con la property descripcion
+        colDescripcion.setCellValueFactory(data ->
+                data.getValue().descripcionProperty());
+
+        // Enlaza la columna Estado con la property estado
+        colEstado.setCellValueFactory(data ->
+                data.getValue().estadoProperty());
+
+        // Asigna la lista observable a la tabla y activa el auto-resize de columnas
         tblListaCategorias.setItems(listaCategorias);
         tblListaCategorias.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     /**
-     * Carga los valores estáticos en los ComboBoxes de filtro y formulario.
+     * Carga las opciones fijas en los ComboBoxes de filtro y formulario.
      */
     private void configurarComboBoxes() {
         cmbFiltroEstado.setItems(FXCollections.observableArrayList("Activo", "Inactivo"));
@@ -101,27 +120,24 @@ public class CategoriaInsumoController {
         tblListaCategorias.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, anterior, seleccionada) -> {
-                    if (seleccionada != null) {
-                        cargarEnFormulario(seleccionada);
-                    }
+                    if (seleccionada != null) cargarEnFormulario(seleccionada);
                 });
     }
 
     // ─────────────────────────────────────────────────────────────
-    // ACCIONES DE TABLA
+    // ACCIONES FXML
     // ─────────────────────────────────────────────────────────────
 
     /**
-     * Ejecuta búsqueda con los filtros activos (texto y estado).
+     * Ejecuta búsqueda con los filtros activos (texto libre + estado).
      * Llamado por el botón "Buscar" del FXML.
      */
     @FXML
     private void buscarCategoria() {
         try {
-            String texto = txtBuscarCategoria.getText();
+            String texto  = txtBuscarCategoria.getText();
             String estado = cmbFiltroEstado.getValue();
-            var resultados = CategoriaInsumoDAO.buscarConFiltros(texto, estado);
-            listaCategorias.setAll(resultados);
+            listaCategorias.setAll(CategoriaInsumoDAO.buscarConFiltros(texto, estado));
             actualizarConteo();
             actualizarPlaceholder();
         } catch (Exception e) {
@@ -139,10 +155,6 @@ public class CategoriaInsumoController {
         cmbFiltroEstado.setValue(null);
         cargarCategorias();
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // ACCIONES DE FORMULARIO
-    // ─────────────────────────────────────────────────────────────
 
     /**
      * Limpia el formulario y deja listo para registrar una nueva categoría.
@@ -166,21 +178,17 @@ public class CategoriaInsumoController {
      */
     @FXML
     private void guardarCategoria() {
-        // Validar campos obligatorios
         if (txtCatNombre.getText().isBlank()) {
             mostrarMensaje("⚠️ El nombre es obligatorio.", "form-mensaje-error");
             return;
         }
-
         CategoriaInsumo c = construirDesdeFormulario();
         try {
             boolean ok;
             if (categoriaSeleccionada == null) {
-                // Modo creación
                 ok = CategoriaInsumoDAO.insertar(c);
                 if (ok) mostrarMensaje("✅ Categoría creada correctamente.", "form-mensaje-ok");
             } else {
-                // Modo edición
                 c.setIdCategoriaInsumo(categoriaSeleccionada.getIdCategoriaInsumo());
                 ok = CategoriaInsumoDAO.actualizar(c);
                 if (ok) mostrarMensaje("✅ Categoría actualizada correctamente.", "form-mensaje-ok");
@@ -198,18 +206,16 @@ public class CategoriaInsumoController {
     @FXML
     private void eliminarCategoria() {
         if (categoriaSeleccionada == null) return;
-
-        // Confirmación antes de eliminar
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Eliminar categoría");
         confirm.setHeaderText("Esta acción no se puede deshacer.");
         confirm.setContentText("¿Eliminar la categoría \""
                 + categoriaSeleccionada.getNombre() + "\"?");
-
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try {
-                    boolean ok = CategoriaInsumoDAO.eliminar(categoriaSeleccionada.getIdCategoriaInsumo());
+                    boolean ok = CategoriaInsumoDAO.eliminar(
+                            categoriaSeleccionada.getIdCategoriaInsumo());
                     if (ok) {
                         mostrarMensaje("✅ Categoría eliminada.", "form-mensaje-ok");
                         prepararNuevoCategoria();
@@ -227,7 +233,7 @@ public class CategoriaInsumoController {
     // ─────────────────────────────────────────────────────────────
 
     /**
-     * Carga todas las categorías desde la BD y refresca la tabla.
+     * Carga todas las categorías desde la BD y refresca la tabla y el conteo.
      */
     private void cargarCategorias() {
         try {
@@ -240,7 +246,7 @@ public class CategoriaInsumoController {
     }
 
     /**
-     * Carga los datos de una categoría en los campos del formulario para editarla.
+     * Carga los datos de una categoría en el formulario para editarla.
      *
      * @param c Categoría seleccionada en la tabla
      */
@@ -254,7 +260,7 @@ public class CategoriaInsumoController {
     }
 
     /**
-     * Construye un objeto {@link CategoriaInsumo} con los valores del formulario.
+     * Construye un objeto CategoriaInsumo con los valores actuales del formulario.
      *
      * @return CategoriaInsumo listo para insertar o actualizar
      */
@@ -267,13 +273,14 @@ public class CategoriaInsumoController {
         );
     }
 
-    /** Actualiza la etiqueta de conteo de resultados en la tabla. */
+    /** Actualiza la etiqueta de conteo de resultados debajo de la tabla. */
     private void actualizarConteo() {
         int total = listaCategorias.size();
-        lblConteoCategorias.setText(total + (total == 1 ? " categoría encontrada" : " categorías encontradas"));
+        lblConteoCategorias.setText(total +
+                (total == 1 ? " categoría encontrada" : " categorías encontradas"));
     }
 
-    /** Muestra u oculta el placeholder vacío según haya datos en la tabla. */
+    /** Muestra u oculta el placeholder vacío según si la lista tiene datos. */
     private void actualizarPlaceholder() {
         boolean hayDatos = !listaCategorias.isEmpty();
         tblListaCategorias.setVisible(hayDatos);
@@ -282,10 +289,11 @@ public class CategoriaInsumoController {
         boxPlaceholder.setManaged(!hayDatos);
     }
 
-    /** Muestra el mensaje de feedback en el formulario con el estilo dado. */
+    /** Muestra el label de feedback con el texto y estilo CSS dados. */
     private void mostrarMensaje(String texto, String estilo) {
         lblMensajeCategoria.setText(texto);
-        lblMensajeCategoria.getStyleClass().removeAll("form-mensaje-ok", "form-mensaje-error");
+        lblMensajeCategoria.getStyleClass()
+                .removeAll("form-mensaje-ok", "form-mensaje-error");
         lblMensajeCategoria.getStyleClass().add(estilo);
         lblMensajeCategoria.setVisible(true);
         lblMensajeCategoria.setManaged(true);

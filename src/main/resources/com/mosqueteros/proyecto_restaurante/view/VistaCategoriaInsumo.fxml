@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
@@ -16,24 +16,26 @@
 <!--
   VistaCategoriaInsumo.fxml — CRUD Categorías de Insumo
 
-  CAMBIO: Se reemplazó MFXTableView (incompatible con PropertyValueFactory/cellValueFactory en FXML)
-  por TableView estándar de JavaFX. Las columnas usan PropertyValueFactory que enlaza con
-  los JavaFX Properties del modelo CategoriaInsumo.
+  IMPORTANTE — JavaFX 21 + JPMS:
+    PropertyValueFactory en FXML falla con "not a valid type" en proyectos modulares.
+    Solución: las columnas se declaran solo con fx:id aquí;
+    el binding (setCellValueFactory con lambda) se hace 100% en Java
+    dentro de CategoriaInsumoController.configurarColumnas().
 
   CONTRATO CONTROLADOR (CategoriaInsumoController):
-    txtBuscarCategoria  → MFXTextField  búsqueda por nombre/descripción
-    cmbFiltroEstado     → ComboBox<String> filtro de estado
+    txtBuscarCategoria  → MFXTextField
+    cmbFiltroEstado     → ComboBox<String>
     tblListaCategorias  → TableView<CategoriaInsumo>
-    colId               → TableColumn ID
-    colNombre           → TableColumn Nombre
-    colDescripcion      → TableColumn Descripción
-    colEstado           → TableColumn Estado
-    lblConteoCategorias → Label conteo de resultados
-    boxPlaceholder      → VBox estado vacío
-    txtCatNombre        → MFXTextField nombre
-    txtCatDescripcion   → MFXTextField descripción
-    cmbCatEstado        → ComboBox<String> estado
-    lblMensajeCategoria → Label mensajes de validación
+    colId               → TableColumn
+    colNombre           → TableColumn
+    colDescripcion      → TableColumn
+    colEstado           → TableColumn
+    lblConteoCategorias → Label
+    boxPlaceholder      → VBox
+    txtCatNombre        → MFXTextField
+    txtCatDescripcion   → MFXTextField
+    cmbCatEstado        → ComboBox<String>
+    lblMensajeCategoria → Label
 -->
 <StackPane
     styleClass="root-container"
@@ -47,9 +49,7 @@
     <HBox alignment="TOP_LEFT" fillHeight="true"
           maxHeight="Infinity" maxWidth="Infinity" spacing="24">
 
-        <!-- ═══════════════════════════════════════════════════════════════ -->
-        <!-- COLUMNA IZQUIERDA: Título + Card con tabla                      -->
-        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- COLUMNA IZQUIERDA: Título + Card con tabla -->
         <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
 
             <!-- Encabezado de sección -->
@@ -77,7 +77,7 @@
 
                     <Region HBox.hgrow="ALWAYS"/>
 
-                    <!-- Filtro por estado (ComboBox nativo JavaFX) -->
+                    <!-- Filtro por estado -->
                     <VBox spacing="2">
                         <Label text="Estado" styleClass="input-label"/>
                         <ComboBox fx:id="cmbFiltroEstado"
@@ -86,58 +86,31 @@
                                   styleClass="filtro-combo-nativo"/>
                     </VBox>
 
-                    <!-- Botón Buscar -->
                     <Button fx:id="btnBuscarCategoria"
                             onAction="#buscarCategoria"
                             styleClass="btn-outline-primary"
                             text="Buscar"/>
 
-                    <!-- Botón Limpiar filtros -->
                     <Button fx:id="btnLimpiarFiltroCategoria"
                             onAction="#limpiarFiltros"
                             styleClass="btn-outline-secondary"
                             text="Limpiar"/>
                 </HBox>
 
-                <!-- ═══════════════════════════════════════════════════════ -->
-                <!-- TABLA ESTÁNDAR JavaFX (PropertyValueFactory compatible) -->
-                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- TABLA: columnas solo con fx:id, el binding se hace en Java -->
                 <VBox VBox.vgrow="ALWAYS" spacing="0">
                     <TableView fx:id="tblListaCategorias"
                                styleClass="mesas-table"
                                VBox.vgrow="ALWAYS">
                         <columns>
-                            <!-- Columna ID -->
-                            <TableColumn fx:id="colId" text="ID" prefWidth="60">
-                                <cellValueFactory>
-                                    <PropertyValueFactory property="idCategoriaInsumo"/>
-                                </cellValueFactory>
-                            </TableColumn>
-
-                            <!-- Columna Nombre -->
-                            <TableColumn fx:id="colNombre" text="NOMBRE">
-                                <cellValueFactory>
-                                    <PropertyValueFactory property="nombre"/>
-                                </cellValueFactory>
-                            </TableColumn>
-
-                            <!-- Columna Descripción -->
-                            <TableColumn fx:id="colDescripcion" text="DESCRIPCIÓN">
-                                <cellValueFactory>
-                                    <PropertyValueFactory property="descripcion"/>
-                                </cellValueFactory>
-                            </TableColumn>
-
-                            <!-- Columna Estado -->
-                            <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="90">
-                                <cellValueFactory>
-                                    <PropertyValueFactory property="estado"/>
-                                </cellValueFactory>
-                            </TableColumn>
+                            <TableColumn fx:id="colId"          text="ID"          prefWidth="60"/>
+                            <TableColumn fx:id="colNombre"      text="NOMBRE"/>
+                            <TableColumn fx:id="colDescripcion" text="DESCRIPCIÓN"/>
+                            <TableColumn fx:id="colEstado"      text="ESTADO"       prefWidth="90"/>
                         </columns>
                     </TableView>
 
-                    <!-- Estado vacío cuando no hay datos -->
+                    <!-- Estado vacío cuando no hay registros -->
                     <VBox fx:id="boxPlaceholder"
                           alignment="CENTER"
                           spacing="16"
@@ -165,12 +138,9 @@
             </VBox>
         </VBox>
 
-        <!-- ═══════════════════════════════════════════════════════════════ -->
-        <!-- COLUMNA DERECHA: Formulario de detalle / edición               -->
-        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- COLUMNA DERECHA: Formulario de detalle / edición -->
         <VBox prefWidth="360" maxWidth="360" minWidth="320" spacing="0">
 
-            <!-- Encabezado del formulario -->
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
                 <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
                 <StackPane styleClass="form-header-badge">
@@ -179,13 +149,9 @@
                 <Label styleClass="form-header-titulo" text="Detalle de Categoría"/>
             </HBox>
 
-            <!-- Formulario con ScrollPane -->
-            <javafx.scene.control.ScrollPane
-                fitToWidth="true"
-                fitToHeight="false"
-                hbarPolicy="NEVER"
-                vbarPolicy="AS_NEEDED"
-                styleClass="form-scroll">
+            <ScrollPane fitToWidth="true" fitToHeight="false"
+                        hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        styleClass="form-scroll">
                 <VBox styleClass="main-card" spacing="0">
 
                     <VBox spacing="18">
@@ -227,7 +193,6 @@
                             </HBox>
                         </VBox>
 
-                        <!-- Mensaje de validación / confirmación -->
                         <Label fx:id="lblMensajeCategoria"
                                styleClass="form-mensaje"
                                text=""
@@ -260,7 +225,7 @@
                                 text="Eliminar"/>
                     </HBox>
                 </VBox>
-            </javafx.scene.control.ScrollPane>
+            </ScrollPane>
         </VBox>
     </HBox>
 </StackPane>
