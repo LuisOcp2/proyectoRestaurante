@@ -1,31 +1,29 @@
 /* ══════════════════════════════════════════════════════════════
-   CALI DELIGHTS — main-shell.css  v4.0
-   Paleta ColorHunt Profesional Restaurante:
-   #2C3E50 (Navy Oscuro) · #C0392B (Crimson) · #E8D5B7 (Beige) · #F5F0E8 (Crema)
-   Shell principal: Sidebar crema · Topbar navy degradado · Acento crimson
+   CALI DELIGHTS — main-shell.css  v5.0
+   Nueva Paleta Oficial:
+   #000000 (Negro) · #7E3BED (Violeta) · #FFFFFF (Blanco) · #C6FF34 (Lima)
+   Shell principal: Sidebar blanco · Topbar violeta degradado · Acento lima
    ══════════════════════════════════════════════════════════════ */
 
-/* ── VARIABLES / ROOT ───────────────────────────────────────── */
-/* Color primario oscuro (navy) */
-/* Color de acento (crimson rojo elegante) */
-/* Color de fondo cálido (beige suave) */
-/* Color de fondo crema (más claro) */
+/* ── SHELL RAÍZ ─────────────────────────────────────────────── */
+/* Fondo general del shell principal de la aplicación */
 .shell-root {
-    -fx-background-color: #F5F0E8;
+    -fx-background-color: #F8F9FA;
     -fx-font-family: 'Segoe UI', 'Ubuntu', 'Inter', SansSerif;
 }
 
 /* ══════════════════════════════════════════════════════════════
-   TOPBAR — degradado navy profundo, 60px de alto
+   TOPBAR — degradado violeta profundo, 60px de alto
    ══════════════════════════════════════════════════════════════ */
+/* Barra superior de la aplicación */
 .topbar {
-    -fx-background-color: linear-gradient(to right, #1a252f 0%, #2C3E50 40%, #34495E 100%);
+    -fx-background-color: linear-gradient(to right, #3A0F8A 0%, #7E3BED 50%, #9B5CF0 100%);
     -fx-pref-height: 60;
     -fx-min-height: 60;
     -fx-max-height: 60;
     -fx-padding: 0 16 0 0;
     -fx-alignment: CENTER_LEFT;
-    -fx-effect: dropshadow(gaussian, rgba(44, 62, 80, 0.55), 18, 0.20, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.55), 18, 0.20, 0, 5);
 }
 
 /* ── Botón hamburger ────────────────────────────────────────── */
@@ -33,7 +31,7 @@
 .btn-hamburger {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-    -fx-text-fill: #E8D5B7;
+    -fx-text-fill: #FFFFFF;
     -fx-font-size: 22;
     -fx-cursor: hand;
     -fx-pref-width: 60;
@@ -44,7 +42,7 @@
 }
 
 .btn-hamburger:hover {
-    -fx-background-color: rgba(192, 57, 43, 0.22);
+    -fx-background-color: rgba(198, 255, 52, 0.20);
     -fx-effect: none;
 }
 
@@ -55,9 +53,9 @@
 }
 
 /* ── Marca topbar ───────────────────────────────────────────── */
-/* Nombre de la app visible cuando el sidebar está colapsado */
+/* Nombre de la app visible en la barra superior */
 .topbar-brand {
-    -fx-text-fill: #E8D5B7;
+    -fx-text-fill: #FFFFFF;
     -fx-font-size: 17;
     -fx-font-weight: bold;
     -fx-padding: 0 12 0 4;
@@ -66,9 +64,9 @@
 /* ── Buscador global ────────────────────────────────────────── */
 /* Campo de búsqueda en la barra superior */
 .topbar-search-wrapper {
-    -fx-background-color: rgba(232, 213, 183, 0.14);
+    -fx-background-color: rgba(255, 255, 255, 0.15);
     -fx-background-radius: 10;
-    -fx-border-color: rgba(232, 213, 183, 0.35);
+    -fx-border-color: rgba(255, 255, 255, 0.35);
     -fx-border-radius: 10;
     -fx-border-width: 1.2;
     -fx-padding: 4 14 4 10;
@@ -78,21 +76,21 @@
 }
 
 .topbar-search-wrapper:focused-within {
-    -fx-background-color: rgba(232, 213, 183, 0.24);
-    -fx-border-color: rgba(232, 213, 183, 0.72);
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-border-color: #C6FF34;
     -fx-border-width: 1.5;
 }
 
 .topbar-search-icon {
     -fx-font-size: 14;
-    -fx-text-fill: rgba(232, 213, 183, 0.75);
+    -fx-text-fill: rgba(255, 255, 255, 0.75);
 }
 
 .topbar-search {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-    -fx-text-fill: #F5F0E8;
-    -fx-prompt-text-fill: rgba(232, 213, 183, 0.60);
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.60);
     -fx-font-size: 13;
     -fx-pref-height: 30;
     -fx-pref-width: 200;
@@ -110,44 +108,46 @@
 /* ── Avatar del usuario ─────────────────────────────────────── */
 /* Círculo con iniciales del usuario logueado */
 .avatar-circle {
-    -fx-background-color: rgba(192, 57, 43, 0.35);
+    -fx-background-color: rgba(198, 255, 52, 0.30);
     -fx-background-radius: 9999;
     -fx-pref-width: 38;
     -fx-pref-height: 38;
     -fx-alignment: CENTER;
-    -fx-border-color: rgba(232, 213, 183, 0.55);
+    -fx-border-color: rgba(255, 255, 255, 0.55);
     -fx-border-radius: 9999;
     -fx-border-width: 1.8;
-    -fx-effect: dropshadow(gaussian, rgba(192, 57, 43, 0.25), 6, 0.10, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(198, 255, 52, 0.30), 6, 0.10, 0, 1);
 }
 
 .avatar-initials {
-    -fx-text-fill: #F5F0E8;
+    -fx-text-fill: #000000;
     -fx-font-size: 13.5;
     -fx-font-weight: bold;
 }
 
 /* ── Nombre y rol del usuario ───────────────────────────────── */
+/* Nombre del usuario logueado en la topbar */
 .topbar-username {
-    -fx-text-fill: #F5F0E8;
+    -fx-text-fill: #FFFFFF;
     -fx-font-size: 13;
     -fx-font-weight: bold;
 }
 
+/* Rol del usuario logueado en la topbar */
 .topbar-rol {
-    -fx-text-fill: rgba(232, 213, 183, 0.75);
+    -fx-text-fill: rgba(255, 255, 255, 0.75);
     -fx-font-size: 11;
 }
 
 /* ── Botón Cerrar Sesión ────────────────────────────────────── */
-/* Outline blanco, se vuelve crimson sólido al hover */
+/* Outline blanco, se vuelve lima sólido al hover */
 .btn-logout {
     -fx-background-color: transparent;
-    -fx-border-color: rgba(232, 213, 183, 0.72);
+    -fx-border-color: rgba(255, 255, 255, 0.72);
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-border-width: 1.5;
-    -fx-text-fill: #E8D5B7;
+    -fx-text-fill: #FFFFFF;
     -fx-font-size: 12.5;
     -fx-font-weight: 600;
     -fx-padding: 6 16 6 16;
@@ -156,51 +156,53 @@
 }
 
 .btn-logout:hover {
-    -fx-background-color: #C0392B;
-    -fx-border-color: #C0392B;
-    -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(192, 57, 43, 0.50), 12, 0.25, 0, 3);
+    -fx-background-color: #C6FF34;
+    -fx-border-color: #C6FF34;
+    -fx-text-fill: #000000;
+    -fx-effect: dropshadow(gaussian, rgba(198, 255, 52, 0.60), 12, 0.25, 0, 3);
 }
 
 .btn-logout:armed {
-    -fx-background-color: #96281B;
-    -fx-border-color: #96281B;
+    -fx-background-color: #A3D61A;
+    -fx-border-color: #A3D61A;
+    -fx-text-fill: #000000;
 }
 
 .btn-logout>.ripple-generator {
-    -fx-background-color: rgba(232, 213, 183, 0.15);
+    -fx-background-color: rgba(255, 255, 255, 0.15);
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SIDEBAR — fondo crema cálido, 260px, sombra sutil
+   SIDEBAR — fondo blanco limpio, 260px, sombra sutil
    ══════════════════════════════════════════════════════════════ */
 /* Panel lateral de navegación del sistema */
 .sidebar {
-    -fx-background-color: #F5F0E8;
+    -fx-background-color: #FFFFFF;
     -fx-pref-width: 260;
     -fx-min-width: 260;
     -fx-max-width: 260;
-    -fx-effect: dropshadow(gaussian, rgba(44, 62, 80, 0.12), 16, 0.08, 6, 0);
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.12), 16, 0.08, 6, 0);
 }
 
 /* ── Cabecera de marca en el sidebar ────────────────────────── */
 /* Área superior con logo y nombre del restaurante */
 .sidebar-brand {
-    -fx-background-color: rgba(44, 62, 80, 0.06);
+    -fx-background-color: rgba(126, 59, 237, 0.06);
     -fx-padding: 22 16 18 16;
     -fx-alignment: CENTER;
     -fx-spacing: 6;
-    -fx-border-color: transparent transparent #E8D5B7 transparent;
+    -fx-border-color: transparent transparent #E9ECEF transparent;
     -fx-border-width: 0 0 1.5 0;
 }
 
+/* Círculo del logo en el sidebar */
 .sidebar-logo-circle {
-    -fx-background-color: rgba(192, 57, 43, 0.12);
+    -fx-background-color: rgba(126, 59, 237, 0.12);
     -fx-background-radius: 9999;
     -fx-pref-width: 48;
     -fx-pref-height: 48;
     -fx-alignment: CENTER;
-    -fx-border-color: rgba(192, 57, 43, 0.28);
+    -fx-border-color: rgba(126, 59, 237, 0.28);
     -fx-border-radius: 9999;
     -fx-border-width: 1.5;
 }
@@ -211,14 +213,14 @@
 
 /* Nombre principal del restaurante en el sidebar */
 .sidebar-brand-name {
-    -fx-text-fill: #C0392B;
+    -fx-text-fill: #7E3BED;
     -fx-font-size: 16;
     -fx-font-weight: bold;
 }
 
-/* Subtítulo del sidebar (ej: "Sistema de Gestión") */
+/* Subtítulo del sidebar (ej: Sistema de Gestión) */
 .sidebar-brand-sub {
-    -fx-text-fill: #7F8C8D;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 10.5;
 }
 
@@ -254,7 +256,7 @@
 /* ── Etiquetas de sección del menú ──────────────────────────── */
 /* Títulos de agrupaciones en el menú (ej: PEDIDOS, CONFIG) */
 .menu-section {
-    -fx-text-fill: #7F8C8D;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 11;
     -fx-font-weight: bold;
     -fx-padding: 14 12 4 18;
@@ -269,7 +271,7 @@
     -fx-border-width: 0 0 0 4;
     -fx-border-radius: 0;
     -fx-background-radius: 0 10 10 0;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
     -fx-font-size: 13.5;
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 10 14 10 14;
@@ -280,36 +282,36 @@
 }
 
 .menu-btn>.ripple-generator {
-    -fx-background-color: rgba(192, 57, 43, 0.07);
+    -fx-background-color: rgba(126, 59, 237, 0.07);
 }
 
-/* Hover: fondo beige con borde y texto crimson */
+/* Hover: fondo violeta suave con borde y texto violeta */
 .menu-btn:hover {
-    -fx-background-color: rgba(192, 57, 43, 0.08);
-    -fx-border-color: #C0392B;
-    -fx-text-fill: #C0392B;
+    -fx-background-color: rgba(126, 59, 237, 0.08);
+    -fx-border-color: #7E3BED;
+    -fx-text-fill: #7E3BED;
 }
 
 .menu-btn:pressed {
-    -fx-background-color: rgba(192, 57, 43, 0.16);
+    -fx-background-color: rgba(126, 59, 237, 0.16);
 }
 
 /* ── Estado activo del ítem de menú ─────────────────────────── */
 /* Ítem actualmente seleccionado en el sidebar */
 .menu-btn-active {
-    -fx-background-color: rgba(192, 57, 43, 0.10);
-    -fx-border-color: #C0392B;
-    -fx-text-fill: #C0392B;
+    -fx-background-color: rgba(126, 59, 237, 0.10);
+    -fx-border-color: #7E3BED;
+    -fx-text-fill: #7E3BED;
     -fx-font-weight: bold;
 }
 
 .menu-btn-active:hover {
-    -fx-background-color: rgba(192, 57, 43, 0.16);
+    -fx-background-color: rgba(126, 59, 237, 0.16);
 }
 
 /* ── Separadores del sidebar ────────────────────────────────── */
 .sidebar .separator>*.line {
-    -fx-background-color: #E8D5B7;
+    -fx-background-color: #E9ECEF;
     -fx-border-color: transparent;
 }
 
@@ -318,18 +320,18 @@
    ══════════════════════════════════════════════════════════════ */
 /* Zona donde se cargan las vistas de cada módulo */
 .content-area {
-    -fx-background-color: #F5F0E8;
+    -fx-background-color: #F8F9FA;
     -fx-padding: 30;
 }
 
 /* ── Panel de bienvenida ────────────────────────────────────── */
 /* Pantalla inicial que se muestra al ingresar al sistema */
 .welcome-panel {
-    -fx-background-color: linear-gradient(to bottom right, #FFFFFF 60%, rgba(232, 213, 183, 0.30) 100%);
+    -fx-background-color: linear-gradient(to bottom right, #FFFFFF 60%, rgba(126, 59, 237, 0.06) 100%);
     -fx-background-radius: 20;
     -fx-padding: 60 50;
-    -fx-effect: dropshadow(gaussian, rgba(44, 62, 80, 0.10), 24, 0.06, 0, 6);
-    -fx-border-color: rgba(192, 57, 43, 0.12);
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.12), 24, 0.06, 0, 6);
+    -fx-border-color: rgba(126, 59, 237, 0.15);
     -fx-border-radius: 20;
     -fx-border-width: 1;
     -fx-max-width: 520;
@@ -338,21 +340,21 @@
 
 /* Título principal de bienvenida */
 .welcome-title {
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
     -fx-font-size: 32;
     -fx-font-weight: 900;
 }
 
 /* Subtítulo con nombre del sistema */
 .welcome-subtitle {
-    -fx-text-fill: #C0392B;
+    -fx-text-fill: #7E3BED;
     -fx-font-size: 15;
     -fx-font-weight: 600;
 }
 
 /* Texto de ayuda/pista de la pantalla de bienvenida */
 .welcome-hint {
-    -fx-text-fill: #7F8C8D;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 13;
 }
 
@@ -361,15 +363,15 @@
    ══════════════════════════════════════════════════════════════ */
 /* Indicador de progreso circular de MaterialFX */
 .mfx-progress-spinner {
-    -mfx-color1: #2C3E50;
-    -mfx-color2: #C0392B;
-    -mfx-color3: #E8D5B7;
-    -mfx-color4: #96281B;
+    -mfx-color1: #7E3BED;
+    -mfx-color2: #C6FF34;
+    -mfx-color3: #5D1FBC;
+    -mfx-color4: #A3D61A;
 }
 
 /* Contenedor del spinner con fondo semi-transparente */
 .spinner-wrapper {
-    -fx-background-color: rgba(245, 240, 232, 0.88);
+    -fx-background-color: rgba(248, 249, 250, 0.88);
     -fx-alignment: CENTER;
 }
 

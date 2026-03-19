@@ -1,13 +1,14 @@
 /* ═══════════════════════════════════════════════════════════════════
-   styles.css  v5  —  Cali Delights Pro
-   Paleta ColorHunt Profesional Restaurante:
-   #2C3E50 (Navy) · #C0392B (Crimson) · #E8D5B7 (Beige) · #F5F0E8 (Crema)
+   styles.css  v6  —  Cali Delights Pro
+   Nueva Paleta Oficial:
+   #000000 (Negro) · #7E3BED (Violeta) · #FFFFFF (Blanco) · #C6FF34 (Lima)
+   Derivados: #5D1FBC · #A3D61A · #F8F9FA · #6C757D · #E9ECEF · #DC3545
 ═══════════════════════════════════════════════════════════════════ */
 
 /* ── CONTENEDOR RAÍZ ── */
 /* Fondo principal de todas las vistas del módulo de Luis */
 .root-container {
-    -fx-background-color: #F5F0E8;
+    -fx-background-color: #F8F9FA;
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
@@ -17,9 +18,9 @@
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
-    -fx-border-color: #E8D5B7;
+    -fx-border-color: #E9ECEF;
     -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.08), 14, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.08), 14, 0, 0, 3);
 }
 
 /* ScrollPane del panel derecho del formulario */
@@ -34,17 +35,17 @@
 }
 
 /* Líneas divisoras entre secciones */
-.divider { -fx-background-color: #E8D5B7; }
+.divider { -fx-background-color: #E9ECEF; }
 
 /* ── TEXTOS DE CABECERA ── */
 /* Título principal de cada vista */
 .titulo-texto {
     -fx-font-size: 26px;
     -fx-font-weight: 800;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
 }
-.header-icon  { -fx-icon-color: #2C3E50; }
-.icon-muted   { -fx-icon-color: #95A5A6; }
+.header-icon  { -fx-icon-color: #7E3BED; }
+.icon-muted   { -fx-icon-color: #6C757D; }
 
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -54,19 +55,19 @@
 /* Contenedor del campo de búsqueda */
 .search-wrapper {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #D5C9B5;
+    -fx-border-color: #E9ECEF;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 0 12;
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 8;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.05), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.06), 3, 0, 0, 1);
 }
 /* Campo de texto para buscar registros */
 .search-field {
     -fx-background-color: transparent;
-    -fx-text-fill: #2C3E50;
-    -fx-prompt-text-fill: #95A5A6;
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #6C757D;
     -fx-font-size: 13px;
     -fx-border-width: 0;
     -fx-min-height: 20;
@@ -83,37 +84,37 @@
 /* ComboBox nativo para filtros de la tabla */
 .filtro-combo-nativo {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #D5C9B5;
+    -fx-border-color: #E9ECEF;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-font-size: 13px;
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.05), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.06), 3, 0, 0, 1);
     -fx-cursor: hand;
 }
 
 /* Celda que muestra el valor seleccionado */
 .filtro-combo-nativo .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
     -fx-font-size: 13px;
     -fx-padding: 0 4;
 }
 
 /* Placeholder vacío del combo */
 .filtro-combo-nativo .list-cell:empty {
-    -fx-text-fill: #95A5A6;
+    -fx-text-fill: #6C757D;
 }
 
-/* Borde crimson al enfocar el combo */
+/* Borde violeta al enfocar el combo */
 .filtro-combo-nativo:focused {
-    -fx-border-color: #C0392B;
+    -fx-border-color: #7E3BED;
     -fx-background-color: #FFFFFF;
 }
 
 /* Hover: borde gris oscuro */
 .filtro-combo-nativo:hover {
-    -fx-border-color: #95A5A6;
+    -fx-border-color: #6C757D;
 }
 
 /* Botón de flecha del combo */
@@ -122,7 +123,7 @@
     -fx-padding: 0 8 0 0;
 }
 .filtro-combo-nativo .arrow-button .arrow {
-    -fx-background-color: #7F8C8D;
+    -fx-background-color: #6C757D;
     -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
     -fx-scale-shape: false;
 }
@@ -130,15 +131,15 @@
 /* Popup de opciones del combo */
 .filtro-combo-nativo .combo-box-popup > .list-view {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #E8D5B7;
+    -fx-border-color: #E9ECEF;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.14), 12, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.14), 12, 0, 0, 4);
 }
 
 .filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
     -fx-font-size: 13px;
     -fx-padding: 8 14;
 }
@@ -146,43 +147,43 @@
 /* Hover sobre opción del popup */
 .filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow
     > .clipped-container > .sheet > .list-cell:hover {
-    -fx-background-color: #FEF0EE;
-    -fx-text-fill: #C0392B;
+    -fx-background-color: rgba(126,59,237,0.08);
+    -fx-text-fill: #7E3BED;
 }
 
 /* Opción seleccionada del popup */
 .filtro-combo-nativo .combo-box-popup > .list-view > .virtual-flow
     > .clipped-container > .sheet > .list-cell:selected {
-    -fx-background-color: #FCDBD8;
-    -fx-text-fill: #96281B;
+    -fx-background-color: rgba(126,59,237,0.15);
+    -fx-text-fill: #5D1FBC;
     -fx-font-weight: 600;
 }
 
 
 /* ── Botón principal de acción (buscar, guardar) ── */
 .btn-buscar-raised {
-    -fx-background-color: #2C3E50;
-    -fx-text-fill: #F5F0E8;
+    -fx-background-color: #7E3BED;
+    -fx-text-fill: #FFFFFF;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-background-radius: 8;
     -fx-padding: 8 16;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 7;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.30), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.40), 6, 0, 0, 2);
 }
-.btn-buscar-raised:hover { -fx-background-color: #1a252f; }
+.btn-buscar-raised:hover { -fx-background-color: #5D1FBC; }
 
 /* ── Botón secundario plano (limpiar filtros) ── */
 .btn-limpiar-flat {
     -fx-background-color: transparent;
-    -fx-text-fill: #7F8C8D;
+    -fx-text-fill: #6C757D;
     -fx-font-weight: 500;
     -fx-font-size: 13px;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 6;
 }
-.btn-limpiar-flat:hover { -fx-text-fill: #2C3E50; }
+.btn-limpiar-flat:hover { -fx-text-fill: #000000; }
 
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -190,14 +191,14 @@
 ═══════════════════════════════════════════════════════════════════ */
 /* Fila de cabecera superior de la tabla */
 .table-header-row {
-    -fx-background-color: #EDE8DF;
+    -fx-background-color: rgba(126,59,237,0.07);
     -fx-padding: 10 20 10 20;
 }
 /* Cada columna de la cabecera de la tabla */
 .col-header {
     -fx-font-weight: 700;
     -fx-font-size: 11px;
-    -fx-text-fill: #7F8C8D;
+    -fx-text-fill: #6C757D;
     -fx-padding: 0 8;
     -fx-alignment: CENTER_LEFT;
 }
@@ -223,18 +224,18 @@
 }
 /* Celda de datos de la tabla */
 .mesas-table .table-cell {
-    -fx-text-fill: #34495E;
+    -fx-text-fill: #000000;
     -fx-font-size: 13px;
     -fx-padding: 13 16;
 }
-/* Fila de la tabla con separador beige */
+/* Fila de la tabla con separador gris */
 .mesas-table .table-row-cell {
-    -fx-border-color: transparent transparent #E8D5B7 transparent;
+    -fx-border-color: transparent transparent #E9ECEF transparent;
     -fx-border-width: 0 0 1 0;
 }
-/* Fila seleccionada: fondo crema suave */
+/* Fila seleccionada: fondo violeta suave */
 .mesas-table .table-row-cell:selected {
-    -fx-background-color: #FCDBD8;
+    -fx-background-color: rgba(126,59,237,0.10);
 }
 
 
@@ -250,13 +251,13 @@
 .placeholder-text {
     -fx-font-size: 15px;
     -fx-font-weight: 600;
-    -fx-text-fill: #34495E;
+    -fx-text-fill: #000000;
     -fx-alignment: CENTER;
 }
 /* Mensaje secundario del estado vacío */
 .placeholder-subtext {
     -fx-font-size: 12.5px;
-    -fx-text-fill: #95A5A6;
+    -fx-text-fill: #6C757D;
     -fx-alignment: CENTER;
 }
 
@@ -266,12 +267,12 @@
 ═══════════════════════════════════════════════════════════════════ */
 /* Pie de la tarjeta: conteo de registros */
 .footer-bar {
-    -fx-background-color: #EDE8DF;
+    -fx-background-color: rgba(126,59,237,0.05);
     -fx-background-radius: 0 0 12 12;
 }
 /* Etiqueta de conteo de registros en el footer */
 .conteo-label {
-    -fx-text-fill: #7F8C8D;
+    -fx-text-fill: #6C757D;
     -fx-font-weight: 500;
     -fx-font-size: 13px;
 }
@@ -282,7 +283,7 @@
 ═══════════════════════════════════════════════════════════════════ */
 /* Ícono/badge de color del encabezado del formulario */
 .form-header-badge {
-    -fx-background-color: rgba(192, 57, 43, 0.10);
+    -fx-background-color: rgba(126,59,237,0.10);
     -fx-background-radius: 8;
     -fx-min-width: 36;
     -fx-min-height: 36;
@@ -290,23 +291,23 @@
     -fx-max-height: 36;
     -fx-alignment: CENTER;
 }
-.form-header-badge-icon { -fx-icon-color: #C0392B; }
+.form-header-badge-icon { -fx-icon-color: #7E3BED; }
 /* Título del panel de formulario */
 .form-header-titulo {
     -fx-font-size: 17px;
     -fx-font-weight: 700;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════════
    LABELS DE CAMPO DEL FORMULARIO
 ═══════════════════════════════════════════════════════════════════ */
-/* Etiqueta de cada campo del formulario (nombre, capacidad, etc.) */
+/* Etiqueta de cada campo del formulario */
 .input-label {
     -fx-font-size: 12.5px;
     -fx-font-weight: 600;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
 }
 
 
@@ -316,35 +317,35 @@
 /* Contenedor de cada campo input con borde y sombra */
 .input-wrapper {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #D5C9B5;
+    -fx-border-color: #E9ECEF;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 0 12;
     -fx-alignment: CENTER_LEFT;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.05), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.05), 3, 0, 0, 1);
 }
 /* Campo de texto del formulario */
 .input-field {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-font-size: 13px;
-    -fx-text-fill: #2C3E50;
-    -fx-prompt-text-fill: #95A5A6;
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #6C757D;
 }
 .input-field > .line,
 .input-field > .focused-line,
 .input-field > .unfocused-line { -fx-stroke: transparent; }
 
-/* MFXComboBox del formulario (select nativo) */
+/* MFXComboBox del formulario */
 .input-combo {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-font-size: 13px;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #000000;
     -fx-padding: 0;
 }
 .input-combo > .arrow-button { -fx-background-color: transparent; }
-.input-combo .arrow          { -fx-background-color: #95A5A6; }
+.input-combo .arrow          { -fx-background-color: #6C757D; }
 
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -352,7 +353,7 @@
 ═══════════════════════════════════════════════════════════════════ */
 /* Área inferior del formulario con botones de acción */
 .form-footer {
-    -fx-background-color: #EDE8DF;
+    -fx-background-color: rgba(126,59,237,0.05);
     -fx-background-radius: 0 0 12 12;
 }
 
@@ -360,10 +361,10 @@
 /* ═══════════════════════════════════════════════════════════════════
    BOTONES DEL SISTEMA
 ═══════════════════════════════════════════════════════════════════ */
-/* Botón primario: fondo navy, texto crema */
+/* Botón primario: fondo violeta, texto blanco */
 .btn-raised-primary {
-    -fx-background-color: #2C3E50;
-    -fx-text-fill: #F5F0E8;
+    -fx-background-color: #7E3BED;
+    -fx-text-fill: #FFFFFF;
     -fx-background-radius: 8;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
@@ -371,18 +372,18 @@
     -fx-cursor: hand;
     -fx-graphic-text-gap: 8;
     -fx-alignment: CENTER;
-    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.30), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.40), 6, 0, 0, 2);
 }
-.btn-raised-primary:hover { -fx-background-color: #1a252f; }
+.btn-raised-primary:hover { -fx-background-color: #5D1FBC; }
 
-/* Botón outline primario: borde y texto navy */
+/* Botón outline primario: borde y texto violeta */
 .btn-outline-primary,
 .btn-outline-primary-form {
     -fx-background-color: transparent;
-    -fx-border-color: #2C3E50;
+    -fx-border-color: #7E3BED;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #7E3BED;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-padding: 9 14;
@@ -391,31 +392,46 @@
     -fx-alignment: CENTER;
 }
 .btn-outline-primary:hover,
-.btn-outline-primary-form:hover { -fx-background-color: rgba(44,62,80,0.07); }
+.btn-outline-primary-form:hover { -fx-background-color: rgba(126,59,237,0.07); }
 
-/* Botón outline secundario: crimson */
-.btn-outline-secondary {
-    -fx-background-color: transparent;
-    -fx-border-color: #C0392B;
+/* Botón lima: acento lima para confirmaciones exitosas */
+.btn-lima {
+    -fx-background-color: #C6FF34;
+    -fx-text-fill: #000000;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #C0392B;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+    -fx-padding: 9 14;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
+    -fx-effect: dropshadow(gaussian, rgba(198,255,52,0.40), 6, 0, 0, 2);
+}
+.btn-lima:hover { -fx-background-color: #A3D61A; }
+
+/* Botón outline lima */
+.btn-outline-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #C6FF34;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #000000;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-padding: 9 14;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 7;
 }
-.btn-outline-secondary:hover { -fx-background-color: #FEF0EE; }
+.btn-outline-secondary:hover { -fx-background-color: rgba(198,255,52,0.15); }
 
 /* Botón de peligro: rojo para eliminar registros */
 .btn-outline-danger,
 .btn-outline-danger-form {
     -fx-background-color: transparent;
-    -fx-border-color: #E74C3C;
+    -fx-border-color: #DC3545;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #E74C3C;
+    -fx-text-fill: #DC3545;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
     -fx-padding: 9 14;
@@ -424,9 +440,9 @@
     -fx-alignment: CENTER;
 }
 .btn-outline-danger:hover,
-.btn-outline-danger-form:hover { -fx-background-color: #FEF5F5; }
+.btn-outline-danger-form:hover { -fx-background-color: rgba(220,53,69,0.07); }
 
-/* Estado deshabilitado de botones secundarios */
+/* Estado deshabilitado de botones */
 .btn-outline-secondary:disabled,
 .btn-outline-danger:disabled,
 .btn-outline-danger-form:disabled {
@@ -437,6 +453,6 @@
 /* Mensaje informativo en el formulario */
 .form-mensaje {
     -fx-font-size: 12.5px;
-    -fx-text-fill: #C0392B;
+    -fx-text-fill: #DC3545;
     -fx-font-weight: 500;
 }
