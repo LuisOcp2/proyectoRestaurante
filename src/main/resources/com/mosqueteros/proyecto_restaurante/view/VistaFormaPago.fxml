@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
@@ -15,19 +16,8 @@
 
 <!--
 ╔════════════════════════════════════════════════════════════════════════════╗
-║  VistaFormaPago.fxml  —  CRUD Formas de Pago                          ║
-║                                                                          ║
-║  Estructura basada en el diseño system "The Modern Maître D'"            ║
+║  VistaFormaPago.fxml  —  CRUD Formas de Pago                           ║
 ║  Campos mapeados a tabla: forma_pago (BD restaurante_2026)              ║
-║                                                                          ║
-║  CONTRATO CONTROLADOR (FormaPagoController):                            ║
-║    txtBuscarFormaPago → MFXTextField  búsqueda por nombre/descripción   ║
-║    tblListaFormasPago → MFXTableView<FormaPago>                        ║
-║    lblConteoFormasPago→ Label conteo de resultados                      ║
-║    txtFPNombre        → MFXTextField  nombre                            ║
-║    txtFPDescripcion   → MFXTextField  descripción                       ║
-║    cmbFPEstado        → MFXComboBox<String> estado                      ║
-║    lblMensajeFormaPago→ Label mensajes de validación/resultado          ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 -->
 <StackPane
@@ -37,73 +27,51 @@
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.mosqueteros.proyecto_restaurante.controller.FormaPagoController">
 
-    <!-- Padding exterior: 32px en todos los lados -->
     <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
 
-    <HBox
-        alignment="TOP_LEFT"
-        fillHeight="true"
-        maxHeight="Infinity"
-        maxWidth="Infinity"
-        spacing="24">
+    <HBox alignment="TOP_LEFT" fillHeight="true" maxHeight="Infinity" maxWidth="Infinity" spacing="24">
 
-        <!-- COLUMNA IZQUIERDA  —  Título + Card con tabla -->
+        <!-- COLUMNA IZQUIERDA -->
         <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
 
-            <!-- Encabezado de sección con overline y título -->
             <VBox alignment="CENTER_LEFT" spacing="4">
-                <!-- Label FORMAS DE PAGO overline arriba del título: 12px Bold #7E3BED -->
                 <Label text="FORMAS DE PAGO" styleClass="input-label"/>
-                <!-- Título de sección: 32px Bold #000000 -->
                 <Label styleClass="titulo-texto" text="Formas de Pago"/>
             </VBox>
 
-            <!-- Card principal: VBox styleClass="main-card" (bg #FFFFFF, radius 12, ambient shadow) -->
             <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
 
-                <!-- Barra filtros: background #F2F0F7 (cambio tonal), padding 16 24, SIN border -->
+                <!-- Barra filtros -->
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
                     <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
 
-                    <!-- Campo de búsqueda por nombre o descripción -->
                     <HBox styleClass="search-wrapper" HBox.hgrow="ALWAYS" minWidth="200">
                         <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
-                        <MFXTextField
-                            fx:id="txtBuscarFormaPago"
+                        <MFXTextField fx:id="txtBuscarFormaPago"
                             promptText="Buscar por nombre o descripción..."
-                            styleClass="search-field"
-                            HBox.hgrow="ALWAYS" />
+                            styleClass="search-field" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <Region HBox.hgrow="ALWAYS"/>
 
-                    <!-- Filtro por estado -->
                     <VBox spacing="2">
                         <Label text="Estado" styleClass="input-label"/>
-                        <ComboBox fx:id="cmbFiltroEstado"
-                                  promptText="Todos los estados"
-                                  prefWidth="120"
-                                  styleClass="filtro-combo-nativo"/>
+                        <ComboBox fx:id="cmbFiltroEstado" promptText="Todos los estados"
+                                  prefWidth="120" styleClass="filtro-combo-nativo"/>
                     </VBox>
 
-                    <!-- Botón para ejecutar la búsqueda -->
-                    <MFXButton fx:id="btnBuscarFormaPago"
-                               onAction="#buscarFormaPago"
-                               styleClass="btn-outline-primary"
-                               text="Buscar">
+                    <MFXButton fx:id="btnBuscarFormaPago" onAction="#buscarFormaPago"
+                               styleClass="btn-outline-primary" text="Buscar">
                         <graphic><FontIcon iconLiteral="fas-search" iconSize="12"/></graphic>
                     </MFXButton>
 
-                    <!-- Botón para limpiar los filtros -->
-                    <MFXButton fx:id="btnLimpiarFiltroFormaPago"
-                               onAction="#limpiarFiltros"
-                               styleClass="btn-outline-secondary"
-                               text="Limpiar">
+                    <MFXButton fx:id="btnLimpiarFiltroFormaPago" onAction="#limpiarFiltros"
+                               styleClass="btn-outline-secondary" text="Limpiar">
                         <graphic><FontIcon iconLiteral="fas-sync" iconSize="12"/></graphic>
                     </MFXButton>
                 </HBox>
 
-                <!-- Cabecera de columnas de la tabla -->
+                <!-- Cabecera -->
                 <HBox styleClass="table-header-row">
                     <Label text="ID" styleClass="col-header" prefWidth="60"/>
                     <Label text="Nombre" styleClass="col-header" HBox.hgrow="ALWAYS"/>
@@ -111,63 +79,42 @@
                     <Label text="Estado" styleClass="col-header" prefWidth="80"/>
                 </HBox>
 
-                <!-- Área de tabla con estado vacío -->
+                <!-- Tabla -->
                 <VBox VBox.vgrow="ALWAYS" spacing="0">
-                    <!-- Tabla de formas de pago (TableView poblada desde el controlador) -->
-                    <TableView
-                        fx:id="tblListaFormasPago"
-                        styleClass="mesas-table">
+                    <TableView fx:id="tblListaFormasPago" styleClass="mesas-table">
                         <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
                         <columns>
-                            <!-- ID -->
                             <TableColumn fx:id="colIdFormaPago" prefWidth="60" text="ID" />
-                            <!-- Nombre -->
                             <TableColumn fx:id="colNombre" prefWidth="150" text="NOMBRE" />
-                            <!-- Descripción -->
                             <TableColumn fx:id="colDescripcion" prefWidth="200" text="DESCRIPCIÓN" />
-                            <!-- Estado -->
                             <TableColumn fx:id="colEstado" prefWidth="80" text="ESTADO" />
                         </columns>
                     </TableView>
 
-                    <!-- Estado vacío: imagen + textos informativos -->
-                    <VBox fx:id="boxPlaceholder"
-                          alignment="CENTER"
-                          spacing="16"
-                          visible="true"
-                          managed="true"
-                          styleClass="empty-state">
+                    <VBox fx:id="boxPlaceholder" alignment="CENTER" spacing="16"
+                          visible="true" managed="true" styleClass="empty-state">
                         <FontIcon iconLiteral="fas-credit-card" iconSize="48" styleClass="icon-muted"/>
                         <Label text="No hay formas de pago registradas" styleClass="titulo-texto"/>
                         <Label text="Ajusta los filtros o agrega una nueva forma de pago." styleClass="conteo-label"/>
                     </VBox>
                 </VBox>
 
-                <!-- Footer de la tabla: background #F2F0F7, SIN border superior -->
+                <!-- Footer tabla -->
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
                     <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
-
-                    <!-- Etiqueta con total de formas de pago encontradas -->
-                    <Label fx:id="lblConteoFormasPago"
-                           styleClass="conteo-label"
-                           text="0 formas de pago encontradas"
-                           HBox.hgrow="ALWAYS"/>
-
-                    <!-- Botón para preparar formulario de nueva forma de pago -->
-                    <MFXButton fx:id="btnNuevoFormaPago"
-                               onAction="#prepararNuevoFormaPago"
-                               styleClass="btn-raised-primary"
-                               text="Nueva Forma de Pago">
+                    <Label fx:id="lblConteoFormasPago" styleClass="conteo-label"
+                           text="0 formas de pago encontradas" HBox.hgrow="ALWAYS"/>
+                    <MFXButton fx:id="btnNuevoFormaPago" onAction="#prepararNuevoFormaPago"
+                               styleClass="btn-raised-primary" text="Nueva Forma de Pago">
                         <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
                     </MFXButton>
                 </HBox>
             </VBox>
         </VBox>
 
-        <!-- COLUMNA DERECHA  —  Formulario de detalle / edición -->
+        <!-- COLUMNA DERECHA  —  Formulario -->
         <VBox prefWidth="360" maxWidth="360" minWidth="320" spacing="0">
 
-            <!-- Encabezado del formulario: badge violeta + título -->
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
                 <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
                 <StackPane styleClass="form-header-badge">
@@ -176,15 +123,12 @@
                 <Label styleClass="form-header-titulo" text="Detalle de Forma de Pago"/>
             </HBox>
 
-            <!-- Formulario derecho: ScrollPane con VBox styleClass="main-card" -->
-            <ScrollPane fitToWidth="true" 
-                        fitToHeight="false" 
-                        hbarPolicy="NEVER" 
-                        vbarPolicy="AS_NEEDED"
+            <!-- ScrollPane con import corregido -->
+            <ScrollPane fitToWidth="true" fitToHeight="false"
+                        hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                         styleClass="form-scroll">
                 <VBox styleClass="main-card" spacing="0">
 
-                    <!-- Campos del formulario -->
                     <VBox spacing="18">
                         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
 
@@ -193,10 +137,8 @@
                             <Label text="Nombre" styleClass="input-label"/>
                             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
                                 <FontIcon iconLiteral="fas-university" iconSize="14" styleClass="icon-muted"/>
-                                <MFXTextField fx:id="txtFPNombre"
-                                              promptText="Ej. Efectivo"
-                                              styleClass="input-field"
-                                              HBox.hgrow="ALWAYS"/>
+                                <MFXTextField fx:id="txtFPNombre" promptText="Ej. Efectivo"
+                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
 
@@ -205,10 +147,8 @@
                             <Label text="Descripción" styleClass="input-label"/>
                             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
                                 <FontIcon iconLiteral="fas-sticky-note" iconSize="14" styleClass="icon-muted"/>
-                                <MFXTextField fx:id="txtFPDescripcion"
-                                              promptText="Descripción detallada"
-                                              styleClass="input-field"
-                                              HBox.hgrow="ALWAYS"/>
+                                <MFXTextField fx:id="txtFPDescripcion" promptText="Descripción detallada"
+                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
 
@@ -217,50 +157,33 @@
                             <Label text="Estado" styleClass="input-label"/>
                             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
                                 <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted"/>
-                                <MFXComboBox fx:id="cmbFPEstado"
-                                             promptText="Seleccionar estado"
-                                             styleClass="input-combo"
-                                             HBox.hgrow="ALWAYS"/>
+                                <MFXComboBox fx:id="cmbFPEstado" promptText="Seleccionar estado"
+                                             styleClass="input-combo" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
 
-                        <!-- Etiqueta de mensajes de validación o confirmación -->
-                        <Label fx:id="lblMensajeFormaPago"
-                               styleClass="form-mensaje"
-                               text=""
-                               wrapText="true"
-                               managed="false"
-                               visible="false"/>
+                        <Label fx:id="lblMensajeFormaPago" styleClass="form-mensaje" text=""
+                               wrapText="true" managed="false" visible="false"/>
                     </VBox>
 
-                    <!-- Footer del formulario: background #F2F0F7, SIN border superior -->
+                    <!-- Footer formulario -->
                     <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
                         <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
 
-                        <!-- Botón Guardar Forma de Pago -->
-                        <MFXButton fx:id="btnGuardarFormaPago"
-                                   maxWidth="Infinity"
-                                   onAction="#guardarFormaPago"
-                                   styleClass="btn-raised-primary"
+                        <MFXButton fx:id="btnGuardarFormaPago" maxWidth="Infinity"
+                                   onAction="#guardarFormaPago" styleClass="btn-raised-primary"
                                    text="Guardar Forma de Pago">
                             <graphic><FontIcon iconLiteral="fas-save" iconSize="12"/></graphic>
                         </MFXButton>
 
-                        <!-- Botón Nueva Forma de Pago -->
-                        <MFXButton fx:id="btnNuevoFormaPagoForm"
-                                   maxWidth="Infinity"
-                                   onAction="#prepararNuevoFormaPago"
-                                   styleClass="btn-outline-primary"
+                        <MFXButton fx:id="btnNuevoFormaPagoForm" maxWidth="Infinity"
+                                   onAction="#prepararNuevoFormaPago" styleClass="btn-outline-primary"
                                    text="Nueva Forma de Pago">
                             <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
                         </MFXButton>
 
-                        <!-- Botón Eliminar Forma de Pago -->
-                        <MFXButton fx:id="btnEliminarFormaPagoForm"
-                                   disable="true"
-                                   maxWidth="Infinity"
-                                   onAction="#eliminarFormaPago"
-                                   styleClass="btn-outline-danger"
+                        <MFXButton fx:id="btnEliminarFormaPagoForm" disable="true" maxWidth="Infinity"
+                                   onAction="#eliminarFormaPago" styleClass="btn-outline-danger"
                                    text="Eliminar">
                             <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12"/></graphic>
                         </MFXButton>
