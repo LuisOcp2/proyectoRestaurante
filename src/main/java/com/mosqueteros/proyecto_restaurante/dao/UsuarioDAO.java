@@ -3,6 +3,7 @@ package com.mosqueteros.proyecto_restaurante.dao;
 import com.mosqueteros.proyecto_restaurante.model.Usuario;
 import com.mosqueteros.proyecto_restaurante.model.Perfil;
 import com.mosqueteros.proyecto_restaurante.util.ConexionDB;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  * Contiene todas las operaciones CRUD contra la tabla `usuario`.
  *
  * Patrón usado: DAO estático (métodos estáticos, sin instancia).
- * La conexión se obtiene de {@link Conexion#getConexion()}.
+ * La conexión se obtiene de {@link ConexionDB#obtenerConexion()}.
  */
 public class UsuarioDAO {
 
@@ -30,8 +31,6 @@ public class UsuarioDAO {
      */
     public static List<Usuario> listarTodos() throws SQLException {
         List<Usuario> lista = new ArrayList<>();
-
-        // Consulta con JOIN para obtener el nombre del perfil
         String sql = """
                 SELECT u.usu_id, u.usu_nombre, u.usu_apellido, u.usu_direccion,
                        u.usu_telefono, u.usu_correo, u.perf_id,
@@ -45,9 +44,8 @@ public class UsuarioDAO {
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
-                lista.add(mapearFila(rs)); // convierte cada fila en un objeto Usuario
+                lista.add(mapearFila(rs));
             }
         }
         return lista;
@@ -71,8 +69,6 @@ public class UsuarioDAO {
                                                   String perfil,
                                                   String estado) throws SQLException {
         List<Usuario> lista = new ArrayList<>();
-
-        // Construcción dinámica del WHERE con parámetros opcionales
         StringBuilder sql = new StringBuilder("""
                 SELECT u.usu_id, u.usu_nombre, u.usu_apellido, u.usu_direccion,
                        u.usu_telefono, u.usu_correo, u.perf_id,
@@ -85,37 +81,26 @@ public class UsuarioDAO {
 
         List<Object> params = new ArrayList<>();
 
-        // Filtro por texto libre (nombre, apellido o login)
         if (busqueda != null && !busqueda.isBlank()) {
             sql.append(" AND (u.usu_nombre LIKE ? OR u.usu_apellido LIKE ? OR u.usu_login LIKE ?)");
             String like = "%" + busqueda.trim() + "%";
-            params.add(like);
-            params.add(like);
-            params.add(like);
+            params.add(like); params.add(like); params.add(like);
         }
-
-        // Filtro por perfil
         if (perfil != null && !perfil.isBlank()) {
             sql.append(" AND p.perf_descripcion = ?");
             params.add(perfil);
         }
-
-        // Filtro por estado
         if (estado != null && !estado.isBlank()) {
             sql.append(" AND u.usu_estado = ?");
             params.add(estado);
         }
-
         sql.append(" ORDER BY u.usu_nombre, u.usu_apellido");
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql.toString())) {
-
-            // Asignar parámetros dinámicamente
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     lista.add(mapearFila(rs));
@@ -131,7 +116,7 @@ public class UsuarioDAO {
 
     /**
      * Inserta un nuevo usuario en la BD.
-     * El campo usupass debe llegar ya hasheado desde el controlador.
+     * Hashea la contraseña con BCrypt antes de guardar.
      *
      * @param usuario Objeto {@link Usuario} con los datos a insertar
      * @return true si la inserción fue exitosa
@@ -145,26 +130,24 @@ public class UsuarioDAO {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
+        // Hashear la contraseña antes de guardar
+        String passHash = BCrypt.hashpw(usuario.getUsupass(), BCrypt.gensalt());
+
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, usuario.getUsunombre());
             ps.setString(2, usuario.getUsuapellido());
             ps.setString(3, usuario.getUsudireccion());
             ps.setString(4, usuario.getUsutelefono());
             ps.setString(5, usuario.getUsucorreo());
-
-            // perfid puede ser null si el usuario no tiene perfil asignado
             if (usuario.getPerfid() != null) {
                 ps.setLong(6, usuario.getPerfid());
             } else {
                 ps.setNull(6, Types.BIGINT);
             }
-
             ps.setString(7, usuario.getUsulogin());
-            ps.setString(8, usuario.getUsupass()); // ya debe venir hasheado
+            ps.setString(8, passHash); // hash bcrypt
             ps.setString(9, usuario.getUsuestado());
-
             return ps.executeUpdate() > 0;
         }
     }
@@ -175,7 +158,8 @@ public class UsuarioDAO {
 
     /**
      * Actualiza los datos de un usuario existente.
-     * Si usupass está vacío, NO actualiza la contraseña (conserva la actual).
+     * Si usupass NO está vacío, hashea y actualiza la contraseña.
+     * Si usupass está vacío, conserva la contraseña actual.
      *
      * @param usuario Objeto {@link Usuario} con los datos actualizados
      * @return true si la actualización fue exitosa
@@ -184,7 +168,6 @@ public class UsuarioDAO {
     public static boolean actualizar(Usuario usuario) throws SQLException {
         boolean actualizarPass = usuario.getUsupass() != null && !usuario.getUsupass().isBlank();
 
-        // SQL condicional: incluye o excluye usupass según corresponda
         String sql = actualizarPass
                 ? """
                   UPDATE usuario SET
@@ -201,32 +184,27 @@ public class UsuarioDAO {
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, usuario.getUsunombre());
             ps.setString(2, usuario.getUsuapellido());
             ps.setString(3, usuario.getUsudireccion());
             ps.setString(4, usuario.getUsutelefono());
             ps.setString(5, usuario.getUsucorreo());
-
             if (usuario.getPerfid() != null) {
                 ps.setLong(6, usuario.getPerfid());
             } else {
                 ps.setNull(6, Types.BIGINT);
             }
-
             ps.setString(7, usuario.getUsulogin());
-
             if (actualizarPass) {
-                // Con contraseña: índices 8=pass, 9=estado, 10=id
-                ps.setString(8, usuario.getUsupass());
+                // Hashear antes de guardar
+                String passHash = BCrypt.hashpw(usuario.getUsupass(), BCrypt.gensalt());
+                ps.setString(8, passHash);
                 ps.setString(9, usuario.getUsuestado());
                 ps.setLong(10, usuario.getUsuid());
             } else {
-                // Sin contraseña: índices 8=estado, 9=id
                 ps.setString(8, usuario.getUsuestado());
                 ps.setLong(9, usuario.getUsuid());
             }
-
             return ps.executeUpdate() > 0;
         }
     }
@@ -237,8 +215,6 @@ public class UsuarioDAO {
 
     /**
      * Elimina un usuario por su ID (usuid).
-     * Precaución: verificar relaciones FK antes de eliminar
-     * (pedido, recibocaja, inventariolog, etc.)
      *
      * @param usuid ID del usuario a eliminar
      * @return true si la eliminación fue exitosa
@@ -246,22 +222,20 @@ public class UsuarioDAO {
      */
     public static boolean eliminar(long usuid) throws SQLException {
         String sql = "DELETE FROM usuario WHERE usu_id = ?";
-
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setLong(1, usuid);
             return ps.executeUpdate() > 0;
         }
     }
 
     // ─────────────────────────────────────────────────────────────
-    // UTIL: obtener lista de perfiles disponibles para ComboBox
+    // UTIL: listar perfiles disponibles para ComboBox
     // ─────────────────────────────────────────────────────────────
 
     /**
      * Carga todos los perfiles activos desde la tabla `perfil`.
-     * Se usa para poblar el ComboBox de perfiles en el formulario.
+     * Se usa para poblar el ComboBox de perfiles en el formulario de usuarios.
      *
      * @return Lista de objetos {@link Perfil}
      * @throws SQLException si hay error de BD
@@ -273,26 +247,34 @@ public class UsuarioDAO {
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
                 Perfil p = new Perfil();
-                p.setPerfId(rs.getLong("perf_id"));
-                p.setPerfDescripcion(rs.getString("perf_descripcion"));
+                p.setPerfid(rs.getLong("perf_id"));              // usa setter correcto
+                p.setPerfdescripcion(rs.getString("perf_descripcion")); // usa setter correcto
                 perfiles.add(p);
             }
         }
         return perfiles;
     }
 
+    // ─────────────────────────────────────────────────────────────
+    // AUTENTICAR: login con verificación bcrypt
+    // ─────────────────────────────────────────────────────────────
+
     /**
-     * Busca un usuario por login para proceso de autenticación.
-     * La verificación de contraseña se hace comparando hashes.
+     * Autentica un usuario verificando login + contraseña con BCrypt.
      *
-     * @param login Login del usuario
-     * @return Objeto {@link Usuario} si existe y está activo, null en caso contrario
+     * Flujo:
+     *   1. Busca el usuario activo por login en BD
+     *   2. Verifica que el password ingresado coincide con el hash almacenado
+     *   3. Retorna el objeto Usuario si todo es correcto, null si no
+     *
+     * @param login    Login ingresado en el formulario
+     * @param password Contraseña en texto plano ingresada en el formulario
+     * @return Objeto {@link Usuario} autenticado, o null si credenciales inválidas
      * @throws SQLException si hay error de BD
      */
-    public static Usuario autenticar(String login) throws SQLException {
+    public static Usuario autenticar(String login, String password) throws SQLException {
         String sql = """
                 SELECT u.usu_id, u.usu_nombre, u.usu_apellido, u.usu_direccion,
                        u.usu_telefono, u.usu_correo, u.perf_id,
@@ -305,14 +287,18 @@ public class UsuarioDAO {
 
         try (Connection con = ConexionDB.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, login);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return mapearFila(rs);
+                    String hashAlmacenado = rs.getString("usu_pass");
+                    // Verificar contraseña con BCrypt
+                    if (BCrypt.checkpw(password, hashAlmacenado)) {
+                        return mapearFila(rs);
+                    }
                 }
             }
         }
+        // Credenciales inválidas o usuario inactivo
         return null;
     }
 
@@ -336,11 +322,8 @@ public class UsuarioDAO {
         u.setUsudireccion(rs.getString("usu_direccion"));
         u.setUsutelefono(rs.getString("usu_telefono"));
         u.setUsucorreo(rs.getString("usu_correo"));
-
-        // perf_id puede ser null (LEFT JOIN)
         long perfid = rs.getLong("perf_id");
         u.setPerfid(rs.wasNull() ? null : perfid);
-
         u.setPerfilDescripcion(rs.getString("perfilDescripcion"));
         u.setUsulogin(rs.getString("usu_login"));
         u.setUsupass(rs.getString("usu_pass"));
