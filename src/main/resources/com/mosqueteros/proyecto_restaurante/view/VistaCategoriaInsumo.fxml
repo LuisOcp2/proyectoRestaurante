@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import javafx.scene.control.ComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
@@ -12,21 +14,26 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <!--
-╔════════════════════════════════════════════════════════════════════════════╗
-║  VistaCategoriaInsumo.fxml  —  CRUD Categorías de Insumo                ║
-║                                                                          ║
-║  Estructura basada en el diseño system "The Modern Maître D'"            ║
-║  Campos mapeados a tabla: categoria_insumo (BD restaurante_2026)        ║
-║                                                                          ║
-║  CONTRATO CONTROLADOR (CategoriaInsumoController):                      ║
-║    txtBuscarCategoria → MFXTextField  búsqueda por nombre/descripción    ║
-║    tblListaCategorias → MFXTableView<CategoriaInsumo>                    ║
-║    lblConteoCategorias→ Label conteo de resultados                       ║
-║    txtCatNombre       → MFXTextField  nombre                             ║
-║    txtCatDescripcion  → MFXTextField  descripción                        ║
-║    cmbCatEstado       → MFXComboBox<String> estado                       ║
-║    lblMensajeCategoria→ Label mensajes de validación/resultado           ║
-╚════════════════════════════════════════════════════════════════════════════╝
+  VistaCategoriaInsumo.fxml — CRUD Categorías de Insumo
+
+  CAMBIO: Se reemplazó MFXTableView (incompatible con PropertyValueFactory/cellValueFactory en FXML)
+  por TableView estándar de JavaFX. Las columnas usan PropertyValueFactory que enlaza con
+  los JavaFX Properties del modelo CategoriaInsumo.
+
+  CONTRATO CONTROLADOR (CategoriaInsumoController):
+    txtBuscarCategoria  → MFXTextField  búsqueda por nombre/descripción
+    cmbFiltroEstado     → ComboBox<String> filtro de estado
+    tblListaCategorias  → TableView<CategoriaInsumo>
+    colId               → TableColumn ID
+    colNombre           → TableColumn Nombre
+    colDescripcion      → TableColumn Descripción
+    colEstado           → TableColumn Estado
+    lblConteoCategorias → Label conteo de resultados
+    boxPlaceholder      → VBox estado vacío
+    txtCatNombre        → MFXTextField nombre
+    txtCatDescripcion   → MFXTextField descripción
+    cmbCatEstado        → ComboBox<String> estado
+    lblMensajeCategoria → Label mensajes de validación
 -->
 <StackPane
     styleClass="root-container"
@@ -35,35 +42,30 @@
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.mosqueteros.proyecto_restaurante.controller.CategoriaInsumoController">
 
-    <!-- Padding exterior: 32px en todos los lados -->
     <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
 
-    <HBox
-        alignment="TOP_LEFT"
-        fillHeight="true"
-        maxHeight="Infinity"
-        maxWidth="Infinity"
-        spacing="24">
+    <HBox alignment="TOP_LEFT" fillHeight="true"
+          maxHeight="Infinity" maxWidth="Infinity" spacing="24">
 
-        <!-- COLUMNA IZQUIERDA  —  Título + Card con tabla -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- COLUMNA IZQUIERDA: Título + Card con tabla                      -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
         <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
 
-            <!-- Encabezado de sección con overline y título -->
+            <!-- Encabezado de sección -->
             <VBox alignment="CENTER_LEFT" spacing="4">
-                <!-- Label CATEGORÍAS DE INSUMO overline arriba del título: 12px Bold #7E3BED -->
                 <Label text="CATEGORÍAS DE INSUMO" styleClass="input-label"/>
-                <!-- Título de sección: 32px Bold #000000 -->
                 <Label styleClass="titulo-texto" text="Categorías de Insumo"/>
             </VBox>
 
-            <!-- Card principal: VBox styleClass="main-card" (bg #FFFFFF, radius 12, ambient shadow) -->
+            <!-- Card principal -->
             <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
 
-                <!-- Barra filtros: background #F2F0F7 (cambio tonal), padding 16 24, SIN border -->
+                <!-- Barra de filtros -->
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
                     <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
 
-                    <!-- Campo de búsqueda por nombre o descripción -->
+                    <!-- Campo de búsqueda libre -->
                     <HBox styleClass="search-wrapper" HBox.hgrow="ALWAYS" minWidth="200">
                         <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
                         <MFXTextField
@@ -75,84 +77,67 @@
 
                     <Region HBox.hgrow="ALWAYS"/>
 
-                    <!-- Filtro por estado -->
+                    <!-- Filtro por estado (ComboBox nativo JavaFX) -->
                     <VBox spacing="2">
                         <Label text="Estado" styleClass="input-label"/>
                         <ComboBox fx:id="cmbFiltroEstado"
                                   promptText="Todos los estados"
-                                  prefWidth="120"
+                                  prefWidth="140"
                                   styleClass="filtro-combo-nativo"/>
                     </VBox>
 
-                    <!-- Botón para ejecutar la búsqueda -->
-                    <MFXButton fx:id="btnBuscarCategoria"
-                               onAction="#buscarCategoria"
-                               styleClass="btn-outline-primary"
-                               text="Buscar">
-                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12"/></graphic>
-                    </MFXButton>
+                    <!-- Botón Buscar -->
+                    <Button fx:id="btnBuscarCategoria"
+                            onAction="#buscarCategoria"
+                            styleClass="btn-outline-primary"
+                            text="Buscar"/>
 
-                    <!-- Botón para limpiar los filtros -->
-                    <MFXButton fx:id="btnLimpiarFiltroCategoria"
-                               onAction="#limpiarFiltros"
-                               styleClass="btn-outline-secondary"
-                               text="Limpiar">
-                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12"/></graphic>
-                    </MFXButton>
+                    <!-- Botón Limpiar filtros -->
+                    <Button fx:id="btnLimpiarFiltroCategoria"
+                            onAction="#limpiarFiltros"
+                            styleClass="btn-outline-secondary"
+                            text="Limpiar"/>
                 </HBox>
 
-                <!-- Cabecera de columnas de la tabla -->
-                <HBox styleClass="table-header-row">
-                    <Label text="ID" styleClass="col-header" prefWidth="60"/>
-                    <Label text="Nombre" styleClass="col-header" HBox.hgrow="ALWAYS"/>
-                    <Label text="Descripción" styleClass="col-header" HBox.hgrow="ALWAYS"/>
-                    <Label text="Estado" styleClass="col-header" prefWidth="80"/>
-                </HBox>
-
-                <!-- Área de tabla con estado vacío -->
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- TABLA ESTÁNDAR JavaFX (PropertyValueFactory compatible) -->
+                <!-- ═══════════════════════════════════════════════════════ -->
                 <VBox VBox.vgrow="ALWAYS" spacing="0">
-                    <!-- Tabla de categorías de insumo (MFXTableView poblada desde el controlador) -->
-                    <io.github.palexdev.materialfx.controls.MFXTableView
-                        fx:id="tblListaCategorias"
-                        styleClass="mesas-table">
-
-                        <!-- Definición de columnas -->
+                    <TableView fx:id="tblListaCategorias"
+                               styleClass="mesas-table"
+                               VBox.vgrow="ALWAYS">
                         <columns>
-                            <!-- ID -->
-                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="0" 
-                                                                                   text="ID">
+                            <!-- Columna ID -->
+                            <TableColumn fx:id="colId" text="ID" prefWidth="60">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="idCategoriaInsumo"/>
                                 </cellValueFactory>
-                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
-                            
-                            <!-- Nombre -->
-                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="1" 
-                                                                                   text="NOMBRE">
+                            </TableColumn>
+
+                            <!-- Columna Nombre -->
+                            <TableColumn fx:id="colNombre" text="NOMBRE">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="nombre"/>
                                 </cellValueFactory>
-                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
-                            
-                            <!-- Descripción -->
-                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="2" 
-                                                                                   text="DESCRIPCIÓN">
+                            </TableColumn>
+
+                            <!-- Columna Descripción -->
+                            <TableColumn fx:id="colDescripcion" text="DESCRIPCIÓN">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="descripcion"/>
                                 </cellValueFactory>
-                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
-                            
-                            <!-- Estado -->
-                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="3" 
-                                                                                   text="ESTADO">
+                            </TableColumn>
+
+                            <!-- Columna Estado -->
+                            <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="90">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="estado"/>
                                 </cellValueFactory>
-                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
+                            </TableColumn>
                         </columns>
-                    </io.github.palexdev.materialfx.controls.MFXTableView>
+                    </TableView>
 
-                    <!-- Estado vacío: imagen + textos informativos -->
+                    <!-- Estado vacío cuando no hay datos -->
                     <VBox fx:id="boxPlaceholder"
                           alignment="CENTER"
                           spacing="16"
@@ -165,31 +150,27 @@
                     </VBox>
                 </VBox>
 
-                <!-- Footer de la tabla: background #F2F0F7, SIN border superior -->
+                <!-- Footer de tabla -->
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
                     <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
-
-                    <!-- Etiqueta con total de categorías encontradas -->
                     <Label fx:id="lblConteoCategorias"
                            styleClass="conteo-label"
                            text="0 categorías encontradas"
                            HBox.hgrow="ALWAYS"/>
-
-                    <!-- Botón para preparar formulario de nueva categoría -->
-                    <MFXButton fx:id="btnNuevoCategoria"
-                               onAction="#prepararNuevoCategoria"
-                               styleClass="btn-raised-primary"
-                               text="Nueva Categoría">
-                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
-                    </MFXButton>
+                    <Button fx:id="btnNuevoCategoria"
+                            onAction="#prepararNuevoCategoria"
+                            styleClass="btn-raised-primary"
+                            text="Nueva Categoría"/>
                 </HBox>
             </VBox>
         </VBox>
 
-        <!-- COLUMNA DERECHA  —  Formulario de detalle / edición -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- COLUMNA DERECHA: Formulario de detalle / edición               -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
         <VBox prefWidth="360" maxWidth="360" minWidth="320" spacing="0">
 
-            <!-- Encabezado del formulario: badge violeta + título -->
+            <!-- Encabezado del formulario -->
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
                 <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
                 <StackPane styleClass="form-header-badge">
@@ -198,21 +179,21 @@
                 <Label styleClass="form-header-titulo" text="Detalle de Categoría"/>
             </HBox>
 
-            <!-- Formulario derecho: ScrollPane con VBox styleClass="main-card" -->
-            <ScrollPane fitToWidth="true" 
-                        fitToHeight="false" 
-                        hbarPolicy="NEVER" 
-                        vbarPolicy="AS_NEEDED"
-                        styleClass="form-scroll">
+            <!-- Formulario con ScrollPane -->
+            <javafx.scene.control.ScrollPane
+                fitToWidth="true"
+                fitToHeight="false"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                styleClass="form-scroll">
                 <VBox styleClass="main-card" spacing="0">
 
-                    <!-- Campos del formulario -->
                     <VBox spacing="18">
                         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
 
                         <!-- Campo: Nombre -->
                         <VBox spacing="6">
-                            <Label text="Nombre" styleClass="input-label"/>
+                            <Label text="Nombre *" styleClass="input-label"/>
                             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
                                 <FontIcon iconLiteral="fas-tag" iconSize="14" styleClass="icon-muted"/>
                                 <MFXTextField fx:id="txtCatNombre"
@@ -239,14 +220,14 @@
                             <Label text="Estado" styleClass="input-label"/>
                             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
                                 <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted"/>
-                                <MFXComboBox fx:id="cmbCatEstado"
-                                             promptText="Seleccionar estado"
-                                             styleClass="input-combo"
-                                             HBox.hgrow="ALWAYS"/>
+                                <ComboBox fx:id="cmbCatEstado"
+                                          promptText="Seleccionar estado"
+                                          styleClass="input-combo"
+                                          HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
 
-                        <!-- Etiqueta de mensajes de validación o confirmación -->
+                        <!-- Mensaje de validación / confirmación -->
                         <Label fx:id="lblMensajeCategoria"
                                styleClass="form-mensaje"
                                text=""
@@ -255,40 +236,31 @@
                                visible="false"/>
                     </VBox>
 
-                    <!-- Footer del formulario: background #F2F0F7, SIN border superior -->
+                    <!-- Footer del formulario -->
                     <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
                         <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
 
-                        <!-- Botón Guardar Categoría -->
-                        <MFXButton fx:id="btnGuardarCategoria"
-                                   maxWidth="Infinity"
-                                   onAction="#guardarCategoria"
-                                   styleClass="btn-raised-primary"
-                                   text="Guardar Categoría">
-                            <graphic><FontIcon iconLiteral="fas-save" iconSize="12"/></graphic>
-                        </MFXButton>
+                        <Button fx:id="btnGuardarCategoria"
+                                maxWidth="Infinity"
+                                onAction="#guardarCategoria"
+                                styleClass="btn-raised-primary"
+                                text="Guardar Categoría"/>
 
-                        <!-- Botón Nueva Categoría -->
-                        <MFXButton fx:id="btnNuevoCategoriaForm"
-                                   maxWidth="Infinity"
-                                   onAction="#prepararNuevoCategoria"
-                                   styleClass="btn-outline-primary"
-                                   text="Nueva Categoría">
-                            <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
-                        </MFXButton>
+                        <Button fx:id="btnNuevoCategoriaForm"
+                                maxWidth="Infinity"
+                                onAction="#prepararNuevoCategoria"
+                                styleClass="btn-outline-primary"
+                                text="Nueva Categoría"/>
 
-                        <!-- Botón Eliminar Categoría -->
-                        <MFXButton fx:id="btnEliminarCategoriaForm"
-                                   disable="true"
-                                   maxWidth="Infinity"
-                                   onAction="#eliminarCategoria"
-                                   styleClass="btn-outline-danger"
-                                   text="Eliminar">
-                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12"/></graphic>
-                        </MFXButton>
+                        <Button fx:id="btnEliminarCategoriaForm"
+                                disable="true"
+                                maxWidth="Infinity"
+                                onAction="#eliminarCategoria"
+                                styleClass="btn-outline-danger"
+                                text="Eliminar"/>
                     </HBox>
                 </VBox>
-            </ScrollPane>
+            </javafx.scene.control.ScrollPane>
         </VBox>
     </HBox>
 </StackPane>
