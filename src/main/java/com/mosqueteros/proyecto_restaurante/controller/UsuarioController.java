@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -24,14 +26,16 @@ import java.util.ResourceBundle;
  * Controlador JavaFX para la vista VistaUsuarios.fxml.
  * Gestiona el CRUD completo de usuarios del sistema.
  *
+ * CORRECCIÓN: tblListaUsuarios era MFXTableView pero el FXML usa
+ * TableView estándar de JavaFX → se cambió a TableView<Usuario>.
+ *
  * Flujo principal:
  *   1. initialize() → carga perfiles y lista inicial de usuarios
  *   2. buscarUsuario() → aplica filtros y recarga la tabla
  *   3. limpiarFiltros() → resetea combos y recarga todos
- *   4. seleccionarUsuario() → rellena el formulario al hacer click en tabla
- *   5. guardarUsuario() → INSERT o UPDATE según modo actual
- *   6. eliminarUsuario() → DELETE con confirmación
- *   7. prepararNuevoUsuario() → limpia formulario para nuevo registro
+ *   4. guardarUsuario() → INSERT o UPDATE según modo actual
+ *   5. eliminarUsuario() → DELETE con confirmación
+ *   6. prepararNuevoUsuario() → limpia formulario para nuevo registro
  */
 public class UsuarioController implements Initializable {
 
@@ -43,17 +47,23 @@ public class UsuarioController implements Initializable {
     /** ComboBox nativo para filtrar por estado */
     @FXML private ComboBox<String> cmbFiltroEstado;
 
-    // ─── Tabla / estado vacío ────────────────────────────────────
+    // ─── Tabla ───────────────────────────────────────────────────
+    /**
+     * Tabla estándar JavaFX — DEBE ser TableView, NO MFXTableView,
+     * porque el FXML usa <TableView> (import javafx.scene.control.TableView).
+     */
+    @FXML private TableView<Usuario> tblListaUsuarios;
+    @FXML private TableColumn<Usuario, Integer> colIdUsuario;
+    @FXML private TableColumn<Usuario, String>  colNombre;
+    @FXML private TableColumn<Usuario, String>  colApellido;
+    @FXML private TableColumn<Usuario, String>  colLogin;
+    @FXML private TableColumn<Usuario, String>  colCorreo;
+    @FXML private TableColumn<Usuario, String>  colPerfil;
+    @FXML private TableColumn<Usuario, String>  colEstado;
     /** Etiqueta que muestra el total de usuarios encontrados */
     @FXML private Label lblConteoUsuarios;
     /** Contenedor del estado vacío (sin resultados) */
     @FXML private VBox boxPlaceholder;
-
-    // ─── Botones de acción (footer tabla) ────────────────────────
-    /** Botón editar (se habilita al seleccionar fila) */
-    @FXML private MFXButton btnEditarUsuario;
-    /** Botón eliminar footer tabla (se habilita al seleccionar fila) */
-    @FXML private MFXButton btnEliminarUsuario;
 
     // ─── Formulario de detalle ───────────────────────────────────
     /** Campo nombre del usuario */
@@ -88,30 +98,38 @@ public class UsuarioController implements Initializable {
     private List<Perfil> listaPerfiles;
 
     // ─────────────────────────────────────────────────────────────
-    // INITIALIZE: se ejecuta al cargar el FXML
+    // INITIALIZE
     // ─────────────────────────────────────────────────────────────
 
     /**
-     * Inicializa la vista: carga perfiles, combos de filtro
-     * y la lista completa de usuarios al arrancar.
+     * Inicializa la vista: enlaza tabla, carga perfiles y lista inicial.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Enlazar la tabla a la lista observable
+        tblListaUsuarios.setItems(listaUsuarios);
+        // Listener de selección en tabla → carga en formulario
+        tblListaUsuarios.getSelectionModel().selectedItemProperty().addListener(
+                (obs, anterior, seleccionado) -> {
+                    if (seleccionado != null) {
+                        usuarioSeleccionado = seleccionado;
+                        cargarUsuarioEnFormulario(seleccionado);
+                    }
+                }
+        );
         configurarCombosFormulario();
         configurarCombosFiltroPerfil();
         cargarTodosLosUsuarios();
     }
 
     // ─────────────────────────────────────────────────────────────
-    // Configurar ComboBox del formulario
+    // Configurar ComboBoxes
     // ─────────────────────────────────────────────────────────────
 
     /**
      * Pobla los combos del formulario con los valores disponibles.
-     * Carga perfiles desde BD y define los estados fijos.
      */
     private void configurarCombosFormulario() {
-        // Cargar perfiles desde BD para el combo del formulario
         try {
             listaPerfiles = UsuarioDAO.listarPerfiles();
             ObservableList<String> nombresPerfiles = FXCollections.observableArrayList();
@@ -122,21 +140,15 @@ public class UsuarioController implements Initializable {
         } catch (SQLException e) {
             mostrarMensaje("Error cargando perfiles: " + e.getMessage(), true);
         }
-
-        // Estados fijos de la BD: Activo o Inactivo
         cmbUsuEstado.setItems(FXCollections.observableArrayList("Activo", "Inactivo"));
-        cmbUsuEstado.setValue("Activo"); // valor por defecto
+        cmbUsuEstado.setValue("Activo");
     }
 
     /**
-     * Pobla el ComboBox de filtro de perfil (nativo JavaFX).
-     * Agrega opción vacía para mostrar todos.
+     * Pobla los combos de filtro de la barra superior.
      */
     private void configurarCombosFiltroPerfil() {
-        // Filtro de estado fijo
         cmbFiltroEstado.setItems(FXCollections.observableArrayList("", "Activo", "Inactivo"));
-
-        // Filtro de perfil: depende de los perfiles ya cargados
         ObservableList<String> opcionesPerfil = FXCollections.observableArrayList("");
         if (listaPerfiles != null) {
             for (Perfil p : listaPerfiles) {
@@ -152,14 +164,12 @@ public class UsuarioController implements Initializable {
 
     /**
      * Ejecuta la búsqueda aplicando los filtros activos.
-     * Llamado por el botón "Buscar" del FXML.
      */
     @FXML
     private void buscarUsuario() {
         String texto  = txtBuscarUsuario.getText();
         String perfil = cmbFiltroPerfil.getValue();
         String estado = cmbFiltroEstado.getValue();
-
         try {
             List<Usuario> resultado = UsuarioDAO.buscarConFiltros(texto, perfil, estado);
             refrescarTabla(resultado);
@@ -170,7 +180,6 @@ public class UsuarioController implements Initializable {
 
     /**
      * Limpia todos los filtros y recarga la lista completa.
-     * Llamado por el botón "Limpiar" del FXML.
      */
     @FXML
     private void limpiarFiltros() {
@@ -181,9 +190,7 @@ public class UsuarioController implements Initializable {
         limpiarFormulario();
     }
 
-    /**
-     * Carga todos los usuarios sin filtros al inicio o al limpiar.
-     */
+    /** Carga todos los usuarios sin filtros. */
     private void cargarTodosLosUsuarios() {
         try {
             List<Usuario> todos = UsuarioDAO.listarTodos();
@@ -194,44 +201,31 @@ public class UsuarioController implements Initializable {
     }
 
     /**
-     * Actualiza la lista observable y el estado del placeholder.
-     * Muestra el estado vacío si no hay resultados.
-     *
-     * @param usuarios Lista de usuarios a mostrar
+     * Actualiza la lista observable, placeholder y conteo.
      */
     private void refrescarTabla(List<Usuario> usuarios) {
         listaUsuarios.setAll(usuarios);
         boolean hayDatos = !usuarios.isEmpty();
-
-        // Mostrar/ocultar placeholder de "sin datos"
         boxPlaceholder.setVisible(!hayDatos);
         boxPlaceholder.setManaged(!hayDatos);
-
-        // Actualizar conteo en el footer
-        lblConteoUsuarios.setText(usuarios.size() + " usuario" + (usuarios.size() == 1 ? "" : "s") + " encontrado" + (usuarios.size() == 1 ? "" : "s"));
+        lblConteoUsuarios.setText(usuarios.size() + " usuario"
+                + (usuarios.size() == 1 ? "" : "s") + " encontrado"
+                + (usuarios.size() == 1 ? "" : "s"));
     }
 
     // ─────────────────────────────────────────────────────────────
-    // GUARDAR: INSERT o UPDATE según modo
+    // GUARDAR
     // ─────────────────────────────────────────────────────────────
 
     /**
-     * Guarda el usuario del formulario.
-     * Si {@code usuarioSeleccionado} es null → INSERT (nuevo).
-     * Si {@code usuarioSeleccionado} tiene ID → UPDATE (edición).
-     * Llamado por los botones "Guardar Usuario" del FXML.
+     * Guarda el usuario del formulario (INSERT o UPDATE).
      */
     @FXML
     private void guardarUsuario() {
-        // Validar campos obligatorios antes de intentar guardar
         if (!validarFormulario()) return;
-
-        // Construir el objeto Usuario desde los campos del formulario
         Usuario u = construirUsuarioDesdeFormulario();
-
         try {
             if (usuarioSeleccionado == null) {
-                // Modo INSERT: nuevo usuario
                 boolean ok = UsuarioDAO.insertar(u);
                 if (ok) {
                     mostrarMensaje("✓ Usuario creado correctamente.", false);
@@ -239,7 +233,6 @@ public class UsuarioController implements Initializable {
                     cargarTodosLosUsuarios();
                 }
             } else {
-                // Modo UPDATE: editar usuario existente
                 u.setUsuid(usuarioSeleccionado.getUsuid());
                 boolean ok = UsuarioDAO.actualizar(u);
                 if (ok) {
@@ -249,7 +242,6 @@ public class UsuarioController implements Initializable {
                 }
             }
         } catch (SQLException e) {
-            // Detectar errores comunes de BD (duplicados)
             String msg = e.getMessage();
             if (msg != null && msg.contains("ukusulogin")) {
                 mostrarMensaje("⚠ El login ya existe. Use uno diferente.", true);
@@ -262,54 +254,11 @@ public class UsuarioController implements Initializable {
     }
 
     // ─────────────────────────────────────────────────────────────
-    // EDITAR: cargar datos del usuario seleccionado en formulario
-    // ─────────────────────────────────────────────────────────────
-
-    /**
-     * Carga los datos del usuario seleccionado en el formulario.
-     * Llamado por el botón "Editar" del FXML.
-     * En implementación real se obtiene el usuario de la fila seleccionada.
-     */
-    @FXML
-    private void editarUsuario() {
-        if (usuarioSeleccionado == null) {
-            mostrarMensaje("⚠ Selecciona un usuario de la tabla primero.", true);
-            return;
-        }
-        cargarUsuarioEnFormulario(usuarioSeleccionado);
-    }
-
-    /**
-     * Rellena todos los campos del formulario con los datos del usuario.
-     * La contraseña NO se precarga por seguridad.
-     *
-     * @param u Usuario cuyos datos se cargarán en el formulario
-     */
-    private void cargarUsuarioEnFormulario(Usuario u) {
-        txtUsuNombre.setText(u.getUsunombre());
-        txtUsuApellido.setText(u.getUsuapellido());
-        txtUsuLogin.setText(u.getUsulogin());
-        txtUsuCorreo.setText(u.getUsucorreo());
-        txtUsuTelefono.setText(u.getUsutelefono());
-        txtUsuDireccion.setText(u.getUsudireccion());
-        txtUsuPass.clear(); // no se precarga la contraseña por seguridad
-        cmbUsuPerfil.setValue(u.getPerfilDescripcion());
-        cmbUsuEstado.setValue(u.getUsuestado());
-
-        // Habilitar botones de eliminar
-        btnEliminarUsuario.setDisable(false);
-        btnEliminarUsuarioForm.setDisable(false);
-        ocultarMensaje();
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // ELIMINAR usuario
+    // ELIMINAR
     // ─────────────────────────────────────────────────────────────
 
     /**
      * Elimina el usuario seleccionado.
-     * Llamado por los botones "Eliminar" del FXML.
-     * Precaución: verifica FK antes de eliminar desde el DAO.
      */
     @FXML
     private void eliminarUsuario() {
@@ -317,7 +266,6 @@ public class UsuarioController implements Initializable {
             mostrarMensaje("⚠ Selecciona un usuario para eliminar.", true);
             return;
         }
-
         try {
             boolean ok = UsuarioDAO.eliminar(usuarioSeleccionado.getUsuid());
             if (ok) {
@@ -326,19 +274,16 @@ public class UsuarioController implements Initializable {
                 cargarTodosLosUsuarios();
             }
         } catch (SQLException e) {
-            // Error FK: el usuario tiene registros relacionados
             mostrarMensaje("⚠ No se puede eliminar: el usuario tiene registros activos.", true);
         }
     }
 
     // ─────────────────────────────────────────────────────────────
-    // NUEVO: preparar formulario vacío
+    // NUEVO
     // ─────────────────────────────────────────────────────────────
 
     /**
-     * Prepara el formulario para registrar un nuevo usuario.
-     * Limpia todos los campos y reinicia el modo a INSERT.
-     * Llamado por los botones "Nuevo Usuario" del FXML.
+     * Prepara el formulario para un nuevo usuario (modo INSERT).
      */
     @FXML
     private void prepararNuevoUsuario() {
@@ -346,15 +291,10 @@ public class UsuarioController implements Initializable {
     }
 
     // ─────────────────────────────────────────────────────────────
-    // UTILIDADES internas del controlador
+    // UTILIDADES
     // ─────────────────────────────────────────────────────────────
 
-    /**
-     * Construye un objeto {@link Usuario} leyendo los valores del formulario.
-     * La contraseña se almacena tal cual (debe hashearse antes de llamar esto).
-     *
-     * @return Objeto {@link Usuario} con los datos del formulario
-     */
+    /** Construye un objeto Usuario leyendo los campos del formulario. */
     private Usuario construirUsuarioDesdeFormulario() {
         Usuario u = new Usuario();
         u.setUsunombre(txtUsuNombre.getText().trim());
@@ -363,10 +303,8 @@ public class UsuarioController implements Initializable {
         u.setUsucorreo(txtUsuCorreo.getText().trim());
         u.setUsutelefono(txtUsuTelefono.getText().trim());
         u.setUsudireccion(txtUsuDireccion.getText().trim());
-        u.setUsupass(txtUsuPass.getPassword().trim()); // se pasa el texto plano (hash en capa real)
+        u.setUsupass(txtUsuPass.getPassword().trim());
         u.setUsuestado(cmbUsuEstado.getValue() != null ? cmbUsuEstado.getValue() : "Activo");
-
-        // Buscar el perfid correspondiente al nombre de perfil seleccionado
         String perfilSelec = cmbUsuPerfil.getValue();
         if (perfilSelec != null && listaPerfiles != null) {
             for (Perfil p : listaPerfiles) {
@@ -380,46 +318,48 @@ public class UsuarioController implements Initializable {
         return u;
     }
 
-    /**
-     * Valida que los campos obligatorios del formulario no estén vacíos.
-     *
-     * @return true si el formulario es válido, false si hay errores
-     */
+    /** Valida que los campos obligatorios no estén vacíos. */
     private boolean validarFormulario() {
         if (txtUsuNombre.getText().isBlank()) {
-            mostrarMensaje("⚠ El nombre es obligatorio.", true);
-            return false;
+            mostrarMensaje("⚠ El nombre es obligatorio.", true); return false;
         }
         if (txtUsuApellido.getText().isBlank()) {
-            mostrarMensaje("⚠ El apellido es obligatorio.", true);
-            return false;
+            mostrarMensaje("⚠ El apellido es obligatorio.", true); return false;
         }
         if (txtUsuLogin.getText().isBlank()) {
-            mostrarMensaje("⚠ El login es obligatorio.", true);
-            return false;
+            mostrarMensaje("⚠ El login es obligatorio.", true); return false;
         }
         if (txtUsuCorreo.getText().isBlank()) {
-            mostrarMensaje("⚠ El correo es obligatorio.", true);
-            return false;
+            mostrarMensaje("⚠ El correo es obligatorio.", true); return false;
         }
-        // La contraseña solo es obligatoria si es un usuario nuevo
         if (usuarioSeleccionado == null && txtUsuPass.getPassword().isBlank()) {
-            mostrarMensaje("⚠ La contraseña es obligatoria para nuevos usuarios.", true);
-            return false;
+            mostrarMensaje("⚠ La contraseña es obligatoria para nuevos usuarios.", true); return false;
         }
         if (cmbUsuEstado.getValue() == null) {
-            mostrarMensaje("⚠ Selecciona un estado.", true);
-            return false;
+            mostrarMensaje("⚠ Selecciona un estado.", true); return false;
         }
         return true;
     }
 
-    /**
-     * Limpia todos los campos del formulario y resetea el modo a INSERT.
-     * También deshabilita los botones de edición/eliminación.
-     */
+    /** Carga los datos del usuario en el formulario para edición. */
+    private void cargarUsuarioEnFormulario(Usuario u) {
+        txtUsuNombre.setText(u.getUsunombre());
+        txtUsuApellido.setText(u.getUsuapellido());
+        txtUsuLogin.setText(u.getUsulogin());
+        txtUsuCorreo.setText(u.getUsucorreo());
+        txtUsuTelefono.setText(u.getUsutelefono());
+        txtUsuDireccion.setText(u.getUsudireccion());
+        txtUsuPass.clear();
+        cmbUsuPerfil.setValue(u.getPerfilDescripcion());
+        cmbUsuEstado.setValue(u.getUsuestado());
+        btnEliminarUsuarioForm.setDisable(false);
+        ocultarMensaje();
+    }
+
+    /** Limpia todos los campos y reinicia el modo a INSERT. */
     private void limpiarFormulario() {
         usuarioSeleccionado = null;
+        tblListaUsuarios.getSelectionModel().clearSelection();
         txtUsuNombre.clear();
         txtUsuApellido.clear();
         txtUsuLogin.clear();
@@ -429,18 +369,11 @@ public class UsuarioController implements Initializable {
         txtUsuPass.clear();
         cmbUsuPerfil.setValue(null);
         cmbUsuEstado.setValue("Activo");
-        btnEditarUsuario.setDisable(true);
-        btnEliminarUsuario.setDisable(true);
         btnEliminarUsuarioForm.setDisable(true);
         ocultarMensaje();
     }
 
-    /**
-     * Muestra un mensaje informativo o de error al usuario.
-     *
-     * @param texto  Texto del mensaje a mostrar
-     * @param esError true si es error (rojo), false si es éxito (verde)
-     */
+    /** Muestra mensaje de éxito (verde) o error (rojo). */
     private void mostrarMensaje(String texto, boolean esError) {
         lblMensajeUsuario.setText(texto);
         lblMensajeUsuario.setStyle(esError
@@ -450,9 +383,7 @@ public class UsuarioController implements Initializable {
         lblMensajeUsuario.setManaged(true);
     }
 
-    /**
-     * Oculta la etiqueta de mensajes del formulario.
-     */
+    /** Oculta la etiqueta de mensajes. */
     private void ocultarMensaje() {
         lblMensajeUsuario.setText("");
         lblMensajeUsuario.setVisible(false);
