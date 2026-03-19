@@ -303,7 +303,7 @@ public class UsuarioController implements Initializable {
         u.setUsucorreo(txtUsuCorreo.getText().trim());
         u.setUsutelefono(txtUsuTelefono.getText().trim());
         u.setUsudireccion(txtUsuDireccion.getText().trim());
-        u.setUsupass(txtUsuPass.getPassword().trim());
+        u.setUsupass(txtUsuPass.getText().trim());
         u.setUsuestado(cmbUsuEstado.getValue() != null ? cmbUsuEstado.getValue() : "Activo");
         String perfilSelec = cmbUsuPerfil.getValue();
         if (perfilSelec != null && listaPerfiles != null) {
@@ -332,7 +332,7 @@ public class UsuarioController implements Initializable {
         if (txtUsuCorreo.getText().isBlank()) {
             mostrarMensaje("⚠ El correo es obligatorio.", true); return false;
         }
-        if (usuarioSeleccionado == null && txtUsuPass.getPassword().isBlank()) {
+        if (usuarioSeleccionado == null && txtUsuPass.getText().isBlank()) {
             mostrarMensaje("⚠ La contraseña es obligatoria para nuevos usuarios.", true); return false;
         }
         if (cmbUsuEstado.getValue() == null) {

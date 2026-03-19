@@ -277,7 +277,7 @@ public class MainController {
         wrapper.setVisible(true);
         wrapper.setOpacity(0);
         wrapper.toFront();
-        new FadeTransition(Duration.millis(200), wrapper) {{ setFromValue(0); setToValue(1); play(); }};
+       // new FadeTransition(Duration.millis(200), wrapper) {{ setFromValue(0); setToValue(1); play(); }};
     }
 
     /** Oculta el spinner con fade-out. */

@@ -58,9 +58,8 @@
 
 /* Campo de búsqueda global en la topbar */
 .topbar-search-wrapper {
-    -fx-background-color: rgba(255, 255, 255, 0.15);
+    /*-fx-background-color: rgba(255, 255, 255, 0.15);*/
     -fx-background-radius: 10;
-    -fx-border-color: rgba(255, 255, 255, 0.35);
     -fx-border-radius: 10;
     -fx-border-width: 1.2;
     -fx-padding: 4 14 4 10;
@@ -80,7 +79,7 @@
 .topbar-search {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #000;
     -fx-prompt-text-fill: rgba(255, 255, 255, 0.60);
     -fx-font-size: 13;
     -fx-pref-height: 30;
@@ -96,20 +95,25 @@
 
 /* Círculo avatar del usuario logueado */
 .avatar-circle {
-    -fx-background-color: rgba(198, 255, 52, 0.30);
+    /* Usamos el color lima casi sólido para que destaque fuerte contra el violeta */
+    -fx-background-color: rgba(198, 255, 52, 0.90);
     -fx-background-radius: 9999;
-    -fx-pref-width: 38;
-    -fx-pref-height: 38;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
     -fx-alignment: CENTER;
-    -fx-border-color: rgba(255, 255, 255, 0.55);
+    
+    /* Borde blanco más grueso y completamente opaco */
+    -fx-border-color: #FFFFFF;
     -fx-border-radius: 9999;
-    -fx-border-width: 1.8;
-    -fx-effect: dropshadow(gaussian, rgba(198, 255, 52, 0.30), 6, 0.10, 0, 1);
+    -fx-border-width: 2.5; 
+    
+    /* Sombra más pronunciada (mayor radio de difuminado y opacidad) */
+    -fx-effect: dropshadow(gaussian, rgba(198, 255, 52, 0.65), 12, 0.30, 0, 2);
 }
 .avatar-initials {
     -fx-text-fill: #000000;
-    -fx-font-size: 13.5;
-    -fx-font-weight: bold;
+    -fx-font-size: 15; /* Ligeramente más grande */
+    -fx-font-weight: 900; /* Extra negrita para que se lea mejor en el círculo brillante */
 }
 
 /* Nombre del usuario logueado */
@@ -157,12 +161,26 @@
    SIDEBAR — blanco limpio, 260px
    ══════════════════════════════════════════════════════════════ */
 /* Panel lateral de navegación */
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR — Efecto Premium de Capas
+   ══════════════════════════════════════════════════════════════ */
 .sidebar {
-    -fx-background-color: #FFFFFF;
+    /* Fondo con ligero toque de transparencia para modernidad */
+    -fx-background-color: rgba(255, 255, 255, 0.92); 
     -fx-pref-width: 260;
     -fx-min-width: 260;
     -fx-max-width: 260;
-    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.12), 16, 0.08, 6, 0);
+
+    /* EFECTO DE CAPAS:
+       - Opacidad 0.25 para que el violeta se note con intención.
+       - Spread 0.15 para darle "cuerpo" a la sombra.
+       - Offset X de 6 para proyectar la sombra hacia la derecha.
+    */
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.25), 25, 0.15, 6, 0);
+    
+    /* Añadimos un borde derecho casi invisible que ayuda a la definición */
+    -fx-border-color: transparent rgba(126, 59, 237, 0.1) transparent transparent;
+    -fx-border-width: 0 1 0 0;
 }
 
 /* Cabecera del sidebar con logo */
@@ -171,21 +189,22 @@
     -fx-padding: 22 16 18 16;
     -fx-alignment: CENTER;
     -fx-spacing: 6;
-    -fx-border-color: transparent transparent #E9ECEF transparent;
+   -fx-border-color: transparent transparent #E9ECEF transparent;
     -fx-border-width: 0 0 1.5 0;
+   
 }
 /* Círculo del logo en el sidebar */
 .sidebar-logo-circle {
     -fx-background-color: rgba(126, 59, 237, 0.12);
     -fx-background-radius: 9999;
-    -fx-pref-width: 48;
-    -fx-pref-height: 48;
+    -fx-pref-width: 10;
+    -fx-pref-height: 10;
     -fx-alignment: CENTER;
     -fx-border-color: rgba(126, 59, 237, 0.28);
     -fx-border-radius: 9999;
     -fx-border-width: 1.5;
 }
-.sidebar-logo-icon { -fx-font-size: 24; }
+.sidebar-logo-icon { -fx-font-size: 30; }
 
 /* Nombre del restaurante en el sidebar */
 .sidebar-brand-name {

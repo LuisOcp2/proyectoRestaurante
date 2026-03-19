@@ -13,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import com.mosqueteros.proyecto_restaurante.util.Alertas;
 import javafx.scene.Node;
@@ -35,11 +34,11 @@ public class MesaController {
     @FXML private TableColumn<Mesa, String>  colEstado;
 
     // ── Formulario ────────────────────────────────────────────────────────────
-    @FXML private MFXTextField          txtMesNumero;
-    @FXML private MFXTextField          txtMesCapacidad;
-    @FXML private MFXComboBox<Sede>     cmbSedeMesa;
-    @FXML private MFXComboBox<AreaMesa> cmbAreaMesa;
-    @FXML private MFXComboBox<String>   cmbEstadoMesa;
+    @FXML private MFXTextField       txtMesNumero;
+    @FXML private MFXTextField       txtMesCapacidad;
+    @FXML private ComboBox<Sede>     cmbSedeMesa;
+    @FXML private ComboBox<AreaMesa> cmbAreaMesa;
+    @FXML private ComboBox<String>   cmbEstadoMesa;
 
     // ── Botones ───────────────────────────────────────────────────────────────
     @FXML private MFXButton   btnGuardarMesa;
@@ -136,22 +135,25 @@ public class MesaController {
         txtMesNumero.setText(mesa.getNumero());
         txtMesCapacidad.setText(String.valueOf(mesa.getCapacidad()));
 
+        // Uso de API nativa: getSelectionModel().select()
         for (Sede s : cmbSedeMesa.getItems()) {
             if (s.getId() == mesa.getSedeId()) {
-                cmbSedeMesa.selectItem(s);
+                cmbSedeMesa.getSelectionModel().select(s);
                 break;
             }
         }
 
+        // Uso de API nativa: getSelectionModel().select()
         for (AreaMesa a : cmbAreaMesa.getItems()) {
             if (a.getId() == mesa.getAreaId()) {
-                cmbAreaMesa.selectItem(a);
+                cmbAreaMesa.getSelectionModel().select(a);
                 break;
             }
         }
 
+        // Uso de API nativa: getSelectionModel().select()
         if (cmbEstadoMesa != null) {
-            cmbEstadoMesa.selectItem(mesa.getEstado());
+            cmbEstadoMesa.getSelectionModel().select(mesa.getEstado());
         }
 
         btnEliminarMesaForm.setDisable(false);
@@ -174,11 +176,11 @@ public class MesaController {
     @FXML
     private void guardarMesa() {
         try {
-            String   numero   = txtMesNumero.getText().trim();
+            String   numero    = txtMesNumero.getText().trim();
             int      capacidad = Integer.parseInt(txtMesCapacidad.getText().trim());
-            Sede     sede     = cmbSedeMesa.getValue();
-            AreaMesa area     = cmbAreaMesa.getValue();
-            String   estado   = (cmbEstadoMesa != null) ? cmbEstadoMesa.getValue() : "Disponible";
+            Sede     sede      = cmbSedeMesa.getValue();
+            AreaMesa area      = cmbAreaMesa.getValue();
+            String   estado    = (cmbEstadoMesa != null) ? cmbEstadoMesa.getValue() : "Disponible";
 
             if (numero.isEmpty() || sede == null) {
                 mostrarAlerta("Error", "El número y la sede son obligatorios.");
@@ -209,20 +211,10 @@ public class MesaController {
         }
     }
 
-    /**
-     * Verifica si la mesa tiene pedidos activos, solicita confirmación
-     * y cambia el estado de la mesa a Inactiva.
-     *
-     * CORRECCIÓN: se reemplazó el Alert nativo de JavaFX por Alertas.confirmar()
-     * pasando el nodoOrigen. Esto evita que la ventana principal se minimice,
-     * ya que el diálogo queda vinculado al Stage padre mediante initOwner()
-     * y Modality.APPLICATION_MODAL.
-     */
     @FXML
     private void desactivarMesa() {
         if (mesaSeleccionada == null) return;
 
-        // Verificar si la mesa tiene pedidos activos antes de intentar inactivar
         if (MesaDAO.tienePedidosActivos(mesaSeleccionada.getId())) {
             mostrarAlerta("Acción denegada", "No se puede inactivar una mesa con pedidos activos.");
             return;
@@ -242,7 +234,6 @@ public class MesaController {
         );
     }
 
-    /** Carga los datos de la mesa seleccionada en el formulario para editar. */
     @FXML
     private void editarMesa() {
         if (mesaSeleccionada != null) {
@@ -250,19 +241,16 @@ public class MesaController {
         }
     }
 
-    /** Delega al método desactivarMesa (botón eliminar del formulario). */
     @FXML
     private void eliminarMesa() {
         desactivarMesa();
     }
 
-    /** Ejecuta el filtro manualmente (botón buscar). */
     @FXML
     private void buscarMesa() {
         filtrar();
     }
 
-    /** Limpia los filtros y recarga la lista completa. */
     @FXML
     private void limpiarFiltrosMesa() {
         cmbFiltroSede.getSelectionModel().clearSelection();
@@ -271,7 +259,6 @@ public class MesaController {
         filtrar();
     }
 
-    /** Filtra las mesas según sede, área, estado y texto de búsqueda. */
     private void filtrar() {
         Sede     sedeFiltro = cmbFiltroSede.getValue();
         AreaMesa areaFiltro = cmbFiltroArea.getValue();
@@ -289,11 +276,6 @@ public class MesaController {
         mesasObservable.setAll(listaFiltrada);
     }
 
-    /**
-     * Determina el tipo de alerta según el título y delega a la clase Alertas,
-     * pasando siempre un nodo origen para que el Stage del diálogo quede
-     * vinculado al Stage padre (evita minimización).
-     */
     private void mostrarAlerta(String titulo, String contenido) {
         Node nodo = obtenerNodoParaAlerta();
         String t  = titulo.toLowerCase();
@@ -309,16 +291,10 @@ public class MesaController {
         }
     }
 
-    /**
-     * Obtiene el primer nodo @FXML disponible para localizar el Stage padre.
-     * El orden de prioridad va de lo más específico (botón de acción) a lo
-     * más general (tabla, campo de texto). Alertas usa este nodo para
-     * llamar a initOwner() y evitar la minimización de la ventana.
-     */
     private Node obtenerNodoParaAlerta() {
         if (btnGuardarMesa != null) return btnGuardarMesa;
         if (tblListaMesas  != null) return tblListaMesas;
         if (txtMesNumero   != null) return txtMesNumero;
-        return null; // Alertas busca el Stage activo como fallback
+        return null; 
     }
 }

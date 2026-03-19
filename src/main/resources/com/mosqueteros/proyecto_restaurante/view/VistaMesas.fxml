@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -17,328 +16,168 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<!--
-╔══════════════════════════════════════════════════════════════════════════╗
-║  VistaMesas.fxml  v4  —  Layout fiel a Google Stitch                    ║
-║                                                                          ║
-║  CAMBIO CLAVE v4:                                                        ║
-║  Los 3 MFXComboBox de la BARRA DE FILTROS fueron reemplazados por        ║
-║  ComboBox nativos de JavaFX.                                             ║
-║                                                                          ║
-║  ¿Por qué?                                                               ║
-║  MFXComboBox aplica su tema interno (MFXComboBoxTheme.DEFAULT_STYLE)     ║
-║  con mayor especificidad que cualquier CSS externo. Esto produce:        ║
-║    - Borde azul al seleccionar (imposible de anular limpiamente)         ║
-║    - Altura mínima propia que desalinea la fila de filtros               ║
-║    - Fondo blanco inconsistente al tener valor seleccionado              ║
-║  ComboBox nativo es 100% controlable desde CSS externo.                  ║
-║                                                                          ║
-║  Los MFXComboBox del formulario lateral se conservan porque:             ║
-║    - Están declarados como MFXComboBox<String> en el controlador         ║
-║    - No causan problemas de altura (están en wrappers con prefHeight)    ║
-║                                                                          ║
-║  CONTRATO CONTROLADOR:                                                   ║
-║    cmbFiltroSede/Area/Estado → ahora son ComboBox<String> (nativo)       ║
-║    La API es idéntica: getValue(), getItems(), setValue(null)            ║
-╚══════════════════════════════════════════════════════════════════════════╝
--->
-<StackPane
-    styleClass="root-container"
-    stylesheets="@../styles/vista-mesas.css"
-    xmlns="http://javafx.com/javafx/21"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.mosqueteros.proyecto_restaurante.controller.MesaController">
+<StackPane styleClass="root-container" stylesheets="@../styles/vista-mesas.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mosqueteros.proyecto_restaurante.controller.MesaController">
 
-    <padding><Insets bottom="28" left="28" right="28" top="28" /></padding>
+    <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
 
-    <HBox
-        alignment="TOP_LEFT"
-        fillHeight="true"
-        maxHeight="Infinity"
-        maxWidth="Infinity"
-        spacing="24">
+    <HBox alignment="TOP_LEFT" fillHeight="true" maxHeight="Infinity" maxWidth="Infinity" spacing="32">
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             COLUMNA IZQUIERDA  —  Título + Card con tabla
-        ════════════════════════════════════════════════════════════════ -->
-        <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
+        <VBox maxHeight="Infinity" spacing="24" HBox.hgrow="ALWAYS">
 
             <HBox alignment="CENTER_LEFT" spacing="12">
-                <FontIcon iconLiteral="fas-chair" iconSize="24" styleClass="header-icon" />
+                <FontIcon iconLiteral="fas-chair" iconSize="28" styleClass="header-icon" />
                 <Label styleClass="titulo-texto" text="Mesas" />
             </HBox>
 
-            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+            <VBox maxHeight="Infinity" spacing="0" styleClass="main-card" VBox.vgrow="ALWAYS">
 
-                <!-- ══════════════════════════════════════════════════════
-                     BARRA DE FILTROS
-                     
-                     Los 3 selectores son ComboBox NATIVOS de JavaFX.
-                     Todos los controles tienen prefHeight="36" para
-                     alineación perfecta en runtime sin dependencia de MFX.
-                ══════════════════════════════════════════════════════════ -->
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <padding><Insets top="16" right="20" bottom="16" left="20" /></padding>
+                <HBox alignment="CENTER_LEFT" spacing="16">
+                    <padding><Insets bottom="16" left="24" right="24" top="16" /></padding>
 
-                    <!-- Buscador con ícono -->
-                    <HBox styleClass="search-wrapper"
-                          prefHeight="36"
-                          HBox.hgrow="ALWAYS" minWidth="180" maxWidth="360">
-                        <FontIcon iconLiteral="fas-search" iconSize="13" styleClass="icon-muted" />
-                        <MFXTextField
-                            fx:id="txtBuscarMesa"
-                            promptText="Buscar por nombre..."
-                            styleClass="search-field"
-                            HBox.hgrow="ALWAYS" />
+                    <HBox maxWidth="400" minWidth="200" prefHeight="40" styleClass="search-wrapper" HBox.hgrow="ALWAYS">
+                        <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted" />
+                        <MFXTextField fx:id="txtBuscarMesa" promptText="Buscar mesa..." styleClass="search-field" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <!--
-                        ComboBox nativo: estilo controlado 100% desde CSS.
-                        .filtro-combo-nativo → clase dedicada para no
-                        interferir con otros combos de la aplicación.
-                    -->
-                    <ComboBox fx:id="cmbFiltroSede"
-                              promptText="Sede"
-                              prefWidth="120" minWidth="100"
-                              prefHeight="36"
-                              styleClass="filtro-combo-nativo" />
+                    <ComboBox fx:id="cmbFiltroSede" prefHeight="40" prefWidth="130" promptText="Sede" styleClass="filtro-combo-nativo" />
+                    <ComboBox fx:id="cmbFiltroArea" prefHeight="40" prefWidth="130" promptText="Área" styleClass="filtro-combo-nativo" />
+                    <ComboBox fx:id="cmbFiltroEstado" prefHeight="40" prefWidth="130" promptText="Estado" styleClass="filtro-combo-nativo" />
 
-                    <ComboBox fx:id="cmbFiltroArea"
-                              promptText="Área"
-                              prefWidth="120" minWidth="100"
-                              prefHeight="36"
-                              styleClass="filtro-combo-nativo" />
-
-                    <ComboBox fx:id="cmbFiltroEstado"
-                              promptText="Estado"
-                              prefWidth="130" minWidth="110"
-                              prefHeight="36"
-                              styleClass="filtro-combo-nativo" />
-
-                    <MFXButton fx:id="btnBuscarMesa"
-                               onAction="#buscarMesa"
-                               styleClass="btn-buscar-raised"
-                               text="Buscar">
-                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12" iconColor="white"/></graphic>
+                    <MFXButton fx:id="btnBuscarMesa" onAction="#buscarMesa" styleClass="btn-buscar-raised" text="Buscar">
+                        <graphic><FontIcon iconColor="white" iconLiteral="fas-search" iconSize="13" /></graphic>
                     </MFXButton>
 
-                    <MFXButton fx:id="btnLimpiarFiltro"
-                               onAction="#limpiarFiltrosMesa"
-                               styleClass="btn-limpiar-flat"
-                               text="Limpiar">
-                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12" styleClass="icon-muted"/></graphic>
-                    </MFXButton>
+                    <MFXButton fx:id="btnLimpiarFiltro" onAction="#limpiarFiltrosMesa" styleClass="btn-limpiar-flat" text="Limpiar" />
                 </HBox>
 
-                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+                <Region maxHeight="1" minHeight="1" styleClass="divider" />
 
-                <!-- Cabecera de columnas custom -->
                 <HBox styleClass="table-header-row">
-                    <Label text="ID"        styleClass="col-header" prefWidth="60"  minWidth="60"  />
-                    <Label text="Sede"      styleClass="col-header" prefWidth="140" HBox.hgrow="ALWAYS" />
-                    <Label text="Área"      styleClass="col-header" prefWidth="120" HBox.hgrow="ALWAYS" />
-                    <Label text="Nº Mesa"   styleClass="col-header" prefWidth="90"  minWidth="90"  />
-                    <Label text="Capacidad" styleClass="col-header" prefWidth="100" minWidth="100" />
-                    <Label text="Estado"    styleClass="col-header" prefWidth="90"  minWidth="90"  />
+                    <Label minWidth="60" prefWidth="60" styleClass="col-header" text="ID" />
+                    <Label prefWidth="140" styleClass="col-header" text="Sede" HBox.hgrow="ALWAYS" />
+                    <Label prefWidth="120" styleClass="col-header" text="Área" HBox.hgrow="ALWAYS" />
+                    <Label minWidth="90" prefWidth="90" styleClass="col-header" text="Nº Mesa" />
+                    <Label minWidth="100" prefWidth="100" styleClass="col-header" text="Capacidad" />
+                    <Label minWidth="90" prefWidth="90" styleClass="col-header" text="Estado" />
                 </HBox>
 
-                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+                <Region maxHeight="1" minHeight="1" styleClass="divider" />
 
-                <!-- Tabla + Empty state apilados -->
                 <StackPane VBox.vgrow="ALWAYS">
-
-                    <TableView
-                        fx:id="tblListaMesas"
-                        styleClass="mesas-table">
-                        <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                    <TableView fx:id="tblListaMesas" styleClass="mesas-table">
+                        <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
                         <columns>
-                            <TableColumn fx:id="colNumero" prefWidth="60"  minWidth="60"  />
+                            <TableColumn fx:id="colNumero" minWidth="60" prefWidth="60" />
                             <TableColumn fx:id="colSede" prefWidth="140" />
                             <TableColumn fx:id="colArea" prefWidth="120" />
-                            <TableColumn fx:id="colCapacidad" prefWidth="100" minWidth="100" />
-                            <TableColumn fx:id="colEstado" prefWidth="90"  minWidth="90"  />
+                            <TableColumn fx:id="colCapacidad" minWidth="100" prefWidth="100" />
+                            <TableColumn fx:id="colEstado" minWidth="90" prefWidth="90" />
                         </columns>
                     </TableView>
 
-                    <VBox fx:id="boxPlaceholder"
-                          alignment="CENTER"
-                          spacing="10"
-                          visible="true"
-                          managed="true"
-                          styleClass="empty-state-container">
-
-                        <ImageView
-                            fx:id="imgEmptyState"
-                            fitHeight="180"
-                            fitWidth="230"
-                            preserveRatio="true"
-                            smooth="true">
-                            <image>
-                                <Image url="@../images/empty_state_mesas.png" />
-                            </image>
+                    <VBox fx:id="boxPlaceholder" alignment="CENTER" managed="true" spacing="16" styleClass="empty-state-container" visible="true">
+                        <ImageView fx:id="imgEmptyState" fitHeight="180" fitWidth="230" preserveRatio="true" smooth="true">
+                            <image><Image url="@../images/empty_state_mesas.png" /></image>
                         </ImageView>
-
-                        <Label styleClass="placeholder-text"
-                               text="No hay mesas registradas" />
-                        <Label styleClass="placeholder-subtext"
-                               text="Ajusta los filtros o agrega una nueva mesa." />
+                        <Label styleClass="placeholder-text" text="No hay mesas registradas" />
                     </VBox>
-
                 </StackPane>
 
-                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+                <Region maxHeight="1" minHeight="1" styleClass="divider" />
 
-                <!-- Footer de la card -->
-                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="footer-bar">
-                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
-
-                    <Label fx:id="lblConteoMesas"
-                           styleClass="conteo-label"
-                           text="0 mesas encontradas"
-                           HBox.hgrow="ALWAYS" />
-
-                    <MFXButton fx:id="btnNuevoMesa"
-                               onAction="#prepararNuevaMesa"
-                               styleClass="btn-outline-primary"
-                               text="Nueva Mesa">
-                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="11" iconColor="#5457CD"/></graphic>
+                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="footer-bar">
+                    <padding><Insets bottom="16" left="24" right="24" top="16" /></padding>
+                    <Label fx:id="lblConteoMesas" styleClass="conteo-label" text="0 mesas encontradas" HBox.hgrow="ALWAYS" />
+                    
+                    <MFXButton fx:id="btnNuevoMesa" onAction="#prepararNuevaMesa" styleClass="btn-outline-primary" text="Nueva Mesa">
+                        <graphic><FontIcon iconColor="black" iconLiteral="fas-plus" iconSize="12" /></graphic>
                     </MFXButton>
-
-                    <MFXButton fx:id="btnEditarMesa"
-                               disable="true"
-                               onAction="#editarMesa"
-                               styleClass="btn-outline-secondary"
-                               text="Editar">
-                        <graphic><FontIcon iconLiteral="fas-pencil-alt" iconSize="11" iconColor="#4F46E5"/></graphic>
+                    <MFXButton fx:id="btnEditarMesa" disable="true" onAction="#editarMesa" styleClass="btn-outline-secondary" text="Editar">
+                        <graphic><FontIcon iconLiteral="fas-pencil-alt" iconSize="12" /></graphic>
                     </MFXButton>
-
-                    <MFXButton fx:id="btnEliminarMesa"
-                               disable="true"
-                               onAction="#eliminarMesa"
-                               styleClass="btn-outline-danger"
-                               text="Eliminar">
-                        <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="11" iconColor="#EF4444"/></graphic>
+                    <MFXButton fx:id="btnEliminarMesa" disable="true" onAction="#eliminarMesa" styleClass="btn-outline-danger" text="Eliminar">
+                        <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12" /></graphic>
                     </MFXButton>
                 </HBox>
 
             </VBox>
         </VBox>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             COLUMNA DERECHA  —  Formulario
-        ════════════════════════════════════════════════════════════════ -->
-        <ScrollPane
-            fitToWidth="true"
-            fitToHeight="false"
-            hbarPolicy="NEVER"
-            vbarPolicy="AS_NEEDED"
-            styleClass="form-scroll"
-            HBox.hgrow="NEVER"
-            minWidth="320"
-            maxWidth="340">
+        <ScrollPane fitToHeight="false" fitToWidth="true" hbarPolicy="NEVER" maxWidth="360" minWidth="340" styleClass="form-scroll" vbarPolicy="AS_NEEDED" HBox.hgrow="NEVER">
 
-            <VBox spacing="0" styleClass="main-card" minWidth="318">
+            <VBox spacing="0" styleClass="main-card">
 
-                <!-- Header del formulario -->
-                <HBox alignment="CENTER_LEFT" spacing="12">
-                    <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                <HBox alignment="CENTER_LEFT" spacing="16">
+                    <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
                     <StackPane styleClass="form-header-badge">
-                        <FontIcon iconLiteral="fas-sliders-h" iconSize="15"
-                                  styleClass="form-header-badge-icon" />
+                        <FontIcon iconLiteral="fas-plus" iconSize="16" styleClass="form-header-badge-icon" />
                     </StackPane>
                     <Label styleClass="form-header-titulo" text="Detalle de Mesa" />
                 </HBox>
 
-                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+                <Region maxHeight="1" minHeight="1" styleClass="divider" />
 
-                <!-- Campos -->
-                <VBox spacing="16">
-                    <padding><Insets top="22" right="22" bottom="22" left="22" /></padding>
+                <VBox spacing="16.0">
+                    <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
 
-                    <VBox spacing="5">
+                    <VBox spacing="8">
                         <Label styleClass="input-label" text="Número de mesa" />
-                        <HBox alignment="CENTER_LEFT" spacing="10"
-                              prefHeight="44" styleClass="input-wrapper">
-                            <FontIcon iconLiteral="fas-chair" iconSize="14" styleClass="icon-muted" />
-                            <MFXTextField fx:id="txtMesNumero" promptText="Ej. A-01"
-                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="12" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-hashtag" iconSize="16" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtMesNumero" floatMode="DISABLED" prefHeight="30.0" prefWidth="226.0" promptText="Ej. A-01" styleClass="input-field" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </VBox>
 
-                    <VBox spacing="5">
-                        <Label styleClass="input-label" text="Capacidad (personas)" />
-                        <HBox alignment="CENTER_LEFT" spacing="10"
-                              prefHeight="44" styleClass="input-wrapper">
-                            <FontIcon iconLiteral="fas-user-friends" iconSize="14" styleClass="icon-muted" />
-                            <MFXTextField fx:id="txtMesCapacidad" promptText="Ej. 4"
-                                styleClass="input-field" HBox.hgrow="ALWAYS" />
+                    <VBox spacing="8">
+                        <Label styleClass="input-label" text="Capacidad" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="12" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-user-friends" iconSize="16" styleClass="icon-muted" />
+                            <MFXTextField fx:id="txtMesCapacidad" floatMode="DISABLED" prefHeight="30.0" prefWidth="219.0" promptText="Personas" styleClass="input-field" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </VBox>
 
-                    <VBox spacing="5">
-                        <Label styleClass="input-label" text="Área de mesa" />
-                        <HBox alignment="CENTER_LEFT" spacing="10"
-                              prefHeight="44" styleClass="input-wrapper">
-                            <FontIcon iconLiteral="fas-vector-square" iconSize="14" styleClass="icon-muted" />
-                            <MFXComboBox fx:id="cmbAreaMesa" promptText="Seleccionar área"
-                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                    <VBox spacing="8">
+                        <Label styleClass="input-label" text="Área asignada" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="12" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-vector-square" iconSize="16" styleClass="icon-muted" />
+                            <ComboBox fx:id="cmbAreaMesa" maxWidth="Infinity" promptText="Seleccionar área" styleClass="input-combo" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </VBox>
 
-                    <VBox spacing="5">
+                    <VBox spacing="8">
                         <Label styleClass="input-label" text="Sede" />
-                        <HBox alignment="CENTER_LEFT" spacing="10"
-                              prefHeight="44" styleClass="input-wrapper">
-                            <FontIcon iconLiteral="fas-building" iconSize="14" styleClass="icon-muted" />
-                            <MFXComboBox fx:id="cmbSedeMesa" promptText="Seleccionar sede"
-                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="12" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-building" iconSize="16" styleClass="icon-muted" />
+                            <ComboBox fx:id="cmbSedeMesa" maxWidth="Infinity" promptText="Seleccionar sede" styleClass="input-combo" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </VBox>
 
-                    <VBox spacing="5">
+                    <VBox spacing="8">
                         <Label styleClass="input-label" text="Estado" />
-                        <HBox alignment="CENTER_LEFT" spacing="10"
-                              prefHeight="44" styleClass="input-wrapper">
-                            <FontIcon iconLiteral="fas-minus-circle" iconSize="14" styleClass="icon-muted" />
-                            <MFXComboBox fx:id="cmbEstadoMesa" promptText="Seleccionar estado"
-                                styleClass="input-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="12" styleClass="input-wrapper">
+                            <FontIcon iconLiteral="fas-circle-notch" iconSize="16" styleClass="icon-muted" />
+                            <ComboBox fx:id="cmbEstadoMesa" maxWidth="Infinity" promptText="Activa / Inactiva" styleClass="input-combo" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </VBox>
 
-                    <Label fx:id="lblMensajeMesa" styleClass="form-mensaje"
-                           text="" wrapText="true" managed="false" visible="false"/>
+                    <Label fx:id="lblMensajeMesa" managed="false" styleClass="form-mensaje" text="" visible="false" wrapText="true" />
                 </VBox>
 
-                <Region styleClass="divider" maxHeight="1" minHeight="1" />
+                <Region maxHeight="1" minHeight="1" styleClass="divider" />
 
-                <!-- Footer de botones -->
-                <VBox spacing="10" styleClass="form-footer">
-                    <padding><Insets top="18" right="22" bottom="22" left="22" /></padding>
+                <VBox prefHeight="177.0" prefWidth="336.0" spacing="12" styleClass="form-footer">
+                    <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
 
-                    <MFXButton fx:id="btnGuardarMesa" maxWidth="Infinity"
-                               onAction="#guardarMesa"
-                               styleClass="btn-raised-primary" text="Guardar Mesa">
-                        <graphic><FontIcon iconLiteral="fas-save" iconSize="13" iconColor="white"/></graphic>
+                    <MFXButton fx:id="btnGuardarMesa" maxWidth="Infinity" onAction="#guardarMesa" styleClass="btn-raised-primary" text="Guardar Mesa">
+                        <graphic><FontIcon iconColor="white" iconLiteral="fas-save" iconSize="14" /></graphic>
                     </MFXButton>
-
-                    <MFXButton fx:id="btnNuevoMesaForm" maxWidth="Infinity"
-                               onAction="#prepararNuevaMesa"
-                               styleClass="btn-outline-primary-form" text="Nueva Mesa">
-                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="13" iconColor="#5457CD"/></graphic>
-                    </MFXButton>
-
-                    <MFXButton fx:id="btnEliminarMesaForm" disable="true"
-                               maxWidth="Infinity"
-                               onAction="#eliminarMesa"
-                               styleClass="btn-outline-danger-form" text="Eliminar">
-                        <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="13" iconColor="#EF4444"/></graphic>
-                    </MFXButton>
+                    <MFXButton fx:id="btnNuevoMesaForm" maxWidth="Infinity" onAction="#prepararNuevaMesa" styleClass="btn-outline-primary-form" text="Limpiar Formulario" />
+                    <MFXButton fx:id="btnEliminarMesaForm" disable="true" maxWidth="Infinity" onAction="#eliminarMesa" styleClass="btn-outline-danger-form" text="Eliminar Mesa" />
                 </VBox>
 
             </VBox>
         </ScrollPane>
-
     </HBox>
 </StackPane>
