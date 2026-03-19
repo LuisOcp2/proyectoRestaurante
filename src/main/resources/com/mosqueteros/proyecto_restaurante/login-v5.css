@@ -1,38 +1,42 @@
 /* =============================================================
-   CALI DELIGHTS - login-v5.css
-   Palette: #FF6933 (Primary Orange) . #FFFFFF (Card) . #2D3436 (Text)
+   CALI DELIGHTS - login-v5.css  v2.0
+   Nueva Paleta Oficial:
+   #7E3BED (Violeta Primario) · #FFFFFF (Blanco) · #000000 (Negro) · #C6FF34 (Lima)
    Font: Work Sans / SansSerif
    ============================================================= */
 
-/* -- ROOT: Occupies the entire window ------------------------- */
+/* -- ROOT: Ocupa toda la ventana -------------------------- */
+/* Fondo gris muy claro para el login */
 .login-root {
-    -fx-background-color: #F8F6F5;
+    -fx-background-color: #F8F9FA;
     -fx-alignment: CENTER;
     -fx-font-family: 'Work Sans', 'Segoe UI', 'Ubuntu', SansSerif;
 }
 
 /* =============================================================
-   CARD (Centered VBox, soft shadow, 15px radius)
+   CARD (VBox centrado, sombra suave, radio 15px)
    ============================================================= */
+/* Tarjeta principal del formulario de login */
 .login-card {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 15;
     -fx-border-radius: 15;
     -fx-border-color: transparent;
     -fx-border-width: 0;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.10), 20, 0, 0, 10);
+    -fx-effect: dropshadow(three-pass-box, rgba(126, 59, 237, 0.15), 20, 0, 0, 10);
 }
 
-/* -- HEADER --------------------------------------------------- */
+/* -- HEADER -------------------------------------------------- */
+/* Cabecera de la tarjeta de login con logo */
 .card-header {
     -fx-alignment: CENTER;
     -fx-padding: 36 36 24 36;
     -fx-spacing: 10;
 }
 
-/* Orange circle with 12% opacity */
+/* Círculo violeta con 12% de opacidad para el logo */
 .logo-circle {
-    -fx-background-color: rgba(255, 105, 51, 0.12);
+    -fx-background-color: rgba(126, 59, 237, 0.12);
     -fx-background-radius: 9999;
     -fx-pref-width: 72;
     -fx-pref-height: 72;
@@ -43,81 +47,83 @@
     -fx-font-size: 32;
 }
 
-/* "Cali Delights" - 24px, bold, primary orange */
+/* Nombre principal del restaurante en el login */
 .brand-name {
-    -fx-text-fill: #FF6933;
+    -fx-text-fill: #7E3BED;
     -fx-font-size: 24;
     -fx-font-weight: bold;
 }
 
+/* Subtítulo de la marca en el login */
 .brand-sub {
-    -fx-text-fill: #636E72;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 12.5;
 }
 
-/* Subtle divider line */
+/* Línea divisora sutil entre header y formulario */
 .header-divider {
-    -fx-background-color: #F0F0F0;
+    -fx-background-color: #E9ECEF;
     -fx-pref-height: 1;
     -fx-max-height: 1;
 }
 
-/* -- FORM BODY ------------------------------------------------ */
+/* -- CUERPO DEL FORMULARIO ------------------------------------ */
+/* Área principal del formulario con campos de texto */
 .card-body {
     -fx-padding: 28 36 24 36;
 }
 
 /* =============================================================
-   FIELD TOP LABEL (above each input)
+   ETIQUETA SUPERIOR DEL CAMPO
    ============================================================= */
+/* Etiqueta de cada campo del formulario de login */
 .field-label {
-    -fx-text-fill: #2D3436;
+    -fx-text-fill: #000000;
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
 
 /* =============================================================
-   INPUT WRAPPER - StackPane containing the field + icons.
-   Border: light gray by default, orange on focus.
-   White background prevents icons from overlapping the field.
+   INPUT WRAPPER - StackPane con el campo + iconos.
+   Borde gris por defecto, violeta al enfocar.
    ============================================================= */
+/* Contenedor de cada campo del formulario */
 .input-wrapper {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 8;
-    -fx-border-color: #E2E8F0;
+    -fx-border-color: #E9ECEF;
     -fx-border-width: 1.5;
     -fx-border-radius: 8;
 }
 
-/* Applied via Focus Listener in Controller */
+/* Estado enfocado del input: borde violeta */
 .input-wrapper:focused {
-    -fx-border-color: #FF6933;
-    -fx-effect: dropshadow(three-pass-box, rgba(255, 105, 51, 0.18), 6, 0, 0, 0);
+    -fx-border-color: #7E3BED;
+    -fx-effect: dropshadow(three-pass-box, rgba(126, 59, 237, 0.20), 6, 0, 0, 0);
 }
 
 /* =============================================================
-   MATERIALFX FIELDS - floatMode DISABLED
-   The field is transparent; the wrapper provides the border.
-   Internal MFX borders and lines are suppressed.
+   CAMPOS MATERIALFX
    ============================================================= */
+/* Campo de texto con MaterialFX, fondo transparente */
 .mfx-field {
     -fx-font-size: 14;
-    -fx-text-fill: #2D3436;
+    -fx-text-fill: #000000;
     -fx-pref-height: 52;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
 }
 
-/* Internal text-field sub-node - transparent */
+/* Sub-nodo interno del campo - transparente */
 .mfx-field .text-field {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
-    -fx-prompt-text-fill: #A0AEC0;
+    -fx-prompt-text-fill: #6C757D;
 }
 
-/* Suppress MFX bottom lines */
+/* Suprimir líneas inferiores de MFX */
 .mfx-field>.unfocused-line,
 .mfx-field>.focused-line,
 .mfx-field>.line,
@@ -127,10 +133,7 @@
     -fx-opacity: 0;
 }
 
-/* =============================================================
-   :valid / :invalid STATES - Green/Red background overridden.
-   MFX injects backgrounds on validation; we keep it transparent.
-   ============================================================= */
+/* Estados válido/inválido: mantener transparente */
 .mfx-field:valid,
 .mfx-field:invalid {
     -fx-background-color: transparent;
@@ -158,15 +161,14 @@
     -fx-opacity: 0;
 }
 
-/* FOCUS: wrapper handles border, field remains transparent */
+/* Enfocado: el wrapper maneja el borde */
 .mfx-field:focused {
     -fx-border-color: transparent;
     -fx-background-color: transparent;
 }
 
 /* =============================================================
-   SUPPRESS NATIVE MFXPasswordField TOGGLE (Eye Icon)
-   Nullifies default MaterialFX 11.x toggle button styles.
+   SUPRIMIR BOTÓN NATIVO DE OJO (MFXPasswordField)
    ============================================================= */
 .mfx-password-field .password-field-toggle-button,
 .mfx-password-field>.password-field-toggle-button,
@@ -185,17 +187,17 @@
     -fx-managed: false;
 }
 
-
+/* Ícono izquierdo del campo */
 .field-icon-left {
     -fx-font-size: 16;
-    -fx-text-fill: #94A3B8;
+    -fx-text-fill: #6C757D;
     -fx-mouse-transparent: true;
 }
 
 /* =============================================================
-   EYE CUSTOM BUTTON - Transparent background in all states.
-   Overrides MFX :hover, :pressed, :focused, :armed classes.
+   BOTÓN OJO PERSONALIZADO
    ============================================================= */
+/* Botón para mostrar/ocultar contraseña */
 .eye-btn,
 .eye-btn:hover,
 .eye-btn:pressed,
@@ -210,7 +212,7 @@
 }
 
 .eye-btn {
-    -fx-text-fill: #94A3B8;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 18;
     -fx-cursor: hand;
     -fx-pref-width: 36;
@@ -219,7 +221,7 @@
 }
 
 .eye-btn:hover {
-    -fx-text-fill: #FF6933;
+    -fx-text-fill: #7E3BED;
     -fx-scale-x: 1.12;
     -fx-scale-y: 1.12;
 }
@@ -229,40 +231,42 @@
     -fx-scale-y: 0.95;
 }
 
-/* ACTIVE State: Icon when password is visible */
+/* Estado activo: ícono cuando la contraseña es visible */
 .eye-btn-active {
-    -fx-text-fill: #FF6933;
+    -fx-text-fill: #7E3BED;
 }
 
-/* Suppress MFXButton internal ripple/surface */
+/* Suprimir ripple/surface de MFXButton */
 .eye-btn>.ripple-generator,
 .eye-btn>.surface {
     -fx-background-color: transparent;
     -fx-opacity: 0;
 }
 
-/* -- PER-FIELD ERROR LABEL ------------------------------------- */
+/* -- LABEL DE ERROR POR CAMPO --------------------------------- */
+/* Mensaje de error debajo de cada campo */
 .field-error {
-    -fx-text-fill: #E17055;
+    -fx-text-fill: #DC3545;
     -fx-font-size: 11.5;
     -fx-padding: 0 0 0 4;
 }
 
-/* Wrapper error state applied manually */
+/* Wrapper en estado error: borde rojo */
 .input-wrapper-error {
-    -fx-border-color: #E17055;
-    -fx-effect: dropshadow(three-pass-box, rgba(225, 112, 85, 0.18), 6, 0, 0, 0);
+    -fx-border-color: #DC3545;
+    -fx-effect: dropshadow(three-pass-box, rgba(220, 53, 69, 0.18), 6, 0, 0, 0);
 }
 
-/* -- CHECKBOX -------------------------------------------------- */
+/* -- CHECKBOX ------------------------------------------------- */
 .mfx-check {
-    -fx-text-fill: #636E72;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 12.5;
 }
 
-/* -- FORGOT PASSWORD LINK ------------------------------------- */
+/* -- ENLACE ¿OLVIDÉ MI CONTRASEÑA? --------------------------- */
+/* Link violeta para recuperación de contraseña */
 .forgot-link {
-    -fx-text-fill: #FF6933;
+    -fx-text-fill: #7E3BED;
     -fx-font-size: 12.5;
     -fx-font-weight: 600;
     -fx-cursor: hand;
@@ -272,48 +276,50 @@
     -fx-underline: true;
 }
 
-/* -- GENERAL ERROR BANNER -------------------------------------- */
+/* -- BANNER DE ERROR GENERAL ---------------------------------- */
+/* Mensaje de error global del formulario */
 .error-banner {
-    -fx-background-color: #FFF3F0;
+    -fx-background-color: rgba(220, 53, 69, 0.07);
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-border-color: #FFBFA8;
+    -fx-border-color: rgba(220, 53, 69, 0.30);
     -fx-border-width: 1.5;
-    -fx-text-fill: #C0392B;
+    -fx-text-fill: #DC3545;
     -fx-font-size: 13;
     -fx-padding: 10 14 10 14;
     -fx-alignment: CENTER_LEFT;
 }
 
 /* =============================================================
-   LOGIN BUTTON
-   Background: #FF6933  Text: White  Shadow: Orange  Radius: 8px
+   BOTÓN LOGIN
+   Fondo violeta, texto blanco, sombra violeta, radio 8px
    ============================================================= */
+/* Botón principal de inicio de sesión */
 .btn-login {
-    -fx-background-color: #FF6933;
+    -fx-background-color: #7E3BED;
     -fx-background-radius: 8;
-    -fx-text-fill: white;
+    -fx-text-fill: #FFFFFF;
     -fx-font-size: 15;
     -fx-font-weight: bold;
     -fx-pref-height: 52;
     -fx-cursor: hand;
     -fx-border-color: transparent;
     -fx-border-width: 0;
-    -fx-effect: dropshadow(gaussian, rgba(255, 105, 51, 0.40), 18, 0.28, 0, 6);
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.50), 18, 0.28, 0, 6);
 }
 
 .btn-login:hover {
-    -fx-background-color: #F05A20;
-    -fx-effect: dropshadow(gaussian, rgba(255, 105, 51, 0.60), 24, 0.40, 0, 10);
+    -fx-background-color: #5D1FBC;
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.70), 24, 0.40, 0, 10);
     -fx-scale-x: 1.018;
     -fx-scale-y: 1.018;
 }
 
 .btn-login:pressed {
-    -fx-background-color: #D4490F;
+    -fx-background-color: #3A0F8A;
     -fx-scale-x: 0.975;
     -fx-scale-y: 0.975;
-    -fx-effect: dropshadow(gaussian, rgba(255, 105, 51, 0.22), 10, 0.18, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.22), 10, 0.18, 0, 4);
 }
 
 .btn-login:disabled {
@@ -322,31 +328,34 @@
     -fx-effect: none;
 }
 
-/* MFX Ripple - translucent white */
+/* MFX Ripple - blanco translúcido */
 .btn-login>.ripple-generator {
     -fx-background-color: rgba(255, 255, 255, 0.20);
 }
 
+/* Estado cargando: gris neutro */
 .btn-loading {
-    -fx-background-color: #94A3B8;
+    -fx-background-color: #6C757D;
     -fx-cursor: default;
     -fx-effect: none;
 }
 
 /* =============================================================
-   FOOTER - light gray background, bottom rounded corners
+   FOOTER - fondo gris claro, esquinas inferiores redondeadas
    ============================================================= */
+/* Pie de la tarjeta de login */
 .card-footer {
-    -fx-background-color: #F8F6F5;
-    -fx-border-color: #EDEDED transparent transparent transparent;
+    -fx-background-color: #F8F9FA;
+    -fx-border-color: #E9ECEF transparent transparent transparent;
     -fx-border-width: 1 0 0 0;
     -fx-padding: 14 36 14 36;
     -fx-alignment: CENTER;
     -fx-background-radius: 0 0 15 15;
 }
 
+/* Etiqueta de copyright/versión en el footer */
 .footer-label {
-    -fx-text-fill: #94A3B8;
+    -fx-text-fill: #6C757D;
     -fx-font-size: 9;
     -fx-font-weight: bold;
 }
