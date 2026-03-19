@@ -1,23 +1,294 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.scene.control.ComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.mosqueteros.proyecto_restaurante.controller.CategoriaInsumoController"
-      styleClass="welcome-panel" VBox.vgrow="ALWAYS">
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-    </padding>
-    
-    <StackPane style="-fx-background-color: rgba(84, 87, 205, 0.1); -fx-background-radius: 60; -fx-min-width: 120; -fx-min-height: 120; -fx-max-width: 120; -fx-max-height: 120;">
-        <FontIcon iconLiteral="fas-folder-open" iconSize="54" iconColor="#5457CD" />
-    </StackPane>
-    
-    <VBox alignment="CENTER" spacing="8.0">
-        <Label text="Categorías de Insumos" styleClass="welcome-title" />
-        <Label text="Módulo en Desarrollo" style="-fx-text-fill: #5457CD; -fx-font-weight: bold; -fx-font-size: 18px;" />
-        <Label text="Clasifica tus ingredientes (Lácteos, Carnes, Verduras...)" styleClass="welcome-subtitle" />
-    </VBox>
-</VBox>
+<!--
+╔════════════════════════════════════════════════════════════════════════════╗
+║  VistaCategoriaInsumo.fxml  —  CRUD Categorías de Insumo                ║
+║                                                                          ║
+║  Estructura basada en el diseño system "The Modern Maître D'"            ║
+║  Campos mapeados a tabla: categoria_insumo (BD restaurante_2026)        ║
+║                                                                          ║
+║  CONTRATO CONTROLADOR (CategoriaInsumoController):                      ║
+║    txtBuscarCategoria → MFXTextField  búsqueda por nombre/descripción    ║
+║    tblListaCategorias → MFXTableView<CategoriaInsumo>                    ║
+║    lblConteoCategorias→ Label conteo de resultados                       ║
+║    txtCatNombre       → MFXTextField  nombre                             ║
+║    txtCatDescripcion  → MFXTextField  descripción                        ║
+║    cmbCatEstado       → MFXComboBox<String> estado                       ║
+║    lblMensajeCategoria→ Label mensajes de validación/resultado           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+-->
+<StackPane
+    styleClass="root-container"
+    stylesheets="@../styles/styles.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.mosqueteros.proyecto_restaurante.controller.CategoriaInsumoController">
+
+    <!-- Padding exterior: 32px en todos los lados -->
+    <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+    <HBox
+        alignment="TOP_LEFT"
+        fillHeight="true"
+        maxHeight="Infinity"
+        maxWidth="Infinity"
+        spacing="24">
+
+        <!-- COLUMNA IZQUIERDA  —  Título + Card con tabla -->
+        <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
+
+            <!-- Encabezado de sección con overline y título -->
+            <VBox alignment="CENTER_LEFT" spacing="4">
+                <!-- Label CATEGORÍAS DE INSUMO overline arriba del título: 12px Bold #7E3BED -->
+                <Label text="CATEGORÍAS DE INSUMO" styleClass="input-label"/>
+                <!-- Título de sección: 32px Bold #000000 -->
+                <Label styleClass="titulo-texto" text="Categorías de Insumo"/>
+            </VBox>
+
+            <!-- Card principal: VBox styleClass="main-card" (bg #FFFFFF, radius 12, ambient shadow) -->
+            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+
+                <!-- Barra filtros: background #F2F0F7 (cambio tonal), padding 16 24, SIN border -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
+                    <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                    <!-- Campo de búsqueda por nombre o descripción -->
+                    <HBox styleClass="search-wrapper" HBox.hgrow="ALWAYS" minWidth="200">
+                        <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
+                        <MFXTextField
+                            fx:id="txtBuscarCategoria"
+                            promptText="Buscar por nombre o descripción..."
+                            styleClass="search-field"
+                            HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <!-- Filtro por estado -->
+                    <VBox spacing="2">
+                        <Label text="Estado" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbFiltroEstado"
+                                  promptText="Todos los estados"
+                                  prefWidth="120"
+                                  styleClass="filtro-combo-nativo"/>
+                    </VBox>
+
+                    <!-- Botón para ejecutar la búsqueda -->
+                    <MFXButton fx:id="btnBuscarCategoria"
+                               onAction="#buscarCategoria"
+                               styleClass="btn-outline-primary"
+                               text="Buscar">
+                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12"/></graphic>
+                    </MFXButton>
+
+                    <!-- Botón para limpiar los filtros -->
+                    <MFXButton fx:id="btnLimpiarFiltroCategoria"
+                               onAction="#limpiarFiltros"
+                               styleClass="btn-outline-secondary"
+                               text="Limpiar">
+                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+                <!-- Cabecera de columnas de la tabla -->
+                <HBox styleClass="table-header-row">
+                    <Label text="ID" styleClass="col-header" prefWidth="60"/>
+                    <Label text="Nombre" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Descripción" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Estado" styleClass="col-header" prefWidth="80"/>
+                </HBox>
+
+                <!-- Área de tabla con estado vacío -->
+                <VBox VBox.vgrow="ALWAYS" spacing="0">
+                    <!-- Tabla de categorías de insumo (MFXTableView poblada desde el controlador) -->
+                    <io.github.palexdev.materialfx.controls.MFXTableView
+                        fx:id="tblListaCategorias"
+                        styleClass="mesas-table">
+
+                        <!-- Definición de columnas -->
+                        <columns>
+                            <!-- ID -->
+                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="0" 
+                                                                                   text="ID">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="idCategoriaInsumo"/>
+                                </cellValueFactory>
+                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
+                            
+                            <!-- Nombre -->
+                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="1" 
+                                                                                   text="NOMBRE">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="nombre"/>
+                                </cellValueFactory>
+                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
+                            
+                            <!-- Descripción -->
+                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="2" 
+                                                                                   text="DESCRIPCIÓN">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="descripcion"/>
+                                </cellValueFactory>
+                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
+                            
+                            <!-- Estado -->
+                            <io.github.palexdev.materialfx.controls.MFXTableColumn colId="3" 
+                                                                                   text="ESTADO">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="estado"/>
+                                </cellValueFactory>
+                            </io.github.palexdev.materialfx.controls.MFXTableColumn>
+                        </columns>
+                    </io.github.palexdev.materialfx.controls.MFXTableView>
+
+                    <!-- Estado vacío: imagen + textos informativos -->
+                    <VBox fx:id="boxPlaceholder"
+                          alignment="CENTER"
+                          spacing="16"
+                          visible="true"
+                          managed="true"
+                          styleClass="empty-state">
+                        <FontIcon iconLiteral="fas-folder-open" iconSize="48" styleClass="icon-muted"/>
+                        <Label text="No hay categorías de insumo registradas" styleClass="titulo-texto"/>
+                        <Label text="Ajusta los filtros o agrega una nueva categoría." styleClass="conteo-label"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Footer de la tabla: background #F2F0F7, SIN border superior -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
+                    <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                    <!-- Etiqueta con total de categorías encontradas -->
+                    <Label fx:id="lblConteoCategorias"
+                           styleClass="conteo-label"
+                           text="0 categorías encontradas"
+                           HBox.hgrow="ALWAYS"/>
+
+                    <!-- Botón para preparar formulario de nueva categoría -->
+                    <MFXButton fx:id="btnNuevoCategoria"
+                               onAction="#prepararNuevoCategoria"
+                               styleClass="btn-raised-primary"
+                               text="Nueva Categoría">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- COLUMNA DERECHA  —  Formulario de detalle / edición -->
+        <VBox prefWidth="360" maxWidth="360" minWidth="320" spacing="0">
+
+            <!-- Encabezado del formulario: badge violeta + título -->
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
+                <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                <StackPane styleClass="form-header-badge">
+                    <FontIcon iconLiteral="fas-folder-open" iconSize="18"/>
+                </StackPane>
+                <Label styleClass="form-header-titulo" text="Detalle de Categoría"/>
+            </HBox>
+
+            <!-- Formulario derecho: ScrollPane con VBox styleClass="main-card" -->
+            <ScrollPane fitToWidth="true" 
+                        fitToHeight="false" 
+                        hbarPolicy="NEVER" 
+                        vbarPolicy="AS_NEEDED"
+                        styleClass="form-scroll">
+                <VBox styleClass="main-card" spacing="0">
+
+                    <!-- Campos del formulario -->
+                    <VBox spacing="18">
+                        <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
+
+                        <!-- Campo: Nombre -->
+                        <VBox spacing="6">
+                            <Label text="Nombre" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-tag" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtCatNombre"
+                                              promptText="Ej. Lácteos"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Descripción -->
+                        <VBox spacing="6">
+                            <Label text="Descripción" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-sticky-note" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtCatDescripcion"
+                                              promptText="Descripción detallada"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Estado -->
+                        <VBox spacing="6">
+                            <Label text="Estado" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted"/>
+                                <MFXComboBox fx:id="cmbCatEstado"
+                                             promptText="Seleccionar estado"
+                                             styleClass="input-combo"
+                                             HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Etiqueta de mensajes de validación o confirmación -->
+                        <Label fx:id="lblMensajeCategoria"
+                               styleClass="form-mensaje"
+                               text=""
+                               wrapText="true"
+                               managed="false"
+                               visible="false"/>
+                    </VBox>
+
+                    <!-- Footer del formulario: background #F2F0F7, SIN border superior -->
+                    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
+                        <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                        <!-- Botón Guardar Categoría -->
+                        <MFXButton fx:id="btnGuardarCategoria"
+                                   maxWidth="Infinity"
+                                   onAction="#guardarCategoria"
+                                   styleClass="btn-raised-primary"
+                                   text="Guardar Categoría">
+                            <graphic><FontIcon iconLiteral="fas-save" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <!-- Botón Nueva Categoría -->
+                        <MFXButton fx:id="btnNuevoCategoriaForm"
+                                   maxWidth="Infinity"
+                                   onAction="#prepararNuevoCategoria"
+                                   styleClass="btn-outline-primary"
+                                   text="Nueva Categoría">
+                            <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <!-- Botón Eliminar Categoría -->
+                        <MFXButton fx:id="btnEliminarCategoriaForm"
+                                   disable="true"
+                                   maxWidth="Infinity"
+                                   onAction="#eliminarCategoria"
+                                   styleClass="btn-outline-danger"
+                                   text="Eliminar">
+                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12"/></graphic>
+                        </MFXButton>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </HBox>
+</StackPane>

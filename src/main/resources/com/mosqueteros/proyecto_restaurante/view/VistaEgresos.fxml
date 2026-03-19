@@ -1,23 +1,332 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.mosqueteros.proyecto_restaurante.controller.EgresoController"
-      styleClass="welcome-panel" VBox.vgrow="ALWAYS">
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-    </padding>
-    
-    <StackPane style="-fx-background-color: rgba(84, 87, 205, 0.1); -fx-background-radius: 60; -fx-min-width: 120; -fx-min-height: 120; -fx-max-width: 120; -fx-max-height: 120;">
-        <FontIcon iconLiteral="fas-money-bill-wave" iconSize="54" iconColor="#5457CD" />
-    </StackPane>
-    
-    <VBox alignment="CENTER" spacing="8.0">
-        <Label text="Control de Egresos" styleClass="welcome-title" />
-        <Label text="Módulo en Desarrollo" style="-fx-text-fill: #5457CD; -fx-font-weight: bold; -fx-font-size: 18px;" />
-        <Label text="Registro y seguimiento de gastos operativos." styleClass="welcome-subtitle" />
-    </VBox>
-</VBox>
+<!--
+╔════════════════════════════════════════════════════════════════════════════╗
+║  VistaEgresos.fxml  —  CRUD Egresos                                    ║
+║                                                                          ║
+║  Estructura basada en el diseño system "The Modern Maître D'"            ║
+║  Campos mapeados a tabla: egresos (BD restaurante_2026)                ║
+║                                                                          ║
+║  CONTRATO CONTROLADOR (EgresoController):                               ║
+║    txtBuscarEgreso     → MFXTextField  búsqueda por concepto/número     ║
+�    cmbFiltroConcepto    → ComboBox<String> filtro por concepto           ║
+║    cmbFiltroEstado      → ComboBox<String> filtro por estado           ║
+║    tblListaEgresos      → MFXTableView<Egreso>                          ║
+║    lblConteoEgresos     → Label conteo de resultados                    ║
+║    txtEgresoNumero      → MFXTextField  número de egreso                ║
+║    txtEgresoConcepto    → MFXTextField  concepto                        ║
+║    txtEgresoDetalle     → MFXTextField  detalle                         ║
+║    txtEgresoValor       → MFXTextField  valor                           ║
+║    dtEgresoFecha        → DatePicker fecha                              ║
+║    cmbEgresoEstado      → MFXComboBox<String> estado                    ║
+║    lblMensajeEgreso     → Label mensajes de validación/resultado        ║
+╚════════════════════════════════════════════════════════════════════════════╝
+-->
+<StackPane
+    styleClass="root-container"
+    stylesheets="@../styles/styles.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.mosqueteros.proyecto_restaurante.controller.EgresoController">
+
+    <!-- Padding exterior: 32px en todos los lados -->
+    <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+    <HBox
+        alignment="TOP_LEFT"
+        fillHeight="true"
+        maxHeight="Infinity"
+        maxWidth="Infinity"
+        spacing="24">
+
+        <!-- COLUMNA IZQUIERDA  —  Título + Card con tabla -->
+        <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
+
+            <!-- Encabezado de sección con overline y título -->
+            <VBox alignment="CENTER_LEFT" spacing="4">
+                <!-- Label EGRESOS overline arriba del título: 12px Bold #7E3BED -->
+                <Label text="EGRESOS" styleClass="input-label"/>
+                <!-- Título de sección: 32px Bold #000000 -->
+                <Label styleClass="titulo-texto" text="Egresos"/>
+            </VBox>
+
+            <!-- Card principal: VBox styleClass="main-card" (bg #FFFFFF, radius 12, ambient shadow) -->
+            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+
+                <!-- Barra filtros: background #F2F0F7 (cambio tonal), padding 16 24, SIN border -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
+                    <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                    <!-- Campo de búsqueda por concepto o número -->
+                    <HBox styleClass="search-wrapper" HBox.hgrow="ALWAYS" minWidth="200">
+                        <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
+                        <MFXTextField
+                            fx:id="txtBuscarEgreso"
+                            promptText="Buscar por concepto o número..."
+                            styleClass="search-field"
+                            HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <!-- Filtro por concepto -->
+                    <VBox spacing="2">
+                        <Label text="Concepto" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbFiltroConcepto"
+                                  promptText="Todos los conceptos"
+                                  prefWidth="140"
+                                  styleClass="filtro-combo-nativo"/>
+                    </VBox>
+
+                    <!-- Filtro por estado -->
+                    <VBox spacing="2">
+                        <Label text="Estado" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbFiltroEstado"
+                                  promptText="Todos los estados"
+                                  prefWidth="120"
+                                  styleClass="filtro-combo-nativo"/>
+                    </VBox>
+
+                    <!-- Botón para ejecutar la búsqueda -->
+                    <MFXButton fx:id="btnBuscarEgreso"
+                               onAction="#buscarEgreso"
+                               styleClass="btn-outline-primary"
+                               text="Buscar">
+                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12"/></graphic>
+                    </MFXButton>
+
+                    <!-- Botón para limpiar los filtros -->
+                    <MFXButton fx:id="btnLimpiarFiltroEgreso"
+                               onAction="#limpiarFiltros"
+                               styleClass="btn-outline-secondary"
+                               text="Limpiar">
+                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+                <!-- Cabecera de columnas de la tabla -->
+                <HBox styleClass="table-header-row">
+                    <Label text="ID" styleClass="col-header" prefWidth="60"/>
+                    <Label text="Número" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Fecha" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Concepto" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Detalle" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Valor" styleClass="col-header" prefWidth="100"/>
+                    <Label text="Estado" styleClass="col-header" prefWidth="80"/>
+                </HBox>
+
+                <!-- Área de tabla con estado vacío -->
+                <VBox VBox.vgrow="ALWAYS" spacing="0">
+                    <!-- Tabla de egresos (TableView poblada desde el controlador) -->
+                    <TableView
+                        fx:id="tblListaEgresos"
+                        styleClass="mesas-table">
+                        <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                        <columns>
+                            <!-- ID -->
+                            <TableColumn fx:id="colIdEgreso" prefWidth="60" text="ID" />
+                            <!-- Número -->
+                            <TableColumn fx:id="colNumero" prefWidth="100" text="NÚMERO" />
+                            <!-- Fecha -->
+                            <TableColumn fx:id="colFecha" prefWidth="120" text="FECHA" />
+                            <!-- Concepto -->
+                            <TableColumn fx:id="colConcepto" prefWidth="150" text="CONCEPTO" />
+                            <!-- Detalle -->
+                            <TableColumn fx:id="colDetalle" prefWidth="200" text="DETALLE" />
+                            <!-- Valor -->
+                            <TableColumn fx:id="colValor" prefWidth="100" text="VALOR" />
+                            <!-- Estado -->
+                            <TableColumn fx:id="colEstado" prefWidth="80" text="ESTADO" />
+                        </columns>
+                    </TableView>
+
+                    <!-- Estado vacío: imagen + textos informativos -->
+                    <VBox fx:id="boxPlaceholder"
+                          alignment="CENTER"
+                          spacing="16"
+                          visible="true"
+                          managed="true"
+                          styleClass="empty-state">
+                        <FontIcon iconLiteral="fas-money-bill-wave" iconSize="48" styleClass="icon-muted"/>
+                        <Label text="No hay egresos registrados" styleClass="titulo-texto"/>
+                        <Label text="Ajusta los filtros o registra un nuevo egreso." styleClass="conteo-label"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Footer de la tabla: background #F2F0F7, SIN border superior -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
+                    <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                    <!-- Etiqueta con total de egresos encontrados -->
+                    <Label fx:id="lblConteoEgresos"
+                           styleClass="conteo-label"
+                           text="0 egresos encontrados"
+                           HBox.hgrow="ALWAYS"/>
+
+                    <!-- Botón para preparar formulario de nuevo egreso -->
+                    <MFXButton fx:id="btnNuevoEgreso"
+                               onAction="#prepararNuevoEgreso"
+                               styleClass="btn-raised-primary"
+                               text="Nuevo Egreso">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- COLUMNA DERECHA  —  Formulario de detalle / edición -->
+        <VBox prefWidth="360" maxWidth="360" minWidth="320" spacing="0">
+
+            <!-- Encabezado del formulario: badge violeta + título -->
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
+                <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                <StackPane styleClass="form-header-badge">
+                    <FontIcon iconLiteral="fas-money-bill-wave" iconSize="18"/>
+                </StackPane>
+                <Label styleClass="form-header-titulo" text="Detalle de Egreso"/>
+            </HBox>
+
+            <!-- Formulario derecho: ScrollPane con VBox styleClass="main-card" -->
+            <ScrollPane fitToWidth="true" 
+                        fitToHeight="false" 
+                        hbarPolicy="NEVER" 
+                        vbarPolicy="AS_NEEDED"
+                        styleClass="form-scroll">
+                <VBox styleClass="main-card" spacing="0">
+
+                    <!-- Campos del formulario -->
+                    <VBox spacing="18">
+                        <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
+
+                        <!-- Campo: Número de Egreso -->
+                        <VBox spacing="6">
+                            <Label text="Número de Egreso" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-hashtag" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtEgresoNumero"
+                                              promptText="Ej. EGR-001"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Fecha -->
+                        <VBox spacing="6">
+                            <Label text="Fecha" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-calendar-alt" iconSize="14" styleClass="icon-muted"/>
+                                <!-- Assuming DatePicker would go here, but keeping TextField for simplicity -->
+                                <MFXTextField fx:id="dtEgresoFecha"
+                                              promptText="Fecha"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Concepto -->
+                        <VBox spacing="6">
+                            <Label text="Concepto" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-tag" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtEgresoConcepto"
+                                              promptText="Ej. Servicios Públicos"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Detalle -->
+                        <VBox spacing="6">
+                            <Label text="Detalle" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-sticky-note" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtEgresoDetalle"
+                                              promptText="Descripción detallada"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Valor -->
+                        <VBox spacing="6">
+                            <Label text="Valor" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-dollar-sign" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtEgresoValor"
+                                              promptText="0.00"
+                                              styleClass="input-field"
+                                              HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Campo: Estado -->
+                        <VBox spacing="6">
+                            <Label text="Estado" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                                <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted"/>
+                                <MFXComboBox fx:id="cmbEgresoEstado"
+                                             promptText="Seleccionar estado"
+                                             styleClass="input-combo"
+                                             HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Etiqueta de mensajes de validación o confirmación -->
+                        <Label fx:id="lblMensajeEgreso"
+                               styleClass="form-mensaje"
+                               text=""
+                               wrapText="true"
+                               managed="false"
+                               visible="false"/>
+                    </VBox>
+
+                    <!-- Footer del formulario: background #F2F0F7, SIN border superior -->
+                    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
+                        <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                        <!-- Botón Guardar Egreso -->
+                        <MFXButton fx:id="btnGuardarEgreso"
+                                   maxWidth="Infinity"
+                                   onAction="#guardarEgreso"
+                                   styleClass="btn-raised-primary"
+                                   text="Guardar Egreso">
+                            <graphic><FontIcon iconLiteral="fas-save" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <!-- Botón Nuevo Egreso -->
+                        <MFXButton fx:id="btnNuevoEgresoForm"
+                                   maxWidth="Infinity"
+                                   onAction="#prepararNuevoEgreso"
+                                   styleClass="btn-outline-primary"
+                                   text="Nuevo Egreso">
+                            <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <!-- Botón Eliminar Egreso -->
+                        <MFXButton fx:id="btnEliminarEgresoForm"
+                                   disable="true"
+                                   maxWidth="Infinity"
+                                   onAction="#eliminarEgreso"
+                                   styleClass="btn-outline-danger"
+                                   text="Eliminar">
+                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12"/></graphic>
+                        </MFXButton>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </HBox>
+</StackPane>
