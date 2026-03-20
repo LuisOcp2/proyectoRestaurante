@@ -29,6 +29,7 @@
 }
 .form-scroll > .viewport { -fx-background-color: transparent; }
 
+/* Líneas divisorias entre secciones */
 .divider { -fx-background-color: #E9ECEF; }
 
 /* ── TEXTOS DE CABECERA ── */
@@ -85,11 +86,15 @@
     -fx-padding: 0 4;
 }
 .filtro-combo-nativo .list-cell:empty { -fx-text-fill: #6C757D; }
+
+/* Borde violeta al enfocar el combo */
 .filtro-combo-nativo:focused {
     -fx-border-color: #7E3BED;
     -fx-background-color: #FFFFFF;
 }
 .filtro-combo-nativo:hover { -fx-border-color: #6C757D; }
+
+/* Botón de flecha del combo */
 .filtro-combo-nativo .arrow-button {
     -fx-background-color: transparent;
     -fx-padding: 0 8 0 0;
@@ -182,10 +187,12 @@
     -fx-font-size: 13px;
     -fx-padding: 13 16;
 }
+/* Fila de la tabla con separador gris */
 .mesas-table .table-row-cell {
     -fx-border-color: transparent transparent #E9ECEF transparent;
     -fx-border-width: 0 0 1 0;
 }
+/* Fila seleccionada: fondo violeta suave */
 .mesas-table .table-row-cell:selected {
     -fx-background-color: rgba(126,59,237,0.10);
 }
@@ -239,6 +246,7 @@
     -fx-alignment: CENTER;
 }
 .form-header-badge-icon { -fx-icon-color: #7E3BED; }
+/* Título del panel de formulario */
 .form-header-titulo {
     -fx-font-size: 17px;
     -fx-font-weight: 700;
@@ -248,6 +256,7 @@
 /* ═══════════════════════════════════════════════════════════════════
    INPUTS DEL FORMULARIO
 ═══════════════════════════════════════════════════════════════════ */
+/* Etiqueta de cada campo del formulario */
 .input-label {
     -fx-font-size: 12.5px;
     -fx-font-weight: 600;
@@ -272,6 +281,8 @@
 .input-field > .line,
 .input-field > .focused-line,
 .input-field > .unfocused-line { -fx-stroke: transparent; }
+
+/* MFXComboBox del formulario */
 .input-combo {
     -fx-background-color: transparent;
     -fx-border-width: 0;
@@ -283,8 +294,18 @@
 .input-combo .arrow          { -fx-background-color: #6C757D; }
 
 /* ═══════════════════════════════════════════════════════════════════
-   BOTONES DEL SISTEMA
+   FOOTER DEL FORMULARIO
 ═══════════════════════════════════════════════════════════════════ */
+/* Área inferior del formulario con botones de acción */
+.form-footer {
+    -fx-background-color: rgba(126,59,237,0.05);
+    -fx-background-radius: 0 0 12 12;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════════ */
+   BOTONES DEL SISTEMA
+═════════════════════════════════════════════════════════════════════════ */
+/* Botón primario: fondo violeta, texto blanco */
 .btn-raised-primary {
     -fx-background-color: #7E3BED;
     -fx-text-fill: #FFFFFF;
@@ -299,6 +320,7 @@
 }
 .btn-raised-primary:hover { -fx-background-color: #5D1FBC; }
 
+/* Botón outline primario: borde y texto violeta */
 .btn-outline-primary,
 .btn-outline-primary-form {
     -fx-background-color: transparent;
@@ -316,6 +338,7 @@
 .btn-outline-primary:hover,
 .btn-outline-primary-form:hover { -fx-background-color: rgba(126,59,237,0.07); }
 
+/* Botón lima: acento lima para confirmaciones exitosas */
 .btn-lima {
     -fx-background-color: #C6FF34;
     -fx-text-fill: #000000;
@@ -325,10 +348,12 @@
     -fx-font-size: 13px;
     -fx-padding: 9 14;
     -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
     -fx-effect: dropshadow(gaussian, rgba(198,255,52,0.40), 6, 0, 0, 2);
 }
 .btn-lima:hover { -fx-background-color: #A3D61A; }
 
+/* Botón outline lima */
 .btn-outline-secondary {
     -fx-background-color: transparent;
     -fx-border-color: #C6FF34;
@@ -340,6 +365,7 @@
     -fx-padding: 9 14;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 7;
+    -fx-alignment: CENTER;
 }
 .btn-outline-secondary:hover { -fx-background-color: rgba(198,255,52,0.15); }
 
@@ -360,6 +386,7 @@
 .btn-outline-danger:hover,
 .btn-outline-danger-form:hover { -fx-background-color: rgba(220,53,69,0.07); }
 
+/* Estado deshabilitado de botones */
 .btn-outline-secondary:disabled,
 .btn-outline-danger:disabled,
 .btn-outline-danger-form:disabled {
