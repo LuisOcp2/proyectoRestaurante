@@ -6,9 +6,6 @@ module com.mosqueteros.proyecto_restaurante {
     requires javafx.fxml;
     requires javafx.graphics;
 
-    // MaterialFX
-    requires MaterialFX;
-
     // Ikonli (Iconos)
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.fontawesome5;
@@ -16,6 +13,7 @@ module com.mosqueteros.proyecto_restaurante {
 
     // JDBC (MySQL)
     requires java.sql;
+    requires MaterialFX;
 
     // BCrypt
     requires jbcrypt;
@@ -32,4 +30,3 @@ module com.mosqueteros.proyecto_restaurante {
     opens com.mosqueteros.proyecto_restaurante.controller to javafx.fxml;
     opens com.mosqueteros.proyecto_restaurante.model to javafx.base;
 }
-

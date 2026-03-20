@@ -1,4 +1,5 @@
 package com.mosqueteros.proyecto_restaurante;
+import com.mosqueteros.proyecto_restaurante.util.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ public class App extends Application {
             "view/login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(App.class.getResource("styles/styles.css").toExternalForm());
+        ThemeManager.aplicarTemaGlobal(scene);
         stage.setTitle("Cali Delights — Sistema de Gestión");
         stage.setResizable(true);
         stage.setMaximized(true);

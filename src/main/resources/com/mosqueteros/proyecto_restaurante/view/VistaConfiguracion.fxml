@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
+
+<StackPane
+    styleClass="root-container"
+    stylesheets="@../styles/styles.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.mosqueteros.proyecto_restaurante.controller.ConfiguracionController">
+
+    <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+    <HBox alignment="TOP_LEFT" fillHeight="true" maxHeight="Infinity" maxWidth="Infinity" spacing="22">
+
+        <VBox spacing="14" HBox.hgrow="ALWAYS" maxHeight="Infinity">
+
+            <VBox alignment="CENTER_LEFT" spacing="4">
+                <Label text="CONFIGURACION GLOBAL" styleClass="input-label"/>
+                <Label styleClass="titulo-texto" text="Parametros del Sistema"/>
+            </VBox>
+
+            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
+                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+
+                    <HBox styleClass="search-wrapper" HBox.hgrow="ALWAYS" minWidth="240" prefHeight="46">
+                        <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
+                        <MFXTextField fx:id="txtBuscarConfiguracion"
+                                      promptText="Buscar por clave o valor..."
+                                      styleClass="search-field" HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <MFXButton onAction="#buscarConfiguracion"
+                               styleClass="btn-outline-primary" text="Buscar">
+                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12"/></graphic>
+                    </MFXButton>
+
+                    <MFXButton onAction="#limpiarFiltros"
+                               styleClass="btn-outline-secondary" text="Limpiar">
+                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+                <HBox styleClass="table-header-row">
+                    <Label text="ID" styleClass="col-header" prefWidth="70"/>
+                    <Label text="Clave" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Valor" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <VBox VBox.vgrow="ALWAYS" spacing="0">
+                    <TableView fx:id="tblListaConfiguraciones" styleClass="mesas-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colIdConfiguracion" text="ID" prefWidth="70"/>
+                            <TableColumn fx:id="colClave" text="CLAVE"/>
+                            <TableColumn fx:id="colValor" text="VALOR"/>
+                        </columns>
+                    </TableView>
+
+                    <VBox fx:id="boxPlaceholder" alignment="CENTER" spacing="16"
+                          visible="true" managed="true" styleClass="empty-state">
+                        <FontIcon iconLiteral="fas-cogs" iconSize="48" styleClass="icon-muted"/>
+                        <Label text="No hay parametros de configuracion" styleClass="titulo-texto"/>
+                        <Label text="Agrega una nueva clave para iniciar." styleClass="conteo-label"/>
+                    </VBox>
+                </VBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
+                    <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+                    <Label fx:id="lblConteoConfiguraciones" styleClass="conteo-label"
+                           text="0 configuraciones encontradas" HBox.hgrow="ALWAYS"/>
+                    <MFXButton onAction="#prepararNuevaConfiguracion"
+                               styleClass="btn-raised-primary" text="Nuevo Parametro">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <VBox prefWidth="388" maxWidth="388" minWidth="352" spacing="0">
+
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
+                <padding><Insets top="18" right="20" bottom="18" left="20" /></padding>
+                <StackPane styleClass="form-header-badge">
+                    <FontIcon iconLiteral="fas-sliders-h" iconSize="18"/>
+                </StackPane>
+                <Label styleClass="form-header-titulo" text="Detalle de Parametro"/>
+            </HBox>
+
+            <MFXScrollPane fitToWidth="true" fitToHeight="false"
+                        hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        styleClass="form-scroll">
+                <VBox styleClass="main-card" spacing="0">
+
+                    <VBox spacing="14">
+                        <padding><Insets top="18" right="20" bottom="18" left="20" /></padding>
+
+                        <VBox spacing="8" styleClass="theme-panel">
+                            <Label text="Tema visual" styleClass="input-label"/>
+                            <MFXComboBox fx:id="cmbTemaUI" promptText="Selecciona un tema"
+                                      styleClass="input-combo" maxWidth="Infinity" prefHeight="46"/>
+                            <VBox spacing="8" styleClass="theme-preview-card" fx:id="boxThemePreview">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <Label fx:id="lblTemaActivoTitulo" text="Violet" styleClass="theme-preview-title" HBox.hgrow="ALWAYS"/>
+                                    <Label text="ACTIVO" styleClass="theme-active-badge"/>
+                                </HBox>
+                                <Label fx:id="lblTemaActivoDescripcion"
+                                       text="Contraste alto para acciones principales y enfoque visual en la navegacion."
+                                       wrapText="true" styleClass="theme-preview-description"/>
+                                <HBox spacing="6" styleClass="theme-preview-palette">
+                                    <StackPane styleClass="theme-palette-dot,theme-palette-dot-primary"/>
+                                    <StackPane styleClass="theme-palette-dot,theme-palette-dot-secondary"/>
+                                    <StackPane styleClass="theme-palette-dot,theme-palette-dot-accent"/>
+                                </HBox>
+                            </VBox>
+                            <VBox spacing="8" styleClass="theme-swatches-grid">
+                                <HBox spacing="10" styleClass="theme-swatches-row">
+                                    <StackPane fx:id="swatchVioletaLima" styleClass="theme-swatch,theme-swatch-violeta"
+                                                onMouseClicked="#seleccionarTemaVioletaLima">
+                                        <VBox alignment="CENTER" spacing="1">
+                                            <Label text="Violet" styleClass="theme-swatch-label"/>
+                                            <Label text="Clasico" styleClass="theme-swatch-subtitle"/>
+                                        </VBox>
+                                    </StackPane>
+                                    <StackPane fx:id="swatchOceanoProfesional" styleClass="theme-swatch,theme-swatch-oceano"
+                                                onMouseClicked="#seleccionarTemaOceanoProfesional">
+                                        <VBox alignment="CENTER" spacing="1">
+                                            <Label text="Artisan" styleClass="theme-swatch-label"/>
+                                            <Label text="Calido" styleClass="theme-swatch-subtitle"/>
+                                        </VBox>
+                                    </StackPane>
+                                    <StackPane fx:id="swatchTierraCalida" styleClass="theme-swatch,theme-swatch-tierra"
+                                                onMouseClicked="#seleccionarTemaTierraCalida">
+                                        <VBox alignment="CENTER" spacing="1">
+                                            <Label text="Culinary" styleClass="theme-swatch-label"/>
+                                            <Label text="Neutro" styleClass="theme-swatch-subtitle"/>
+                                        </VBox>
+                                    </StackPane>
+                                </HBox>
+                                <HBox spacing="10" styleClass="theme-swatches-row">
+                                    <StackPane fx:id="swatchGoldenBeach" styleClass="theme-swatch,theme-swatch-goldenbeach"
+                                                onMouseClicked="#seleccionarTemaGoldenBeach">
+                                        <VBox alignment="CENTER" spacing="1">
+                                            <Label text="Golden" styleClass="theme-swatch-label"/>
+                                            <Label text="Fresco" styleClass="theme-swatch-subtitle"/>
+                                        </VBox>
+                                    </StackPane>
+                                    <StackPane fx:id="swatchSweetSundays" styleClass="theme-swatch,theme-swatch-sweetsundays"
+                                                onMouseClicked="#seleccionarTemaSweetSundays">
+                                        <VBox alignment="CENTER" spacing="1">
+                                            <Label text="Sweet" styleClass="theme-swatch-label"/>
+                                            <Label text="Dulce" styleClass="theme-swatch-subtitle"/>
+                                        </VBox>
+                                    </StackPane>
+                                    <StackPane fx:id="swatchVintageReserve" styleClass="theme-swatch,theme-swatch-vintagereserve"
+                                                onMouseClicked="#seleccionarTemaVintageReserve">
+                                        <VBox alignment="CENTER" spacing="1">
+                                            <Label text="Vintage" styleClass="theme-swatch-label"/>
+                                            <Label text="Elegante" styleClass="theme-swatch-subtitle"/>
+                                        </VBox>
+                                    </StackPane>
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="10">
+                                <MFXButton onAction="#seleccionarTemaAnterior" styleClass="btn-outline-primary"
+                                           text="Anterior"/>
+                                <MFXButton onAction="#seleccionarTemaSiguiente" styleClass="btn-outline-primary"
+                                           text="Siguiente"/>
+                                <MFXButton onAction="#restaurarTemaPredeterminado" styleClass="btn-outline-primary"
+                                           text="Restaurar"/>
+                            </HBox>
+                        </VBox>
+
+                        <VBox spacing="8" styleClass="theme-panel">
+                            <Label text="Atajos de configuracion" styleClass="input-label"/>
+                            <HBox spacing="8">
+                                <MFXButton onAction="#usarPresetEmpresaNombre" styleClass="btn-outline-secondary" text="Empresa"/>
+                                <MFXButton onAction="#usarPresetMoneda" styleClass="btn-outline-secondary" text="Moneda"/>
+                                <MFXButton onAction="#usarPresetImpuesto" styleClass="btn-outline-secondary" text="Impuesto"/>
+                                <MFXButton onAction="#usarPresetPieTicket" styleClass="btn-outline-secondary" text="Pie ticket"/>
+                            </HBox>
+                            <HBox spacing="8">
+                                <MFXButton onAction="#usarPresetCodigoMoneda" styleClass="btn-outline-secondary" text="Codigo moneda"/>
+                                <MFXButton onAction="#usarPresetTelefonoEmpresa" styleClass="btn-outline-secondary" text="Telefono"/>
+                                <MFXButton onAction="#usarPresetZonaHoraria" styleClass="btn-outline-secondary" text="Zona horaria"/>
+                            </HBox>
+                            <HBox spacing="8">
+                                <MFXButton onAction="#usarPresetCorreoEmpresa" styleClass="btn-outline-secondary" text="Correo"/>
+                                <MFXButton onAction="#usarPresetPrefijoFactura" styleClass="btn-outline-secondary" text="Prefijo"/>
+                                <MFXButton onAction="#usarPresetDecimalesMoneda" styleClass="btn-outline-secondary" text="Decimales"/>
+                            </HBox>
+                            <VBox spacing="6">
+                                <Label text="Perfil rapido" styleClass="input-label"/>
+                                <MFXComboBox fx:id="cmbPerfilInicial" promptText="Selecciona un perfil"
+                                             styleClass="input-combo" maxWidth="Infinity" prefHeight="44"/>
+                            </VBox>
+                            <MFXButton onAction="#cargarConfiguracionInicial" styleClass="btn-raised-primary"
+                                       text="Cargar configuracion inicial" maxWidth="Infinity"/>
+                        </VBox>
+
+                        <VBox spacing="6">
+                            <Label text="Clave *" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="input-wrapper" prefHeight="46">
+                                <FontIcon iconLiteral="fas-key" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtCfgClave" promptText="Ej. company_name"
+                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <VBox spacing="6">
+                            <Label text="Valor" styleClass="input-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="input-wrapper" prefHeight="46">
+                                <FontIcon iconLiteral="fas-align-left" iconSize="14" styleClass="icon-muted"/>
+                                <MFXTextField fx:id="txtCfgValor" promptText="Valor del parametro"
+                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <Label fx:id="lblMensajeConfiguracion" styleClass="form-mensaje" text=""
+                               wrapText="true" managed="false" visible="false"/>
+                    </VBox>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="8" styleClass="form-footer">
+                        <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
+
+                        <MFXButton maxWidth="Infinity"
+                                   onAction="#guardarConfiguracion" styleClass="btn-raised-primary"
+                                   text="Guardar Parametro">
+                            <graphic><FontIcon iconLiteral="fas-save" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <MFXButton maxWidth="Infinity"
+                                   onAction="#prepararNuevaConfiguracion" styleClass="btn-outline-primary"
+                                   text="Nuevo Parametro">
+                            <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <MFXButton fx:id="btnEliminarConfiguracionForm" disable="true" maxWidth="Infinity"
+                                   onAction="#eliminarConfiguracion" styleClass="btn-outline-danger"
+                                   text="Eliminar">
+                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12"/></graphic>
+                        </MFXButton>
+                    </HBox>
+                </VBox>
+            </MFXScrollPane>
+        </VBox>
+    </HBox>
+</StackPane>

@@ -10,6 +10,8 @@ public class SessionUtil {
 
     /** Usuario que tiene la sesión activa actualmente */
     private static Usuario usuarioActual;
+    private static Long sedeActivaId;
+    private static String sedeActivaNombre;
 
     /**
      * Guarda el usuario autenticado en la sesión.
@@ -52,9 +54,26 @@ public class SessionUtil {
         return usuarioActual != null ? usuarioActual.getUsuid() : 0;
     }
 
+    public static void setSedeActiva(Long sedeId, String sedeNombre) {
+        sedeActivaId = sedeId;
+        sedeActivaNombre = sedeNombre;
+    }
+
+    public static Long getSedeActivaId() {
+        return sedeActivaId;
+    }
+
+    public static String getSedeActivaNombre() {
+        return sedeActivaNombre;
+    }
+
     /**
      * Elimina la sesión activa (logout).
      * Pone usuarioActual a null.
      */
-    public static void limpiarSesion() { usuarioActual = null; }
+    public static void limpiarSesion() {
+        usuarioActual = null;
+        sedeActivaId = null;
+        sedeActivaNombre = null;
+    }
 }

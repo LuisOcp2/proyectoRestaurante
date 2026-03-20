@@ -1,23 +1,224 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
-<VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.mosqueteros.proyecto_restaurante.controller.ClienteController"
-      styleClass="welcome-panel" VBox.vgrow="ALWAYS">
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-    </padding>
-    
-    <StackPane style="-fx-background-color: rgba(84, 87, 205, 0.1); -fx-background-radius: 60; -fx-min-width: 120; -fx-min-height: 120; -fx-max-width: 120; -fx-max-height: 120;">
-        <FontIcon iconLiteral="fas-user-tie" iconSize="54" iconColor="#5457CD" />
-    </StackPane>
-    
-    <VBox alignment="CENTER" spacing="8.0">
-        <Label text="Base de Datos de Clientes" styleClass="welcome-title" />
-        <Label text="Módulo en Desarrollo" style="-fx-text-fill: #5457CD; -fx-font-weight: bold; -fx-font-size: 18px;" />
-        <Label text="Administración de fidelización y datos de contacto." styleClass="welcome-subtitle" />
-    </VBox>
-</VBox>
+<StackPane
+    styleClass="root-container"
+    stylesheets="@../styles/styles.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.mosqueteros.proyecto_restaurante.controller.ClienteController">
+
+    <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+    <HBox alignment="TOP_LEFT" fillHeight="true" maxHeight="Infinity" maxWidth="Infinity" spacing="24">
+
+        <VBox spacing="16" HBox.hgrow="ALWAYS" maxHeight="Infinity">
+
+            <VBox alignment="CENTER_LEFT" spacing="4">
+                <Label text="CLIENTES" styleClass="input-label"/>
+                <Label styleClass="titulo-texto" text="Clientes"/>
+            </VBox>
+
+            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
+                    <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                    <HBox styleClass="search-wrapper" HBox.hgrow="ALWAYS" minWidth="200">
+                        <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
+                        <MFXTextField fx:id="txtBuscarCliente"
+                            promptText="Buscar por nombre, documento o correo..."
+                            styleClass="search-field" HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <VBox spacing="2">
+                        <Label text="Estado" styleClass="input-label"/>
+                        <MFXComboBox fx:id="cmbFiltroEstado" promptText="Todos"
+                                  prefWidth="120" styleClass="filtro-combo-nativo"/>
+                    </VBox>
+
+                    <MFXButton fx:id="btnBuscarCliente" onAction="#buscarCliente"
+                               styleClass="btn-outline-primary" text="Buscar">
+                        <graphic><FontIcon iconLiteral="fas-search" iconSize="12"/></graphic>
+                    </MFXButton>
+
+                    <MFXButton fx:id="btnLimpiarFiltroCliente" onAction="#limpiarFiltros"
+                               styleClass="btn-outline-secondary" text="Limpiar">
+                        <graphic><FontIcon iconLiteral="fas-sync" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+
+                <HBox styleClass="table-header-row">
+                    <Label text="ID" styleClass="col-header" prefWidth="60"/>
+                    <Label text="Documento" styleClass="col-header" prefWidth="120"/>
+                    <Label text="Nombre" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Correo" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                    <Label text="Teléfono" styleClass="col-header" prefWidth="120"/>
+                    <Label text="Estado" styleClass="col-header" prefWidth="80"/>
+                </HBox>
+
+                <VBox VBox.vgrow="ALWAYS" spacing="0">
+                    <TableView fx:id="tblListaClientes" styleClass="mesas-table">
+                        <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="colIdCliente" prefWidth="60" text="ID" />
+                            <TableColumn fx:id="colDocumento" prefWidth="120" text="DOCUMENTO" />
+                            <TableColumn fx:id="colNombre" prefWidth="170" text="NOMBRE" />
+                            <TableColumn fx:id="colCorreo" prefWidth="180" text="CORREO" />
+                            <TableColumn fx:id="colTelefono" prefWidth="120" text="TELÉFONO" />
+                            <TableColumn fx:id="colEstado" prefWidth="80" text="ESTADO" />
+                        </columns>
+                    </TableView>
+
+                    <VBox fx:id="boxPlaceholder" alignment="CENTER" spacing="16"
+                          visible="true" managed="true" styleClass="empty-state">
+                        <FontIcon iconLiteral="fas-user-friends" iconSize="48" styleClass="icon-muted"/>
+                        <Label text="No hay clientes registrados" styleClass="titulo-texto"/>
+                        <Label text="Ajusta los filtros o agrega un nuevo cliente." styleClass="conteo-label"/>
+                    </VBox>
+                </VBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
+                    <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+                    <Label fx:id="lblConteoClientes" styleClass="conteo-label"
+                           text="0 clientes encontrados" HBox.hgrow="ALWAYS"/>
+                    <MFXButton fx:id="btnNuevoCliente" onAction="#prepararNuevoCliente"
+                               styleClass="btn-raised-primary" text="Nuevo Cliente">
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                    </MFXButton>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <VBox prefWidth="360" maxWidth="360" minWidth="320" spacing="0">
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-header">
+                <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                <StackPane styleClass="form-header-badge">
+                    <FontIcon iconLiteral="fas-user-friends" iconSize="18"/>
+                </StackPane>
+                <Label styleClass="form-header-titulo" text="Detalle de Cliente"/>
+            </HBox>
+
+            <MFXScrollPane fitToWidth="true" fitToHeight="false"
+                        hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        styleClass="form-scroll">
+                <VBox styleClass="main-card" spacing="0">
+                    <VBox spacing="18">
+                        <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
+
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCliTipoDocumentoField" styleClass="pixel-combo-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-address-card"/>
+                                </HBox>
+                                <MFXComboBox fx:id="cmbCliTipoDocumento" promptText=" "
+                                             styleClass="pixel-history-combo"
+                                             StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Tipo de documento" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                        </VBox>
+
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCliDocumentoField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-id-card"/>
+                                </HBox>
+                                <MFXTextField fx:id="txtCliDocumento" promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Número de documento" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                            <Label fx:id="lblCliDocumentoError" text="" styleClass="field-error"
+                                   managed="false" visible="false"/>
+                        </VBox>
+
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCliNombreField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-user"/>
+                                </HBox>
+                                <MFXTextField fx:id="txtCliNombre" promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Nombre" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                        </VBox>
+
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCliCorreoField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-envelope"/>
+                                </HBox>
+                                <MFXTextField fx:id="txtCliCorreo" promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Correo" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                        </VBox>
+
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCliTelefonoField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-phone"/>
+                                </HBox>
+                                <MFXTextField fx:id="txtCliTelefono" promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Teléfono" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                        </VBox>
+
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCliEstadoField" styleClass="pixel-combo-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-toggle-on"/>
+                                </HBox>
+                                <MFXComboBox fx:id="cmbCliEstado" promptText=" "
+                                             styleClass="pixel-history-combo"
+                                             StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Estado" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                        </VBox>
+
+                        <Label fx:id="lblMensajeCliente" styleClass="form-mensaje" text=""
+                               wrapText="true" managed="false" visible="false"/>
+                    </VBox>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
+                        <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
+
+                        <MFXButton fx:id="btnGuardarCliente" maxWidth="Infinity"
+                                   onAction="#guardarCliente" styleClass="btn-raised-primary"
+                                   text="Guardar Cliente">
+                            <graphic><FontIcon iconLiteral="fas-save" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <MFXButton fx:id="btnNuevoClienteForm" maxWidth="Infinity"
+                                   onAction="#prepararNuevoCliente" styleClass="btn-outline-primary"
+                                   text="Nuevo Cliente">
+                            <graphic><FontIcon iconLiteral="fas-plus" iconSize="12"/></graphic>
+                        </MFXButton>
+
+                        <MFXButton fx:id="btnEliminarClienteForm" disable="true" maxWidth="Infinity"
+                                   onAction="#eliminarCliente" styleClass="btn-outline-danger"
+                                   text="Eliminar">
+                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12"/></graphic>
+                        </MFXButton>
+                    </HBox>
+                </VBox>
+            </MFXScrollPane>
+        </VBox>
+    </HBox>
+</StackPane>

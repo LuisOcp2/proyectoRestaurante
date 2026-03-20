@@ -1,250 +1,266 @@
-/* =============================================================
-   CALI DELIGHTS - login-v5.css  v2.0
-   Nueva Paleta Oficial:
-   #7E3BED (Violeta) · #FFFFFF (Blanco) · #000000 (Negro) · #C6FF34 (Lima)
-   ============================================================= */
+/* Login - version estricta theme-driven */
 
-/* Fondo gris claro para la pantalla de login */
 .login-root {
-    -fx-background-color: #F8F9FA;
+    -fx-background-color: -color-bg-app;
     -fx-alignment: CENTER;
-    -fx-font-family: 'Work Sans', 'Segoe UI', 'Ubuntu', SansSerif;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-/* Tarjeta principal del formulario de login */
 .login-card {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: -color-surface;
     -fx-background-radius: 15;
     -fx-border-radius: 15;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-effect: dropshadow(three-pass-box, rgba(126, 59, 237, 0.15), 20, 0, 0, 10);
+    -fx-border-color: -color-border;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.12), 20, 0, 0, 8);
 }
 
-/* Cabecera de la tarjeta de login */
 .card-header {
     -fx-alignment: CENTER;
     -fx-padding: 36 36 24 36;
     -fx-spacing: 10;
 }
 
-/* Círculo violeta para el logo */
 .logo-circle {
-    -fx-background-color: rgba(126, 59, 237, 0.12);
+    -fx-background-color: rgba(0, 0, 0, 0.08);
     -fx-background-radius: 9999;
     -fx-pref-width: 72;
     -fx-pref-height: 72;
     -fx-alignment: CENTER;
 }
-.logo-icon { -fx-font-size: 32; }
 
-/* Nombre del restaurante en el login */
-.brand-name {
-    -fx-text-fill: #7E3BED;
-    -fx-font-size: 24;
-    -fx-font-weight: bold;
+.logo-icon {
+    -fx-font-size: 32;
 }
-/* Subtítulo de la marca en el login */
+
+.brand-name {
+    -fx-text-fill: -color-primary;
+    -fx-font-size: 24;
+    -fx-font-weight: 800;
+}
+
 .brand-sub {
-    -fx-text-fill: #6C757D;
+    -fx-text-fill: -color-text-muted;
     -fx-font-size: 12.5;
 }
 
-/* Línea divisora entre header y cuerpo */
 .header-divider {
-    -fx-background-color: #E9ECEF;
+    -fx-background-color: -color-border;
     -fx-pref-height: 1;
     -fx-max-height: 1;
 }
 
-/* Cuerpo del formulario de login */
-.card-body { -fx-padding: 28 36 24 36; }
-
-/* Etiqueta de cada campo del formulario */
-.field-label {
-    -fx-text-fill: #000000;
-    -fx-font-size: 14;
-    -fx-font-weight: bold;
+.card-body {
+    -fx-padding: 28 36 24 36;
 }
 
-/* Contenedor de cada campo input */
+.field-label {
+    -fx-text-fill: -color-text;
+    -fx-font-size: 14;
+    -fx-font-weight: 700;
+}
+
 .input-wrapper {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: -color-surface;
     -fx-background-radius: 8;
-    -fx-border-color: #E9ECEF;
-    -fx-border-width: 1.5;
+    -fx-border-color: -color-border;
+    -fx-border-width: 1.2;
     -fx-border-radius: 8;
 }
-/* Estado enfocado: borde violeta */
+
 .input-wrapper:focused {
-    -fx-border-color: #7E3BED;
-    -fx-effect: dropshadow(three-pass-box, rgba(126, 59, 237, 0.20), 6, 0, 0, 0);
+    -fx-border-color: -contrast-focus-border;
+    -fx-border-width: -contrast-focus-width;
+    -fx-effect: dropshadow(three-pass-box, -contrast-focus-shadow, 6, 0, 0, 0);
 }
 
-/* Campo de texto MaterialFX transparente */
-.mfx-field {
+.input-login-field {
     -fx-font-size: 14;
-    -fx-text-fill: #000000;
+    -fx-text-fill: -color-text;
     -fx-pref-height: 52;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
 }
-.mfx-field .text-field {
+
+.input-login-field,
+.input-login-field.text-field {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
-    -fx-prompt-text-fill: #6C757D;
+    -fx-prompt-text-fill: -color-text-muted;
+    -fx-text-fill: -color-text;
 }
-.mfx-field>.unfocused-line,
-.mfx-field>.focused-line,
-.mfx-field>.line,
-.mfx-field>.track {
+
+.input-login-field > .unfocused-line,
+.input-login-field > .focused-line,
+.input-login-field > .line,
+.input-login-field > .track {
     -fx-stroke: transparent;
     -fx-stroke-width: 0;
     -fx-opacity: 0;
 }
-.mfx-field:valid, .mfx-field:invalid {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-}
-.mfx-field:valid .text-field, .mfx-field:invalid .text-field,
-.mfx-field:valid>.text-field, .mfx-field:invalid>.text-field {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-}
-.mfx-field:valid>.unfocused-line, .mfx-field:valid>.focused-line, .mfx-field:valid>.line,
-.mfx-field:invalid>.unfocused-line, .mfx-field:invalid>.focused-line, .mfx-field:invalid>.line {
-    -fx-stroke: transparent; -fx-stroke-width: 0; -fx-opacity: 0;
-}
-.mfx-field:focused { -fx-border-color: transparent; -fx-background-color: transparent; }
 
-/* Suprimir botón nativo de ojo MFX */
-.mfx-password-field .password-field-toggle-button,
-.mfx-password-field>.password-field-toggle-button,
-.mfx-field .password-field-toggle-button,
-.mfx-field>.password-field-toggle-button,
-.mfx-field .toggle-button,
-.mfx-field>.toggle-button {
-    -fx-pref-width: 0; -fx-pref-height: 0;
-    -fx-max-width: 0; -fx-max-height: 0;
-    -fx-min-width: 0; -fx-min-height: 0;
-    -fx-opacity: 0; -fx-padding: 0;
+.input-login-field:focused {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.input-login-field .password-field-toggle-button,
+.input-login-field > .password-field-toggle-button,
+.input-login-field .toggle-button,
+.input-login-field > .toggle-button {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
     -fx-managed: false;
 }
 
-/* Ícono izquierdo del campo */
+.field-icon-left,
+.eye-btn {
+    -fx-text-fill: -color-text-muted;
+}
+
 .field-icon-left {
     -fx-font-size: 16;
-    -fx-text-fill: #6C757D;
     -fx-mouse-transparent: true;
 }
 
-/* Botón ojo para mostrar/ocultar contraseña */
 .eye-btn,
-.eye-btn:hover, .eye-btn:pressed,
-.eye-btn:focused, .eye-btn:armed, .eye-btn:disabled {
+.eye-btn:hover,
+.eye-btn:pressed,
+.eye-btn:focused,
+.eye-btn:armed,
+.eye-btn:disabled {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-effect: none;
     -fx-padding: 0;
 }
+
 .eye-btn {
-    -fx-text-fill: #6C757D;
     -fx-font-size: 18;
     -fx-cursor: hand;
     -fx-pref-width: 36;
     -fx-pref-height: 36;
     -fx-background-radius: 50;
 }
-.eye-btn:hover { -fx-text-fill: #7E3BED; -fx-scale-x: 1.12; -fx-scale-y: 1.12; }
-.eye-btn:pressed { -fx-scale-x: 0.95; -fx-scale-y: 0.95; }
-/* Estado activo: contraseña visible */
-.eye-btn-active { -fx-text-fill: #7E3BED; }
-.eye-btn>.ripple-generator, .eye-btn>.surface {
-    -fx-background-color: transparent; -fx-opacity: 0;
+
+.eye-btn:hover,
+.eye-btn-active {
+    -fx-text-fill: -color-primary;
 }
 
-/* Mensaje de error por campo */
+.eye-btn:hover {
+    -fx-scale-x: 1.12;
+    -fx-scale-y: 1.12;
+}
+
+.eye-btn:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.eye-btn > .ripple-generator,
+.eye-btn > .surface {
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+}
+
 .field-error {
-    -fx-text-fill: #DC3545;
+    -fx-text-fill: -color-danger;
     -fx-font-size: 11.5;
     -fx-padding: 0 0 0 4;
 }
-/* Wrapper en estado error */
+
 .input-wrapper-error {
-    -fx-border-color: #DC3545;
-    -fx-effect: dropshadow(three-pass-box, rgba(220, 53, 69, 0.18), 6, 0, 0, 0);
+    -fx-border-color: -color-danger;
+    -fx-effect: dropshadow(three-pass-box, rgba(186, 26, 26, 0.20), 6, 0, 0, 0);
 }
 
-/* Checkbox recordarme */
-.mfx-check { -fx-text-fill: #6C757D; -fx-font-size: 12.5; }
+.login-check {
+    -fx-text-fill: -color-text-muted;
+    -fx-font-size: 12.5;
+}
 
-/* Enlace ¿Olvidé mi contraseña? */
 .forgot-link {
-    -fx-text-fill: #7E3BED;
+    -fx-text-fill: -color-primary;
     -fx-font-size: 12.5;
     -fx-font-weight: 600;
     -fx-cursor: hand;
 }
-.forgot-link:hover { -fx-underline: true; }
 
-/* Banner de error general del formulario */
+.forgot-link:hover {
+    -fx-underline: true;
+}
+
 .error-banner {
-    -fx-background-color: rgba(220, 53, 69, 0.07);
+    -fx-background-color: rgba(186, 26, 26, 0.08);
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-border-color: rgba(220, 53, 69, 0.30);
-    -fx-border-width: 1.5;
-    -fx-text-fill: #DC3545;
+    -fx-border-color: -color-danger;
+    -fx-border-width: 1.2;
+    -fx-text-fill: -color-danger;
     -fx-font-size: 13;
     -fx-padding: 10 14 10 14;
     -fx-alignment: CENTER_LEFT;
 }
 
-/* Botón principal de inicio de sesión */
 .btn-login {
-    -fx-background-color: #7E3BED;
+    -fx-background-color: -color-primary;
     -fx-background-radius: 8;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: -color-surface;
     -fx-font-size: 15;
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
     -fx-pref-height: 52;
     -fx-cursor: hand;
     -fx-border-color: transparent;
     -fx-border-width: 0;
-    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.50), 18, 0.28, 0, 6);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 14, 0.2, 0, 4);
 }
-.btn-login:hover {
-    -fx-background-color: #5D1FBC;
-    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.70), 24, 0.40, 0, 10);
-    -fx-scale-x: 1.018; -fx-scale-y: 1.018;
-}
-.btn-login:pressed {
-    -fx-background-color: #3A0F8A;
-    -fx-scale-x: 0.975; -fx-scale-y: 0.975;
-    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.22), 10, 0.18, 0, 4);
-}
-.btn-login:disabled { -fx-opacity: 0.55; -fx-cursor: default; -fx-effect: none; }
-.btn-login>.ripple-generator { -fx-background-color: rgba(255, 255, 255, 0.20); }
-/* Estado cargando */
-.btn-loading { -fx-background-color: #6C757D; -fx-cursor: default; -fx-effect: none; }
 
-/* Pie de la tarjeta de login */
+.btn-login:hover {
+    -fx-background-color: -color-primary-strong;
+}
+
+.btn-login:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.btn-login:disabled {
+    -fx-opacity: 0.55;
+    -fx-cursor: default;
+    -fx-effect: none;
+}
+
+.btn-login > .ripple-generator {
+    -fx-background-color: rgba(255, 255, 255, 0.18);
+}
+
+.btn-loading {
+    -fx-background-color: -color-text-muted;
+    -fx-cursor: default;
+    -fx-effect: none;
+}
+
 .card-footer {
-    -fx-background-color: #F8F9FA;
-    -fx-border-color: #E9ECEF transparent transparent transparent;
+    -fx-background-color: -color-bg-app;
+    -fx-border-color: -color-border transparent transparent transparent;
     -fx-border-width: 1 0 0 0;
     -fx-padding: 14 36 14 36;
     -fx-alignment: CENTER;
     -fx-background-radius: 0 0 15 15;
 }
-/* Etiqueta de copyright en el footer */
+
 .footer-label {
-    -fx-text-fill: #6C757D;
+    -fx-text-fill: -color-text-muted;
     -fx-font-size: 9;
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
 }

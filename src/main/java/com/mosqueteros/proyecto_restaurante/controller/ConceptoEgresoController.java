@@ -1,20 +1,21 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import com.mosqueteros.proyecto_restaurante.util.FloatingFieldHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Controlador para VistaConceptoEgreso.fxml.
@@ -23,7 +24,7 @@ import java.util.ResourceBundle;
  *
  * CORRECCIÓN: el controlador anterior referenciaba "comboEstado"
  * que no existe en el FXML nuevo. Ahora usa los fx:id correctos:
- *   cmbFiltroEstado  → ComboBox filtro en barra superior
+ *   cmbFiltroEstado  → MFXComboBox filtro en barra superior
  *   cmbConEstado     → MFXComboBox en formulario lateral
  */
 public class ConceptoEgresoController implements Initializable {
@@ -31,8 +32,8 @@ public class ConceptoEgresoController implements Initializable {
     // ─── Filtros ──────────────────────────────────────────────────
     /** Campo de búsqueda por nombre o descripción */
     @FXML private MFXTextField txtBuscarConcepto;
-    /** ComboBox nativo filtro por estado (fx:id="cmbFiltroEstado") */
-    @FXML private ComboBox<String> cmbFiltroEstado;
+    /** MFXComboBox nativo filtro por estado (fx:id="cmbFiltroEstado") */
+    @FXML private MFXComboBox<String> cmbFiltroEstado;
 
     // ─── Tabla ────────────────────────────────────────────────────
     /** Tabla principal de conceptos de egreso */
@@ -49,10 +50,16 @@ public class ConceptoEgresoController implements Initializable {
     // ─── Formulario ───────────────────────────────────────────────
     /** Campo nombre del concepto */
     @FXML private MFXTextField txtConNombre;
+    /** Contenedor visual del campo nombre */
+    @FXML private StackPane boxConNombreField;
+    /** Error de validacion del nombre */
+    @FXML private Label lblConNombreError;
     /** Campo descripción del concepto */
     @FXML private MFXTextField txtConDescripcion;
-    /** ComboBox estado del formulario (fx:id="cmbConEstado") */
+    /** MFXComboBox estado del formulario (fx:id="cmbConEstado") */
     @FXML private MFXComboBox<String> cmbConEstado;
+    /** Contenedor visual del combo estado */
+    @FXML private StackPane boxConEstadoField;
     /** Botón eliminar del formulario */
     @FXML private MFXButton btnEliminarConceptoForm;
     /** Etiqueta de mensajes de validación */
@@ -76,6 +83,7 @@ public class ConceptoEgresoController implements Initializable {
         // Enlazar tabla a lista observable
         tblListaConceptos.setItems(listaConceptos);
         actualizarPlaceholder();
+        configurarFloatingFields();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -126,8 +134,15 @@ public class ConceptoEgresoController implements Initializable {
      */
     @FXML
     private void guardarConcepto() {
+        limpiarErroresCampos();
         if (txtConNombre.getText().isBlank()) {
+            mostrarErrorNombre("El nombre es obligatorio.");
             mostrarMensaje("⚠ El nombre del concepto es obligatorio.", true);
+            return;
+        }
+        if (cmbConEstado.getValue() == null || cmbConEstado.getValue().isBlank()) {
+            marcarInvalido(boxConEstadoField, true);
+            mostrarMensaje("⚠ Selecciona un estado.", true);
             return;
         }
         // TODO: integrar con ConceptoEgresoDAO.insertar/actualizar(...)
@@ -156,6 +171,7 @@ public class ConceptoEgresoController implements Initializable {
         txtConDescripcion.clear();
         cmbConEstado.setValue("Activo");
         btnEliminarConceptoForm.setDisable(true);
+        limpiarErroresCampos();
         ocultarMensaje();
     }
 
@@ -182,5 +198,32 @@ public class ConceptoEgresoController implements Initializable {
         lblMensajeConcepto.setText("");
         lblMensajeConcepto.setVisible(false);
         lblMensajeConcepto.setManaged(false);
+    }
+
+    private void configurarFloatingFields() {
+        FloatingFieldHelper.bindTextField(boxConNombreField, txtConNombre);
+        FloatingFieldHelper.bindComboBox(boxConEstadoField, cmbConEstado);
+    }
+
+    private void limpiarErroresCampos() {
+        if (lblConNombreError != null) {
+            lblConNombreError.setText("");
+            lblConNombreError.setVisible(false);
+            lblConNombreError.setManaged(false);
+        }
+        FloatingFieldHelper.clearInvalid(boxConNombreField, boxConEstadoField);
+    }
+
+    private void mostrarErrorNombre(String mensaje) {
+        if (lblConNombreError != null) {
+            lblConNombreError.setText(mensaje);
+            lblConNombreError.setVisible(true);
+            lblConNombreError.setManaged(true);
+        }
+        FloatingFieldHelper.setInvalid(boxConNombreField, true);
+    }
+
+    private void marcarInvalido(StackPane contenedor, boolean invalido) {
+        FloatingFieldHelper.setInvalid(contenedor, invalido);
     }
 }

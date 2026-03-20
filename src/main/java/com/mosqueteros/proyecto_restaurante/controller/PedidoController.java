@@ -1,15 +1,15 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * PedidoController — controlador para VistaPedidos.fxml
@@ -44,15 +44,15 @@ public class PedidoController {
 
     // ── Filtros ──────────────────────────────────────────────────────────
     @FXML private DatePicker     dpFechaPedido;
-    @FXML private ComboBox<String> cmbFiltroMesaPedido;
-    @FXML private ComboBox<String> cmbFiltroEstadoPedido;
-    @FXML private ComboBox<String> cmbFiltroSedePedido;
+    @FXML private MFXComboBox<String> cmbFiltroMesaPedido;
+    @FXML private MFXComboBox<String> cmbFiltroEstadoPedido;
+    @FXML private MFXComboBox<String> cmbFiltroSedePedido;
 
     // ── Formulario rápido (panel cocina) ─────────────────────────────────
-    @FXML private ComboBox<String> cmbPlatoDetalle;
+    @FXML private MFXComboBox<String> cmbPlatoDetalle;
     @FXML private MFXTextField   txtCantidadDetalle;
     @FXML private TextArea       txtObservacionDetalle;
-    @FXML private ComboBox<String> cmbEstadoDetalle;
+    @FXML private MFXComboBox<String> cmbEstadoDetalle;
 
     // ── Labels ───────────────────────────────────────────────────────────
     @FXML private Label lblConteoPedidos;

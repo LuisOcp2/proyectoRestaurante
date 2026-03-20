@@ -1,20 +1,21 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import com.mosqueteros.proyecto_restaurante.util.FloatingFieldHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Controlador para VistaEgresos.fxml.
@@ -23,8 +24,8 @@ import java.util.ResourceBundle;
  *
  * CORRECCIÓN: el controlador anterior referenciaba "comboTipoEgreso"
  * que no existe en el FXML nuevo. Ahora usa los fx:id correctos:
- *   cmbFiltroConcepto → ComboBox filtro concepto en barra superior
- *   cmbFiltroEstado   → ComboBox filtro estado en barra superior
+ *   cmbFiltroConcepto → MFXComboBox filtro concepto en barra superior
+ *   cmbFiltroEstado   → MFXComboBox filtro estado en barra superior
  *   cmbEgresoEstado   → MFXComboBox estado en formulario lateral
  */
 public class EgresoController implements Initializable {
@@ -32,10 +33,10 @@ public class EgresoController implements Initializable {
     // ─── Filtros ──────────────────────────────────────────────────
     /** Campo de búsqueda por concepto o número */
     @FXML private MFXTextField txtBuscarEgreso;
-    /** ComboBox nativo filtro por concepto (fx:id="cmbFiltroConcepto") */
-    @FXML private ComboBox<String> cmbFiltroConcepto;
-    /** ComboBox nativo filtro por estado (fx:id="cmbFiltroEstado") */
-    @FXML private ComboBox<String> cmbFiltroEstado;
+    /** MFXComboBox nativo filtro por concepto (fx:id="cmbFiltroConcepto") */
+    @FXML private MFXComboBox<String> cmbFiltroConcepto;
+    /** MFXComboBox nativo filtro por estado (fx:id="cmbFiltroEstado") */
+    @FXML private MFXComboBox<String> cmbFiltroEstado;
 
     // ─── Tabla ────────────────────────────────────────────────────
     /** Tabla principal de egresos */
@@ -55,6 +56,10 @@ public class EgresoController implements Initializable {
     // ─── Formulario ───────────────────────────────────────────────
     /** Campo número del egreso */
     @FXML private MFXTextField txtEgresoNumero;
+    /** Contenedor visual del campo numero */
+    @FXML private StackPane boxEgresoNumeroField;
+    /** Error de validacion del numero */
+    @FXML private Label lblEgresoNumeroError;
     /** Campo fecha del egreso */
     @FXML private MFXTextField dtEgresoFecha;
     /** Campo concepto del egreso */
@@ -63,8 +68,10 @@ public class EgresoController implements Initializable {
     @FXML private MFXTextField txtEgresoDetalle;
     /** Campo valor del egreso */
     @FXML private MFXTextField txtEgresoValor;
-    /** ComboBox estado del formulario (fx:id="cmbEgresoEstado") */
+    /** MFXComboBox estado del formulario (fx:id="cmbEgresoEstado") */
     @FXML private MFXComboBox<String> cmbEgresoEstado;
+    /** Contenedor visual del combo estado */
+    @FXML private StackPane boxEgresoEstadoField;
     /** Botón eliminar del formulario */
     @FXML private MFXButton btnEliminarEgresoForm;
     /** Etiqueta de mensajes de validación */
@@ -90,6 +97,7 @@ public class EgresoController implements Initializable {
         // Enlazar tabla a lista observable
         tblListaEgresos.setItems(listaEgresos);
         actualizarPlaceholder();
+        configurarFloatingFields();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -141,12 +149,19 @@ public class EgresoController implements Initializable {
      */
     @FXML
     private void guardarEgreso() {
+        limpiarErroresCampos();
         if (txtEgresoNumero.getText().isBlank()) {
+            mostrarErrorNumero("El numero de egreso es obligatorio.");
             mostrarMensaje("⚠ El número de egreso es obligatorio.", true);
             return;
         }
         if (txtEgresoValor.getText().isBlank()) {
             mostrarMensaje("⚠ El valor del egreso es obligatorio.", true);
+            return;
+        }
+        if (cmbEgresoEstado.getValue() == null || cmbEgresoEstado.getValue().isBlank()) {
+            marcarInvalido(boxEgresoEstadoField, true);
+            mostrarMensaje("⚠ Selecciona un estado.", true);
             return;
         }
         // TODO: integrar con EgresoDAO.insertar/actualizar(...)
@@ -178,6 +193,7 @@ public class EgresoController implements Initializable {
         txtEgresoValor.clear();
         cmbEgresoEstado.setValue("Activo");
         btnEliminarEgresoForm.setDisable(true);
+        limpiarErroresCampos();
         ocultarMensaje();
     }
 
@@ -204,5 +220,32 @@ public class EgresoController implements Initializable {
         lblMensajeEgreso.setText("");
         lblMensajeEgreso.setVisible(false);
         lblMensajeEgreso.setManaged(false);
+    }
+
+    private void configurarFloatingFields() {
+        FloatingFieldHelper.bindTextField(boxEgresoNumeroField, txtEgresoNumero);
+        FloatingFieldHelper.bindComboBox(boxEgresoEstadoField, cmbEgresoEstado);
+    }
+
+    private void limpiarErroresCampos() {
+        if (lblEgresoNumeroError != null) {
+            lblEgresoNumeroError.setText("");
+            lblEgresoNumeroError.setVisible(false);
+            lblEgresoNumeroError.setManaged(false);
+        }
+        FloatingFieldHelper.clearInvalid(boxEgresoNumeroField, boxEgresoEstadoField);
+    }
+
+    private void mostrarErrorNumero(String mensaje) {
+        if (lblEgresoNumeroError != null) {
+            lblEgresoNumeroError.setText(mensaje);
+            lblEgresoNumeroError.setVisible(true);
+            lblEgresoNumeroError.setManaged(true);
+        }
+        FloatingFieldHelper.setInvalid(boxEgresoNumeroField, true);
+    }
+
+    private void marcarInvalido(StackPane contenedor, boolean invalido) {
+        FloatingFieldHelper.setInvalid(contenedor, invalido);
     }
 }

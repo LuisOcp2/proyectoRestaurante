@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
@@ -12,6 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
 <!--
   VistaCategoriaInsumo.fxml — CRUD Categorías de Insumo
@@ -24,7 +24,7 @@
 
   CONTRATO CONTROLADOR (CategoriaInsumoController):
     txtBuscarCategoria  → MFXTextField
-    cmbFiltroEstado     → ComboBox<String>
+    cmbFiltroEstado     → MFXComboBox<String>
     tblListaCategorias  → TableView<CategoriaInsumo>
     colId               → TableColumn
     colNombre           → TableColumn
@@ -34,7 +34,7 @@
     boxPlaceholder      → VBox
     txtCatNombre        → MFXTextField
     txtCatDescripcion   → MFXTextField
-    cmbCatEstado        → ComboBox<String>
+    cmbCatEstado        → MFXComboBox<String>
     lblMensajeCategoria → Label
 -->
 <StackPane
@@ -80,18 +80,18 @@
                     <!-- Filtro por estado -->
                     <VBox spacing="2">
                         <Label text="Estado" styleClass="input-label"/>
-                        <ComboBox fx:id="cmbFiltroEstado"
+                        <MFXComboBox fx:id="cmbFiltroEstado"
                                   promptText="Todos los estados"
                                   prefWidth="140"
                                   styleClass="filtro-combo-nativo"/>
                     </VBox>
 
-                    <Button fx:id="btnBuscarCategoria"
+                    <MFXButton fx:id="btnBuscarCategoria"
                             onAction="#buscarCategoria"
                             styleClass="btn-outline-primary"
                             text="Buscar"/>
 
-                    <Button fx:id="btnLimpiarFiltroCategoria"
+                    <MFXButton fx:id="btnLimpiarFiltroCategoria"
                             onAction="#limpiarFiltros"
                             styleClass="btn-outline-secondary"
                             text="Limpiar"/>
@@ -130,7 +130,7 @@
                            styleClass="conteo-label"
                            text="0 categorías encontradas"
                            HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="btnNuevoCategoria"
+                    <MFXButton fx:id="btnNuevoCategoria"
                             onAction="#prepararNuevoCategoria"
                             styleClass="btn-raised-primary"
                             text="Nueva Categoría"/>
@@ -149,7 +149,7 @@
                 <Label styleClass="form-header-titulo" text="Detalle de Categoría"/>
             </HBox>
 
-            <ScrollPane fitToWidth="true" fitToHeight="false"
+            <MFXScrollPane fitToWidth="true" fitToHeight="false"
                         hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                         styleClass="form-scroll">
                 <VBox styleClass="main-card" spacing="0">
@@ -157,16 +157,19 @@
                     <VBox spacing="18">
                         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
 
-                        <!-- Campo: Nombre -->
-                        <VBox spacing="6">
-                            <Label text="Nombre *" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
-                                <FontIcon iconLiteral="fas-tag" iconSize="14" styleClass="icon-muted"/>
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCatNombreField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-tag"/>
+                                </HBox>
                                 <MFXTextField fx:id="txtCatNombre"
-                                              promptText="Ej. Lácteos"
-                                              styleClass="input-field"
-                                              HBox.hgrow="ALWAYS"/>
-                            </HBox>
+                                              promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Nombre *" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                            <Label fx:id="lblCatNombreError" text="" styleClass="field-error"
+                                   managed="false" visible="false"/>
                         </VBox>
 
                         <!-- Campo: Descripción -->
@@ -181,16 +184,17 @@
                             </HBox>
                         </VBox>
 
-                        <!-- Campo: Estado -->
-                        <VBox spacing="6">
-                            <Label text="Estado" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
-                                <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted"/>
-                                <ComboBox fx:id="cmbCatEstado"
-                                          promptText="Seleccionar estado"
-                                          styleClass="input-combo"
-                                          HBox.hgrow="ALWAYS"/>
-                            </HBox>
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxCatEstadoField" styleClass="pixel-combo-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-toggle-on"/>
+                                </HBox>
+                                <MFXComboBox fx:id="cmbCatEstado"
+                                             promptText=" "
+                                             styleClass="pixel-history-combo"
+                                             StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Estado" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
                         </VBox>
 
                         <Label fx:id="lblMensajeCategoria"
@@ -205,19 +209,19 @@
                     <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
                         <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
 
-                        <Button fx:id="btnGuardarCategoria"
+                        <MFXButton fx:id="btnGuardarCategoria"
                                 maxWidth="Infinity"
                                 onAction="#guardarCategoria"
                                 styleClass="btn-raised-primary"
                                 text="Guardar Categoría"/>
 
-                        <Button fx:id="btnNuevoCategoriaForm"
+                        <MFXButton fx:id="btnNuevoCategoriaForm"
                                 maxWidth="Infinity"
                                 onAction="#prepararNuevoCategoria"
                                 styleClass="btn-outline-primary"
                                 text="Nueva Categoría"/>
 
-                        <Button fx:id="btnEliminarCategoriaForm"
+                        <MFXButton fx:id="btnEliminarCategoriaForm"
                                 disable="true"
                                 maxWidth="Infinity"
                                 onAction="#eliminarCategoria"
@@ -225,7 +229,7 @@
                                 text="Eliminar"/>
                     </HBox>
                 </VBox>
-            </ScrollPane>
+            </MFXScrollPane>
         </VBox>
     </HBox>
 </StackPane>

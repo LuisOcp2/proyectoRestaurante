@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
 <?import io.github.palexdev.materialfx.controls.MFXCheckbox?>
+<?import javafx.scene.control.Label?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
@@ -36,9 +37,9 @@
                 <Label text="Usuario" styleClass="field-label"/>
                 <StackPane styleClass="input-wrapper">
                     <MFXTextField fx:id="texUsuario"
-                                  floatMode="DISABLED"
+                                   
                                   promptText="Ingresa tu usuario"
-                                  styleClass="mfx-field"
+                                  styleClass="input-login-field"
                                   maxWidth="Infinity"
                                   onKeyReleased="#validarCampoAlEscribir">
                         <padding><Insets left="40" right="14" top="0" bottom="0"/></padding>
@@ -58,17 +59,17 @@
                 <Label text="Contraseña" styleClass="field-label"/>
                 <StackPane styleClass="input-wrapper">
                     <MFXPasswordField fx:id="texContrasena"
-                                      floatMode="DISABLED"
+                                       
                                       promptText="••••••••"
-                                      styleClass="mfx-field"
+                                      styleClass="input-login-field"
                                       maxWidth="Infinity"
                                       onKeyReleased="#validarCampoAlEscribir">
                         <padding><Insets top="0" right="45" bottom="0" left="40"/></padding>
                     </MFXPasswordField>
                     <MFXTextField fx:id="texContrasenaVisible"
-                                  floatMode="DISABLED"
+                                   
                                   promptText="••••••••"
-                                  styleClass="mfx-field"
+                                  styleClass="input-login-field"
                                   maxWidth="Infinity"
                                   visible="false" managed="false"
                                   onKeyReleased="#validarCampoAlEscribir">
@@ -94,8 +95,8 @@
 
             <HBox alignment="CENTER_LEFT">
                 <MFXCheckbox fx:id="casRecordar"
-                             text="Recordarme"
-                             styleClass="mfx-check"/>
+                              text="Recordarme"
+                              styleClass="login-check"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label text="¿Olvidó su contraseña?"
                        styleClass="forgot-link"

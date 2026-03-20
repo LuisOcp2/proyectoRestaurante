@@ -1,341 +1,219 @@
-/* ═══════════════════════════════════════════════════════════════════
-   MODERN MAÎTRE D' — Light Mode Editorial v4.0 (Neo-Inputs Native)
-   Primary: #7E3BED (Violet) · Secondary: #C6FF34 (Lime)
-   Background: #FFFFFF (Stark White) · Surface-Low: #F8F8FC
-═══════════════════════════════════════════════════════════════════ */
+/* Vista Mesas - version simplificada y theme-driven */
 
-/* ── 1. CONTENEDOR RAÍZ ── */
 .root-container {
-    -fx-background-color: #FFFFFF !important;
-    -fx-font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
+    -fx-background-color: -color-bg-app;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-/* ── 2. JERARQUÍA DE SUPERFICIES ── */
 .main-card {
-    -fx-background-color: #F8F8FC !important; /* surface-container-low */
+    -fx-background-color: -color-surface;
     -fx-background-radius: 12;
-    -fx-border-width: 0;
-    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.04), 40, 0, 0, 4);
+    -fx-border-radius: 12;
+    -fx-border-color: -color-border;
+    -fx-border-width: 1;
 }
 
-.form-scroll, .form-scroll > .viewport {
-    -fx-background-color: transparent !important;
+.form-scroll,
+.form-scroll > .viewport {
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
 
-.divider { 
-    -fx-background-color: #E0E0EB !important;
+.divider {
+    -fx-background-color: -color-border;
     -fx-max-height: 1;
 }
 
-/* ── 3. TIPOGRAFÍA EDITORIAL ── */
 .titulo-texto {
-    -fx-font-size: 32px;
-    -fx-font-weight: 800; /* ExtraBold */
-    -fx-text-fill: #000000;
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -color-text;
 }
-.header-icon { -fx-icon-color: #7E3BED; }
-.icon-muted { -fx-icon-color: #95A5A6; }
 
-/* ESTILO DE LABEL COMO EN LA IMAGEN (Violeta, Bold) */
+.header-icon { -fx-icon-color: -color-primary; }
+.icon-muted { -fx-icon-color: -color-text-muted; }
+
 .input-label {
     -fx-font-size: 13px;
-    -fx-font-weight: 800;
-    -fx-text-fill: #7E3BED; 
+    -fx-font-weight: 700;
+    -fx-text-fill: -color-primary;
 }
 
-
-/* ═══════════════════════════════════════════════════════════════════
-   ESTILOS NEOBRUTALISTAS PARA INPUTS (Funcionales)
-═══════════════════════════════════════════════════════════════════ */
-
-/* El HBOX que envuelve el ícono y el input */
-.input-wrapper {
-    -fx-background-color: #FFFFFF !important;
-    -fx-padding: 0 14;
-    
-    /* Borde negro sólido */
-    -fx-border-color: #000000;
-    -fx-border-width: 1.5;
+.input-wrapper,
+.search-wrapper,
+.filtro-combo-nativo {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border;
+    -fx-border-width: 1;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    
-    /* Sombra sólida desplazada (Blur = 0, Spread = 1.0) */
-    -fx-effect: dropshadow(gaussian, #000000, 0, 1.0, 3, 3);
-    -fx-cursor: text;
 }
 
-.input-wrapper:focused-within {
-    -fx-border-color: #000000 !important;
-    -fx-effect: dropshadow(gaussian, #000000, 0, 1.0, 5, 5);
+.input-wrapper {
+    -fx-padding: 0 14;
 }
 
-/* ── CAMPOS INTERNOS PARA EL FORMULARIO NEOBRUTALISTA ── */
-/* Transparencia total para dejar que el wrapper luzca */
-.input-field,
-.input-combo {
-    -fx-background-color: transparent !important;
-    -fx-padding: 0;
-    -fx-cursor: hand;
-}
-
-/* 1. MFX TEXTFIELD INTERNO: MATAR EL BORDE AZUL NATIVO Y FONDOS OCULTOS */
-.input-field .text-field, 
-.input-field .text-field:focused {
-    -fx-background-color: transparent !important;
-    -fx-border-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-background-insets: 0 !important;
-    -fx-padding: 0 !important;
-    -fx-effect: none !important; 
-}
-
-/* Ocultar las líneas azules nativas de MFX SIN usar visibility: hidden */
-.input-field > .line, 
-.input-field > .focused-line, 
-.input-field > .unfocused-line { 
-    -fx-stroke: transparent !important;
-    -fx-fill: transparent !important;
-}
-
-/* Estilos de la tipografía dentro del campo de texto */
-.input-field .text-field {
-    -fx-text-fill: #1A1C1C !important;
-    -fx-font-size: 14px !important;
-    -fx-font-weight: 600 !important;
-}
-.input-field .text-field:empty {
-    -fx-text-fill: #A0A0B0 !important;
-    -fx-prompt-text-fill: #A0A0B0 !important;
-}
-
-/* 2. COMBOBOX NATIVO INTERNO: LIMPIEZA TOTAL */
-/* Quita cualquier marco azul de enfoque nativo */
-.input-combo:focused {
-    -fx-background-color: transparent !important;
-    -fx-effect: none !important; 
-}
-
-/* Estilo del texto del ComboBox cuando NO está desplegado */
-.input-combo .list-cell {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #1A1C1C !important;
-    -fx-font-size: 14px !important;
-    -fx-font-weight: 600 !important;
-    -fx-padding: 0 !important; /* Para que alinee perfecto con el icono del HBox */
-}
-.input-combo .list-cell:empty {
-    -fx-text-fill: #A0A0B0 !important;
-}
-
-/* La flechita del ComboBox interno */
-.input-combo .arrow-button { 
-    -fx-background-color: transparent !important; 
-    -fx-padding: 0 0 0 0 !important; 
-}
-.input-combo .arrow { 
-    -fx-background-color: #000000 !important; 
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   DISEÑO NEOBRUTALISTA PARA EL POPUP DEL COMBOBOX (La Lista Pro Max)
-   - Aplica para TODOS los ComboBox nativos (.input-combo y .filtro-combo-nativo) -
-═══════════════════════════════════════════════════════════════════ */
-
-/* El contenedor del popup real que debemos estilizar */
-.combo-box-popup > .list-view {
-    -fx-background-color: #FFFFFF !important;
-    
-    /* Borde neobrutalista para la caja flotante */
-    -fx-border-color: #000000 !important;
-    -fx-border-width: 1.5 !important;
-    -fx-border-radius: 8 !important;
-    -fx-background-radius: 8 !important;
-    
-    /* Sombra dura Neobrutalista */
-    -fx-effect: dropshadow(gaussian, #000000, 0, 1.0, 4, 4) !important;
-    
-    /* Padding para separar el texto del borde grueso */
-    -fx-padding: 8 4 8 4 !important; 
-}
-
-/* Estilo de las opciones de la lista (Celdas) */
-.combo-box-popup .list-cell {
-    -fx-background-color: transparent !important;
-    -fx-padding: 10 16 10 16 !important; 
-    -fx-alignment: CENTER-LEFT !important; 
-    -fx-background-radius: 6 !important;
-    -fx-cursor: hand !important;
-    -fx-min-height: 40 !important; /* Más alto para que no se vea aplastado */
-    
-    /* Texto base */
-    -fx-text-fill: #1A1C1C !important;
-    -fx-font-size: 14px !important;
-    -fx-font-weight: 600 !important;
-    -fx-font-family: "Manrope", "Inter", sans-serif !important;
-}
-
-/* Hover de las opciones */
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: #F8F8FC !important;
-}
-
-/* Opción seleccionada */
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: #C6FF34 !important; /* El Lime de fondo */
-    -fx-text-fill: #000000 !important;
-    -fx-font-weight: 800 !important;
-}
-
-
-/* ── 4. BARRA DE FILTROS SUPERIOR (Manteniendo look limpio) ── */
 .search-wrapper {
-    -fx-background-color: #FFFFFF !important;
-    -fx-background-radius: 8;
     -fx-padding: 0 16;
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 12;
-    -fx-border-color: #E0E0EB;
-    -fx-border-width: 1;
 }
-.search-wrapper:focused-within {
-    -fx-border-color: #7E3BED !important;
-    -fx-border-width: 1.5;
-}
-.search-field, .search-field.mfx-text-field {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #1A1C1C !important;
-    -fx-prompt-text-fill: #A0A0B0 !important;
-    -fx-font-size: 14px;
-}
-/* Para la barra superior sí podemos usar visibility hidden en la línea porque MFXTextField raíz no se rompe igual */
-.search-field > .line, .search-field > .focused-line, .search-field > .unfocused-line { visibility: hidden; }
 
-/* ComboBox Nativos Barra Superior */
-.filtro-combo-nativo {
-    -fx-background-color: #FFFFFF !important;
-    -fx-background-radius: 8;
-    -fx-border-color: #E0E0EB;
-    -fx-border-width: 1;
-    -fx-border-radius: 8;
-    -fx-cursor: hand;
-}
+.input-wrapper:focused-within,
+.search-wrapper:focused-within,
 .filtro-combo-nativo:focused {
-    -fx-border-color: #7E3BED !important;
-    -fx-border-width: 1.5;
+    -fx-border-color: -contrast-focus-border;
+    -fx-border-width: -contrast-focus-width;
+    -fx-effect: dropshadow(gaussian, -contrast-focus-shadow, 8, 0.12, 0, 1);
 }
-/* La celda seleccionada (cuando está cerrado) */
-.filtro-combo-nativo .list-cell {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #1A1C1C;
+
+.input-field,
+.input-combo,
+.search-field,
+.search-field {
+    -fx-background-color: transparent;
+}
+
+.input-field .text-field,
+.search-field,
+.search-field .text-field {
+    -fx-text-fill: -color-text;
+    -fx-prompt-text-fill: -color-text-muted;
+}
+
+.input-field > .line,
+.input-field > .focused-line,
+.input-field > .unfocused-line,
+.search-field > .line,
+.search-field > .focused-line,
+.search-field > .unfocused-line {
+    -fx-stroke: transparent;
+    -fx-opacity: 0;
+}
+
+.filtro-combo-nativo .list-cell,
+.input-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-text;
     -fx-font-size: 13px;
     -fx-font-weight: 600;
 }
-.filtro-combo-nativo .arrow-button { -fx-background-color: transparent !important; -fx-padding: 0 8 0 0 !important; }
-.filtro-combo-nativo .arrow { -fx-background-color: #95A5A6 !important; }
 
+.filtro-combo-nativo .arrow,
+.input-combo .arrow {
+    -fx-background-color: -color-text-muted;
+}
 
-/* ── 5. TABLA Y CABECERAS ── */
+.combo-box-popup > .list-view {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-text;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: -contrast-table-hover;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -contrast-table-selected;
+    -fx-text-fill: -contrast-table-selected-text;
+    -fx-font-weight: 700;
+}
+
 .table-header-row {
-    -fx-background-color: #FFFFFF !important;
-    -fx-padding: 20 20;
-    -fx-border-color: transparent transparent #7E3BED transparent;
-    -fx-border-width: 0 0 2 0;
-}
-.col-header {
-    -fx-font-weight: 800;
-    -fx-font-size: 11px;
-    -fx-text-fill: #000000;
-    -fx-text-transform: uppercase;
-}
-
-.mesas-table { -fx-background-color: transparent !important; }
-.mesas-table .column-header, .mesas-table .column-header-background { visibility: hidden; }
-
-.mesas-table .table-cell {
-    -fx-text-fill: #4A4455;
-    -fx-font-size: 14px;
-    -fx-padding: 16 16;
-}
-.mesas-table .table-row-cell {
-    -fx-background-color: transparent !important;
-    -fx-border-color: transparent transparent #E0E0EB transparent;
+    -fx-background-color: -color-surface;
+    -fx-padding: 16 20;
+    -fx-border-color: transparent transparent -color-border transparent;
     -fx-border-width: 0 0 1 0;
 }
-.mesas-table .table-row-cell:hover { -fx-background-color: rgba(198, 255, 52, 0.15) !important; }
-.mesas-table .table-row-cell:selected { -fx-background-color: #C6FF34 !important; }
-.mesas-table .table-row-cell:selected .table-cell { -fx-text-fill: #000000 !important; -fx-font-weight: 700; }
 
-
-/* ── 6. BOTONES ── */
-.btn-raised-primary, .btn-buscar-raised {
-    -fx-background-color: linear-gradient(to bottom right, #7E3BED, #5D1FBC) !important;
-    -fx-text-fill: #FFFFFF !important;
-    -fx-background-radius: 12;
+.col-header {
     -fx-font-weight: 700;
-    -fx-padding: 12 24;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(126, 59, 237, 0.25), 16, 0, 0, 4);
+    -fx-font-size: 11px;
+    -fx-text-fill: -color-text-muted;
 }
 
-.btn-outline-primary, .btn-outline-primary-form, .btn-nuevo-mesa {
-    -fx-background-color: #C6FF34 !important;
-    -fx-text-fill: #000000 !important;
-    -fx-background-radius: 12;
-    -fx-border-width: 0;
-    -fx-font-weight: 800;
-    -fx-padding: 12 24;
-    -fx-cursor: hand;
+.mesas-table {
+    -fx-background-color: transparent;
 }
-.btn-outline-primary:hover { -fx-background-color: #B5ED28 !important; }
 
-.btn-outline-secondary, .btn-outline-danger, .btn-outline-danger-form {
-    -fx-background-color: transparent !important;
-    -fx-border-color: rgba(0, 0, 0, 0.15); 
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
-    -fx-text-fill: #1A1C1C !important;
+.mesas-table .column-header,
+.mesas-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    visibility: hidden;
+}
+
+.mesas-table .table-cell {
+    -fx-text-fill: -color-text;
+    -fx-font-size: 14px;
+    -fx-padding: 14 16;
+}
+
+.mesas-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -color-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.mesas-table .table-row-cell:hover {
+    -fx-background-color: -contrast-table-hover;
+}
+
+.mesas-table .table-row-cell:selected {
+    -fx-background-color: -contrast-table-selected;
+}
+
+.mesas-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: -contrast-table-selected-text;
     -fx-font-weight: 700;
-    -fx-padding: 12 20;
-    -fx-cursor: hand;
 }
-.btn-outline-danger:hover, .btn-outline-danger-form:hover {
-    -fx-background-color: #FFF0F0 !important;
-    -fx-text-fill: #D92D20 !important;
-    -fx-border-color: #D92D20;
-}
+
+.btn-raised-primary,
+.btn-buscar-raised,
+.btn-outline-primary,
+.btn-outline-primary-form,
+.btn-outline-secondary,
+.btn-outline-danger,
+.btn-outline-danger-form,
 .btn-limpiar-flat {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #7E3BED !important;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-weight: 700;
 }
 
-
-/* ── 7. HEADER DEL FORMULARIO ── */
 .form-header-badge {
-    -fx-background-color: #C6FF34 !important; 
+    -fx-background-color: -color-accent;
     -fx-background-radius: 8;
-    -fx-min-width: 40; -fx-min-height: 40;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
 }
-.form-header-badge-icon { -fx-icon-color: #000000; }
+
+.form-header-badge-icon {
+    -fx-icon-color: -color-text;
+}
+
 .form-header-titulo {
     -fx-font-size: 20px;
-    -fx-font-weight: 800; 
-    -fx-text-fill: #000000;
+    -fx-font-weight: 800;
+    -fx-text-fill: -color-text;
 }
 
-.form-footer, .footer-bar {
-    -fx-background-color: transparent !important;
-}
 .conteo-label {
-    -fx-text-fill: #A0A0B0;
+    -fx-text-fill: -color-text-muted;
     -fx-font-weight: 600;
 }
 
-
-/* ── 8. SCROLLBAR ── */
-.form-scroll .scroll-bar:vertical { -fx-background-color: transparent; -fx-pref-width: 6; }
-.form-scroll .scroll-bar:vertical .thumb { -fx-background-color: #E0E0EB; -fx-background-radius: 4; }
-.form-scroll .scroll-bar:vertical .thumb:hover { -fx-background-color: #A0A0B0; }
+.form-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: -color-border;
+    -fx-background-radius: 4;
+}

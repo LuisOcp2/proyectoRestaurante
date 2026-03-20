@@ -1,269 +1,150 @@
-/* ═══════════════════════════════════════════════════════════════════
-   vista-platos.css  v2  —  Cali Delights Pro - Platos Edition
-   Sincronizado con vista-mesas.css — eliminación agresiva de bordes MFX
-═══════════════════════════════════════════════════════════════════ */
+/* Vista Platos - version simplificada y theme-driven */
 
-/* ── RAÍZ ── */
 .root-container {
-    -fx-background-color: #F8FAFC !important;
-    -fx-font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
+    -fx-background-color: -color-bg-app;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-/* ── CARDS ── */
 .main-card {
-    -fx-background-color: #FFFFFF !important;
+    -fx-background-color: -color-surface;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
-    -fx-border-color: #E2E8F0;
+    -fx-border-color: -color-border;
     -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 16, 0, 0, 3);
 }
 
-/* ScrollPane del panel derecho */
-.form-scroll {
-    -fx-background-color: transparent !important;
-    -fx-background: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 0;
-}
+.form-scroll,
 .form-scroll > .viewport {
-    -fx-background-color: transparent !important;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
-/* Divisores */
 .divider {
-    -fx-background-color: #E2E8F0 !important;
-    -fx-opacity: 1;
+    -fx-background-color: -color-border;
 }
 
-/* ── TEXTOS ENCABEZADO ── */
-.view-title {
-    -fx-font-size: 26px;
+.view-title,
+.card-title {
+    -fx-font-size: 24px;
     -fx-font-weight: 700;
-    -fx-text-fill: #0F172A;
+    -fx-text-fill: -color-text;
 }
-.view-subtitle {
-    -fx-font-size: 14px;
-    -fx-text-fill: #64748B;
+
+.view-subtitle,
+.card-subtitle,
+.footer-text,
+.placeholder-subtext {
+    -fx-text-fill: -color-text-muted;
 }
-.header-icon { -fx-icon-color: #1E293B; }
-.icon-muted  { -fx-icon-color: #94A3B8; }
 
+.header-icon,
+.input-icon,
+.icon-muted {
+    -fx-icon-color: -color-text-muted;
+}
 
-/* ═══════════════════════════════════════════════════════════════════
-   BARRA DE FILTROS - BUSCADOR
-═══════════════════════════════════════════════════════════════════ */
-.search-wrapper {
-    -fx-background-color: #FFFFFF !important;
-    -fx-border-color: #D1D5DB;
+.search-wrapper,
+.filtro-combo-nativo,
+.input-wrapper,
+.form-combo,
+.custom-text-area {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border;
     -fx-border-width: 1;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-padding: 0 14;
-    -fx-alignment: CENTER_LEFT;
-    -fx-spacing: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 3, 0, 0, 1);
 }
 
-.search-wrapper:hover { -fx-border-color: #9CA3AF; }
+.search-wrapper,
+.input-wrapper {
+    -fx-padding: 0 14;
+    -fx-alignment: CENTER_LEFT;
+}
 
-.search-wrapper:focused-within {
-    -fx-border-color: #5457CD !important;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.15), 6, 0, 0, 0);
+.search-wrapper:focused-within,
+.filtro-combo-nativo:focused,
+.input-wrapper:focused-within,
+.form-combo:focused,
+.custom-text-area:focused {
+    -fx-border-color: -contrast-focus-border;
+    -fx-border-width: -contrast-focus-width;
+    -fx-effect: dropshadow(gaussian, -contrast-focus-shadow, 8, 0.12, 0, 1);
 }
 
 .search-field,
-.search-field.mfx-text-field {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #1E293B !important;
-    -fx-prompt-text-fill: #9CA3AF !important;
-    -fx-font-size: 13.5px;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-    -fx-background-insets: 0 !important;
-    -fx-background-radius: 0 !important;
-    -fx-min-height: 20;
-    -fx-pref-height: 20;
+.transparent-field,
+.form-combo {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-text;
+    -fx-prompt-text-fill: -color-text-muted;
 }
 
-/* Ocultar líneas de MFXTextField en buscador */
 .search-field > .line,
 .search-field > .focused-line,
 .search-field > .unfocused-line,
-.search-field .line,
-.search-field .focused-line,
-.search-field .unfocused-line {
-    -fx-stroke: transparent !important;
-    -fx-stroke-width: 0 !important;
-    -fx-opacity: 0 !important;
-    visibility: hidden;
+.transparent-field > .line,
+.transparent-field > .focused-line,
+.transparent-field > .unfocused-line,
+.form-combo > .line,
+.form-combo > .focused-line,
+.form-combo > .unfocused-line {
+    -fx-stroke: transparent;
+    -fx-opacity: 0;
 }
 
-/* Asegurar que MFXTextField no tenga bordes propios */
-.search-wrapper .mfx-text-field,
-.input-wrapper .mfx-text-field {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-    -fx-background-insets: 0 !important;
-    -fx-background-radius: 0 !important;
-}
-
-/* Eliminar bordes de los text-field internos */
-.search-wrapper .text-field,
-.search-wrapper .bound-text-field,
-.input-wrapper .text-field,
-.input-wrapper .bound-text-field {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-    -fx-background-insets: 0 !important;
-    -fx-background-radius: 0 !important;
-}
-
-/* Eliminar todos los bordes de componentes MFX dentro de wrappers */
-.input-wrapper .mfx-text-field > *,
-.search-wrapper .mfx-text-field > * {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-}
-
-/* Asegurar que floating text no interfiera */
-.input-wrapper .floating-text,
-.search-wrapper .floating-text {
-    -fx-opacity: 0 !important;
-    visibility: hidden;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   COMBOBOX NATIVOS DE FILTRO
-═══════════════════════════════════════════════════════════════════ */
-.filtro-combo-nativo,
-.filtro-combo-nativo.combo-box {
-    -fx-background-color: #FFFFFF !important;
-    -fx-border-color: #D1D5DB;
-    -fx-border-width: 1;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-font-size: 13.5px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 3, 0, 0, 1);
-    -fx-cursor: hand;
-    -fx-pref-height: 36;
-}
-
-.filtro-combo-nativo .list-cell {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #1E293B;
-    -fx-font-size: 13.5px;
-    -fx-padding: 0 8;
-    -fx-font-weight: 500;
-}
-
-.filtro-combo-nativo .list-cell:empty {
-    -fx-text-fill: #64748B;
-    -fx-font-weight: 400;
-}
-
-.filtro-combo-nativo:focused {
-    -fx-border-color: #5457CD !important;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.15), 6, 0, 0, 0);
-}
-
-.filtro-combo-nativo:hover { -fx-border-color: #9CA3AF; }
-
-.filtro-combo-nativo .arrow-button {
-    -fx-background-color: transparent !important;
-    -fx-padding: 0 10 0 0;
-}
-
-.filtro-combo-nativo .arrow-button .arrow {
-    -fx-background-color: #6B7280;
-    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
-    -fx-scale-shape: false;
-}
-
-/* Popup del ComboBox nativo */
-.filtro-combo-nativo .combo-box-popup > .list-view {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #E2E8F0;
-    -fx-border-width: 1;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);
-    -fx-padding: 4;
-}
-
-.filtro-combo-nativo .combo-box-popup .list-cell {
+.filtro-combo-nativo .list-cell,
+.form-combo .label,
+.form-combo .text {
     -fx-background-color: transparent;
-    -fx-text-fill: #334155;
-    -fx-font-size: 13.5px;
-    -fx-padding: 10 14;
-    -fx-background-radius: 6;
+    -fx-text-fill: -color-text;
 }
 
-.filtro-combo-nativo .combo-box-popup .list-cell:hover {
-    -fx-background-color: #F1F5F9 !important;
-    -fx-text-fill: #5457CD;
+.filtro-combo-nativo .arrow,
+.form-combo .arrow {
+    -fx-background-color: -color-text-muted;
 }
 
-.filtro-combo-nativo .combo-box-popup .list-cell:selected {
-    -fx-background-color: #EEF2FF !important;
-    -fx-text-fill: #5457CD;
+.filtro-combo-nativo .combo-box-popup > .list-view,
+.form-combo .combo-popup {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border;
+}
+
+.filtro-combo-nativo .combo-box-popup .list-cell,
+.form-combo .combo-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-text;
+}
+
+.filtro-combo-nativo .combo-box-popup .list-cell:hover,
+.form-combo .combo-popup .list-cell:hover {
+    -fx-background-color: -contrast-table-hover;
+}
+
+.filtro-combo-nativo .combo-box-popup .list-cell:selected,
+.form-combo .combo-popup .list-cell:selected {
+    -fx-background-color: -contrast-table-selected;
+    -fx-text-fill: -contrast-table-selected-text;
     -fx-font-weight: 600;
 }
 
-
-/* ═══════════════════════════════════════════════════════════════════
-   BOTÓN LIMPIAR FILTROS
-═══════════════════════════════════════════════════════════════════ */
-.btn-limpiar-flat,
-.btn-limpiar-flat.mfx-button {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #64748B !important;
-    -fx-font-weight: 500;
-    -fx-font-size: 13.5px;
-    -fx-cursor: hand;
-    -fx-graphic-text-gap: 7;
-    -fx-padding: 9 14;
-    -fx-background-radius: 8;
-}
-
-.btn-limpiar-flat:hover {
-    -fx-text-fill: #334155 !important;
-    -fx-background-color: #F1F5F9 !important;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   CABECERA DE TABLA PERSONALIZADA
-═══════════════════════════════════════════════════════════════════ */
 .table-header-row {
-    -fx-background-color: #F8FAFC !important;
-    -fx-padding: 12 20;
+    -fx-background-color: -color-surface;
 }
 
 .table-header-label {
+    -fx-text-fill: -color-text-muted;
     -fx-font-weight: 700;
-    -fx-font-size: 11.5px;
-    -fx-text-fill: #64748B;
-    -fx-padding: 0 8;
-    -fx-alignment: CENTER_LEFT;
 }
 
-
-/* ═══════════════════════════════════════════════════════════════════
-   TABLA PLATOS
-═══════════════════════════════════════════════════════════════════ */
 .mesas-table {
-    -fx-background-color: transparent !important;
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
 
 .mesas-table .column-header,
 .mesas-table .column-header-background {
-    -fx-background-color: transparent !important;
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-pref-height: 0;
     -fx-max-height: 0;
@@ -272,424 +153,60 @@
 }
 
 .mesas-table .table-cell {
-    -fx-text-fill: #334155;
-    -fx-font-size: 13.5px;
-    -fx-padding: 14 16;
+    -fx-text-fill: -color-text;
 }
 
 .mesas-table .table-row-cell {
-    -fx-border-color: transparent transparent #F1F5F9 transparent;
+    -fx-border-color: transparent transparent -color-border transparent;
     -fx-border-width: 0 0 1 0;
 }
 
 .mesas-table .table-row-cell:hover {
-    -fx-background-color: #F8FAFC !important;
+    -fx-background-color: -contrast-table-hover;
 }
 
 .mesas-table .table-row-cell:selected {
-    -fx-background-color: #EEF2FF !important;
+    -fx-background-color: -contrast-table-selected;
 }
 
-
-/* ═══════════════════════════════════════════════════════════════════
-   FORMULARIO DERECHO - HEADER
-═══════════════════════════════════════════════════════════════════ */
 .header-badge-container {
-    -fx-background-color: rgba(251, 191, 36, 0.1) !important;
+    -fx-background-color: rgba(0, 0, 0, 0.05);
     -fx-background-radius: 10;
-    -fx-min-width: 44;
-    -fx-min-height: 44;
-    -fx-alignment: CENTER;
 }
 
-.card-title {
-    -fx-font-size: 17.5px;
-    -fx-font-weight: 700;
-    -fx-text-fill: #0F172A;
-}
-
-.card-subtitle {
-    -fx-font-size: 13px;
-    -fx-text-fill: #64748B;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   FORMULARIO - LABELS E INPUT WRAPPERS
-═══════════════════════════════════════════════════════════════════ */
 .input-label {
+    -fx-text-fill: -color-primary;
     -fx-font-size: 13px;
     -fx-font-weight: 600;
-    -fx-text-fill: #334155;
 }
 
-.input-wrapper {
-    -fx-background-color: #FFFFFF !important;
-    -fx-border-color: #D1D5DB;
-    -fx-border-width: 1;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 0 14;
-    -fx-alignment: CENTER_LEFT;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 3, 0, 0, 1);
-    -fx-pref-height: 44;
-}
-
-.input-wrapper:hover { -fx-border-color: #9CA3AF; }
-
-.input-wrapper:focused-within {
-    -fx-border-color: #5457CD !important;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.15), 6, 0, 0, 0);
-}
-
-.input-wrapper:disabled {
-    -fx-background-color: #F1F5F9 !important;
-    -fx-border-color: #E2E8F0;
-}
-
-.input-icon { -fx-icon-color: #94A3B8; }
-
-/* Iconos en input-wrapper */
-.input-wrapper .ikonli-font-icon,
-.search-wrapper .ikonli-font-icon {
-    -fx-icon-color: #94A3B8;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   FORMULARIO - MFXTextField DENTRO DE input-wrapper
-   (styleClass "transparent-field" en VistaPlatos.fxml)
-═══════════════════════════════════════════════════════════════════ */
-.transparent-field,
-.transparent-field.mfx-text-field {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-    -fx-font-size: 13.5px;
-    -fx-text-fill: #1E293B !important;
-    -fx-prompt-text-fill: #9CA3AF !important;
-    -fx-padding: 0;
-    -fx-background-insets: 0 !important;
-    -fx-background-radius: 0 !important;
-}
-
-/* Ocultar todas las líneas de MFXTextField */
-.transparent-field > .line,
-.transparent-field > .focused-line,
-.transparent-field > .unfocused-line,
-.transparent-field .line,
-.transparent-field .focused-line,
-.transparent-field .unfocused-line {
-    -fx-stroke: transparent !important;
-    -fx-stroke-width: 0 !important;
-    -fx-opacity: 0 !important;
-    visibility: hidden;
-}
-
-/* Eliminar cualquier borde interno */
-.transparent-field .text-field,
-.transparent-field .bound-text-field {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-    -fx-background-insets: 0 !important;
-    -fx-background-radius: 0 !important;
-}
-
-/* Sin efecto de focus propio — lo maneja el wrapper */
-.transparent-field:focused {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-}
-
-.transparent-field:disabled { -fx-opacity: 0.5; }
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   FORMULARIO - MFXComboBox (styleClass "form-combo" en VistaPlatos)
-   Patrón: stand-alone con borde propio (NO dentro de input-wrapper)
-═══════════════════════════════════════════════════════════════════ */
-.form-combo,
-.form-combo.mfx-combo-box {
-    -fx-background-color: #FFFFFF !important;
-    -fx-border-color: #D1D5DB;
-    -fx-border-width: 1;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-font-size: 13.5px;
-    -fx-text-fill: #1E293B !important;
-    -fx-prompt-text-fill: #9CA3AF !important;
-    -fx-padding: 0 14;
-    -fx-pref-height: 44;
-    -fx-background-insets: 0 !important;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 3, 0, 0, 1);
-    -fx-cursor: hand;
-}
-
-.form-combo:hover { -fx-border-color: #9CA3AF; }
-
-.form-combo:focused {
-    -fx-border-color: #5457CD !important;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.15), 6, 0, 0, 0);
-}
-
-/* Ocultar líneas propias de MFX */
-.form-combo > .line,
-.form-combo > .focused-line,
-.form-combo > .unfocused-line,
-.form-combo .line,
-.form-combo .focused-line,
-.form-combo .unfocused-line {
-    -fx-stroke: transparent !important;
-    -fx-stroke-width: 0 !important;
-    -fx-opacity: 0 !important;
-    visibility: hidden;
-}
-
-/* Eliminar contenedor interno */
-.form-combo .combo-box-container,
-.form-combo .mfx-combo-box-container {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-    -fx-background-insets: 0 !important;
-    -fx-background-radius: 0 !important;
-}
-
-.form-combo .arrow-button {
-    -fx-background-color: transparent !important;
-    -fx-padding: 0 4 0 0;
-}
-
-.form-combo .arrow {
-    -fx-background-color: #6B7280;
-    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
-}
-
-/* Texto del valor seleccionado */
-.form-combo .label,
-.form-combo > .label,
-.form-combo .mfx-label,
-.form-combo .combo-label,
-.form-combo .text {
-    -fx-text-fill: #1E293B !important;
-    -fx-font-size: 13.5px;
-}
-
-.form-combo .label:empty,
-.form-combo .text:empty {
-    -fx-text-fill: #9CA3AF !important;
-}
-
-/* Eliminar bordes internos del combo */
-.form-combo > *,
-.form-combo .combo-box-container > * {
-    -fx-background-color: transparent !important;
-    -fx-border-width: 0 !important;
-    -fx-border-color: transparent !important;
-}
-
-.form-combo:disabled { -fx-opacity: 0.5; }
-
-/* Popup / Dropdown del MFXComboBox */
-.form-combo .combo-popup,
-.mfx-combo-box .combo-popup {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #E2E8F0;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);
-    -fx-padding: 4;
-}
-
-.form-combo .combo-popup .list-cell,
-.mfx-combo-box .combo-popup .list-cell {
-    -fx-background-color: transparent !important;
-    -fx-text-fill: #334155 !important;
-    -fx-padding: 10 14;
-    -fx-font-size: 13.5px;
-    -fx-background-radius: 6;
-}
-
-.form-combo .combo-popup .list-cell:hover,
-.mfx-combo-box .combo-popup .list-cell:hover {
-    -fx-background-color: #F1F5F9 !important;
-    -fx-text-fill: #5457CD !important;
-}
-
-.form-combo .combo-popup .list-cell:selected,
-.mfx-combo-box .combo-popup .list-cell:filled:selected {
-    -fx-background-color: #EEF2FF !important;
-    -fx-text-fill: #5457CD !important;
-    -fx-font-weight: 600;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   TEXTAREA
-═══════════════════════════════════════════════════════════════════ */
-.custom-text-area {
-    -fx-background-color: #FFFFFF !important;
-    -fx-border-color: #D1D5DB;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 8 14;
-    -fx-font-size: 13.5px;
-    -fx-prompt-text-fill: #9CA3AF;
-}
-
-.custom-text-area .content {
-    -fx-background-color: transparent !important;
-}
-
-.custom-text-area:focused {
-    -fx-border-color: #5457CD;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.15), 6, 0, 0, 0);
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   BOTONES DEL FORMULARIO
-═══════════════════════════════════════════════════════════════════ */
-.btn-raised-primary,
-.btn-raised-primary.mfx-button {
-    -fx-background-color: #5457CD !important;
-    -fx-text-fill: white !important;
-    -fx-background-radius: 8;
-    -fx-font-weight: 600;
-    -fx-font-size: 13.5px;
-    -fx-padding: 12 18;
-    -fx-cursor: hand;
-    -fx-graphic-text-gap: 9;
-    -fx-alignment: CENTER;
-    -fx-effect: dropshadow(gaussian, rgba(84,87,205,0.3), 8, 0, 0, 2);
-}
-
-.btn-raised-primary:hover {
-    -fx-background-color: #4346BA !important;
-}
-
-.btn-outline-primary-form,
-.btn-outline-primary-form.mfx-button {
-    -fx-background-color: transparent !important;
-    -fx-border-color: #5457CD;
-    -fx-border-width: 1.5;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-text-fill: #5457CD !important;
-    -fx-font-weight: 600;
-    -fx-font-size: 13.5px;
-    -fx-padding: 10 16;
-    -fx-cursor: hand;
-    -fx-graphic-text-gap: 8;
-    -fx-alignment: CENTER;
-}
-
-.btn-outline-primary-form:hover {
-    -fx-background-color: #EEF2FF !important;
-}
-
-.btn-outline-danger-form,
-.btn-outline-danger-form.mfx-button {
-    -fx-background-color: transparent !important;
-    -fx-border-color: #EF4444;
-    -fx-border-width: 1.5;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-text-fill: #EF4444 !important;
-    -fx-font-weight: 600;
-    -fx-font-size: 13.5px;
-    -fx-padding: 10 16;
-    -fx-cursor: hand;
-    -fx-graphic-text-gap: 8;
-    -fx-alignment: CENTER;
-}
-
-.btn-outline-danger-form:hover {
-    -fx-background-color: #FEF2F2 !important;
-}
-
-.btn-outline-danger-form:disabled { -fx-opacity: 0.4; }
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   MENSAJES DE ESTADO DEL FORMULARIO
-═══════════════════════════════════════════════════════════════════ */
 .form-mensaje {
-    -fx-font-size: 13px;
-    -fx-text-fill: #5457CD;
-    -fx-font-weight: 500;
+    -fx-text-fill: -color-primary;
 }
 
-.form-mensaje.error   { -fx-text-fill: #EF4444; }
-.form-mensaje.success { -fx-text-fill: #10B981; }
-.form-mensaje.warning { -fx-text-fill: #F59E0B; }
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   ESTADO VACÍO DE TABLA
-═══════════════════════════════════════════════════════════════════ */
-.empty-state-container {
-    -fx-background-color: transparent !important;
-    -fx-alignment: CENTER;
+.btn-raised-primary,
+.btn-outline-primary-form,
+.btn-outline-danger-form,
+.btn-limpiar-flat {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-font-weight: 600;
 }
 
 .placeholder-text {
-    -fx-font-size: 15.5px;
-    -fx-font-weight: 600;
-    -fx-text-fill: #334155;
-}
-
-.placeholder-subtext {
-    -fx-font-size: 13px;
-    -fx-text-fill: #94A3B8;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   SCROLLBAR PERSONALIZADO
-═══════════════════════════════════════════════════════════════════ */
-.form-scroll .scroll-bar:vertical {
-    -fx-background-color: transparent;
-    -fx-pref-width: 8;
-}
-
-.form-scroll .scroll-bar:vertical .track {
-    -fx-background-color: transparent;
-}
-
-.form-scroll .scroll-bar:vertical .thumb {
-    -fx-background-color: #CBD5E1;
-    -fx-background-radius: 4;
-}
-
-.form-scroll .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #94A3B8;
-}
-
-.form-scroll .scroll-bar:vertical .increment-button,
-.form-scroll .scroll-bar:vertical .decrement-button {
-    -fx-background-color: transparent;
-    -fx-pref-height: 0;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════════════════════════════ */
-.footer-bar {
-    -fx-background-color: #F8FAFC !important;
-    -fx-background-radius: 0 0 12 12;
-}
-
-.footer-text {
-    -fx-text-fill: #94A3B8;
-    -fx-font-size: 11px;
+    -fx-text-fill: -color-text;
 }
 
 .status-online {
-    -fx-text-fill: #10B981;
+    -fx-text-fill: -color-primary;
     -fx-font-weight: 700;
-    -fx-font-size: 10px;
+}
+
+.footer-bar {
+    -fx-background-color: -color-surface;
+}
+
+.form-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: -color-border;
+    -fx-background-radius: 4;
 }

@@ -8,6 +8,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * DAO (Data Access Object) para la entidad Usuario.
@@ -230,12 +231,12 @@ public class UsuarioDAO {
     }
 
     // ─────────────────────────────────────────────────────────────
-    // UTIL: listar perfiles disponibles para ComboBox
+    // UTIL: listar perfiles disponibles para MFXComboBox
     // ─────────────────────────────────────────────────────────────
 
     /**
      * Carga todos los perfiles activos desde la tabla `perfil`.
-     * Se usa para poblar el ComboBox de perfiles en el formulario de usuarios.
+     * Se usa para poblar el MFXComboBox de perfiles en el formulario de usuarios.
      *
      * @return Lista de objetos {@link Perfil}
      * @throws SQLException si hay error de BD

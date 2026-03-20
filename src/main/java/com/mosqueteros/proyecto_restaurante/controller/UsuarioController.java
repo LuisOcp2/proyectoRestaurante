@@ -3,30 +3,31 @@ package com.mosqueteros.proyecto_restaurante.controller;
 import com.mosqueteros.proyecto_restaurante.dao.UsuarioDAO;
 import com.mosqueteros.proyecto_restaurante.model.Perfil;
 import com.mosqueteros.proyecto_restaurante.model.Usuario;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import com.mosqueteros.proyecto_restaurante.util.FloatingFieldHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Controlador JavaFX para la vista VistaUsuarios.fxml.
  * Gestiona el CRUD completo de usuarios del sistema.
  *
- * CORRECCIÓN: tblListaUsuarios era MFXTableView pero el FXML usa
+ * CORRECCIÓN: tblListaUsuarios era TableView personalizado pero el FXML usa
  * TableView estándar de JavaFX → se cambió a TableView<Usuario>.
  *
  * Flujo principal:
@@ -42,14 +43,14 @@ public class UsuarioController implements Initializable {
     // ─── Barra de filtros ────────────────────────────────────────
     /** Campo de búsqueda por nombre, apellido o login */
     @FXML private MFXTextField txtBuscarUsuario;
-    /** ComboBox nativo para filtrar por perfil/rol */
-    @FXML private ComboBox<String> cmbFiltroPerfil;
-    /** ComboBox nativo para filtrar por estado */
-    @FXML private ComboBox<String> cmbFiltroEstado;
+    /** MFXComboBox nativo para filtrar por perfil/rol */
+    @FXML private MFXComboBox<String> cmbFiltroPerfil;
+    /** MFXComboBox nativo para filtrar por estado */
+    @FXML private MFXComboBox<String> cmbFiltroEstado;
 
     // ─── Tabla ───────────────────────────────────────────────────
     /**
-     * Tabla estándar JavaFX — DEBE ser TableView, NO MFXTableView,
+     * Tabla estándar JavaFX — DEBE ser TableView,
      * porque el FXML usa <TableView> (import javafx.scene.control.TableView).
      */
     @FXML private TableView<Usuario> tblListaUsuarios;
@@ -68,6 +69,10 @@ public class UsuarioController implements Initializable {
     // ─── Formulario de detalle ───────────────────────────────────
     /** Campo nombre del usuario */
     @FXML private MFXTextField txtUsuNombre;
+    /** Contenedor visual del campo usuario (floating label) */
+    @FXML private StackPane boxUsuNombreField;
+    /** Error de validacion del campo usuario */
+    @FXML private Label lblUsuNombreError;
     /** Campo apellido del usuario */
     @FXML private MFXTextField txtUsuApellido;
     /** Campo login del usuario */
@@ -80,9 +85,11 @@ public class UsuarioController implements Initializable {
     @FXML private MFXTextField txtUsuDireccion;
     /** Campo contraseña (MFXPasswordField oculta el texto) */
     @FXML private MFXPasswordField txtUsuPass;
-    /** ComboBox perfil/rol del formulario */
+    /** MFXComboBox perfil/rol del formulario */
     @FXML private MFXComboBox<String> cmbUsuPerfil;
-    /** ComboBox estado del formulario */
+    /** Contenedor visual del combo perfil (floating label) */
+    @FXML private StackPane boxUsuPerfilField;
+    /** MFXComboBox estado del formulario */
     @FXML private MFXComboBox<String> cmbUsuEstado;
     /** Etiqueta para mensajes de validación o confirmación */
     @FXML private Label lblMensajeUsuario;
@@ -96,6 +103,16 @@ public class UsuarioController implements Initializable {
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     /** Lista de perfiles cargados desde BD */
     private List<Perfil> listaPerfiles;
+    /** Opciones base del combo de perfil */
+    private final ObservableList<String> perfilesBase = FXCollections.observableArrayList();
+    /** Historial de perfiles recientemente seleccionados */
+    private final LinkedList<String> perfilesRecientes = new LinkedList<>();
+    /** Ultimo valor valido seleccionado en el combo de perfil */
+    private String ultimoPerfilValido;
+
+    private static final String HEADER_RECIENTES = "# Recientes";
+    private static final String HEADER_OTRAS_OPCIONES = "# Otras opciones";
+    private static final int MAX_RECIENTES = 4;
 
     // ─────────────────────────────────────────────────────────────
     // INITIALIZE
@@ -119,6 +136,7 @@ public class UsuarioController implements Initializable {
         );
         configurarCombosFormulario();
         configurarCombosFiltroPerfil();
+        configurarFloatingFields();
         cargarTodosLosUsuarios();
     }
 
@@ -132,11 +150,12 @@ public class UsuarioController implements Initializable {
     private void configurarCombosFormulario() {
         try {
             listaPerfiles = UsuarioDAO.listarPerfiles();
-            ObservableList<String> nombresPerfiles = FXCollections.observableArrayList();
+            perfilesBase.clear();
             for (Perfil p : listaPerfiles) {
-                nombresPerfiles.add(p.getPerfdescripcion());
+                perfilesBase.add(p.getPerfdescripcion());
             }
-            cmbUsuPerfil.setItems(nombresPerfiles);
+            reconstruirItemsPerfilConHistorial();
+            configurarComportamientoPerfilConHistorial();
         } catch (SQLException e) {
             mostrarMensaje("Error cargando perfiles: " + e.getMessage(), true);
         }
@@ -320,8 +339,12 @@ public class UsuarioController implements Initializable {
 
     /** Valida que los campos obligatorios no estén vacíos. */
     private boolean validarFormulario() {
+        limpiarErroresCampos();
+
         if (txtUsuNombre.getText().isBlank()) {
-            mostrarMensaje("⚠ El nombre es obligatorio.", true); return false;
+            mostrarErrorCampoNombre("El usuario es obligatorio.");
+            mostrarMensaje("⚠ El nombre es obligatorio.", true);
+            return false;
         }
         if (txtUsuApellido.getText().isBlank()) {
             mostrarMensaje("⚠ El apellido es obligatorio.", true); return false;
@@ -334,6 +357,11 @@ public class UsuarioController implements Initializable {
         }
         if (usuarioSeleccionado == null && txtUsuPass.getText().isBlank()) {
             mostrarMensaje("⚠ La contraseña es obligatoria para nuevos usuarios.", true); return false;
+        }
+        if (cmbUsuPerfil.getValue() == null || cmbUsuPerfil.getValue().isBlank() || esHeaderGrupo(cmbUsuPerfil.getValue())) {
+            marcarInvalido(boxUsuPerfilField, true);
+            mostrarMensaje("⚠ Selecciona un perfil.", true);
+            return false;
         }
         if (cmbUsuEstado.getValue() == null) {
             mostrarMensaje("⚠ Selecciona un estado.", true); return false;
@@ -353,6 +381,7 @@ public class UsuarioController implements Initializable {
         cmbUsuPerfil.setValue(u.getPerfilDescripcion());
         cmbUsuEstado.setValue(u.getUsuestado());
         btnEliminarUsuarioForm.setDisable(false);
+        limpiarErroresCampos();
         ocultarMensaje();
     }
 
@@ -370,6 +399,7 @@ public class UsuarioController implements Initializable {
         cmbUsuPerfil.setValue(null);
         cmbUsuEstado.setValue("Activo");
         btnEliminarUsuarioForm.setDisable(true);
+        limpiarErroresCampos();
         ocultarMensaje();
     }
 
@@ -388,5 +418,75 @@ public class UsuarioController implements Initializable {
         lblMensajeUsuario.setText("");
         lblMensajeUsuario.setVisible(false);
         lblMensajeUsuario.setManaged(false);
+    }
+
+    private void configurarFloatingFields() {
+        FloatingFieldHelper.bindTextField(boxUsuNombreField, txtUsuNombre);
+        FloatingFieldHelper.bindComboBox(boxUsuPerfilField, cmbUsuPerfil,
+                v -> v != null && !String.valueOf(v).isBlank() && !esHeaderGrupo(String.valueOf(v)));
+    }
+
+    private void limpiarErroresCampos() {
+        if (lblUsuNombreError != null) {
+            lblUsuNombreError.setText("");
+            lblUsuNombreError.setVisible(false);
+            lblUsuNombreError.setManaged(false);
+        }
+        FloatingFieldHelper.clearInvalid(boxUsuNombreField, boxUsuPerfilField);
+    }
+
+    private void mostrarErrorCampoNombre(String mensaje) {
+        if (lblUsuNombreError != null) {
+            lblUsuNombreError.setText(mensaje);
+            lblUsuNombreError.setVisible(true);
+            lblUsuNombreError.setManaged(true);
+        }
+        FloatingFieldHelper.setInvalid(boxUsuNombreField, true);
+    }
+
+    private void marcarInvalido(StackPane contenedor, boolean invalido) {
+        FloatingFieldHelper.setInvalid(contenedor, invalido);
+    }
+
+    private void configurarComportamientoPerfilConHistorial() {
+        cmbUsuPerfil.valueProperty().addListener((obs, anterior, seleccionado) -> {
+            if (esHeaderGrupo(seleccionado)) {
+                cmbUsuPerfil.setValue(ultimoPerfilValido != null ? ultimoPerfilValido : anterior);
+                return;
+            }
+            if (seleccionado == null || seleccionado.isBlank()) {
+                return;
+            }
+
+            ultimoPerfilValido = seleccionado;
+            registrarPerfilReciente(seleccionado);
+            reconstruirItemsPerfilConHistorial();
+            cmbUsuPerfil.setValue(seleccionado);
+        });
+    }
+
+    private void registrarPerfilReciente(String perfil) {
+        perfilesRecientes.remove(perfil);
+        perfilesRecientes.addFirst(perfil);
+        while (perfilesRecientes.size() > MAX_RECIENTES) {
+            perfilesRecientes.removeLast();
+        }
+    }
+
+    private void reconstruirItemsPerfilConHistorial() {
+        ObservableList<String> items = FXCollections.observableArrayList();
+        if (!perfilesRecientes.isEmpty()) {
+            items.add(HEADER_RECIENTES);
+            items.addAll(perfilesRecientes);
+        }
+        items.add(HEADER_OTRAS_OPCIONES);
+        for (String perfil : perfilesBase) {
+            if (!perfilesRecientes.contains(perfil)) items.add(perfil);
+        }
+        cmbUsuPerfil.setItems(items);
+    }
+
+    private boolean esHeaderGrupo(String item) {
+        return HEADER_RECIENTES.equals(item) || HEADER_OTRAS_OPCIONES.equals(item);
     }
 }

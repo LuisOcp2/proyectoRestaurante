@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import io.github.palexdev.materialfx.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
@@ -57,7 +57,7 @@
                     <Label text="ID" prefWidth="60" maxWidth="60" minWidth="60" styleClass="table-header-label"/>
                     <Label text="CATEGORÍA" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="table-header-label"/>
                     <Label text="NOMBRE" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="table-header-label"/>
-                    <Label text="PRECIO" prefWidth="100" maxWidth="100" minWidth="100" styleClass="table-header-label" alignment="CENTER_RIGHT" style="-fx-padding: 0 15 0 0;"/>
+                    <Label text="PRECIO" prefWidth="100" maxWidth="100" minWidth="100" styleClass="table-header-label table-header-price" alignment="CENTER_RIGHT"/>
                     <Label text="ESTADO" prefWidth="120" maxWidth="120" minWidth="120" styleClass="table-header-label" alignment="CENTER"/>
                 </HBox>
 
@@ -100,14 +100,14 @@
         <!-- ─────────────────────────────────────
              COLUMNA DERECHA: Detalle y Edición
              ───────────────────────────────────── -->
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll" HBox.hgrow="NEVER" minWidth="340" maxWidth="360">
+        <MFXScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll" HBox.hgrow="NEVER" minWidth="340" maxWidth="360">
             <VBox spacing="0" styleClass="main-card" minWidth="338">
                 
                 <!-- Header del Formulario -->
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
                     <StackPane styleClass="header-badge-container">
-                        <FontIcon iconLiteral="fas-utensils" iconSize="16" iconColor="#fbbf24"/>
+                        <FontIcon iconLiteral="fas-utensils" iconSize="16" styleClass="icon-accent"/>
                     </StackPane>
                     <VBox>
                         <Label fx:id="lblTituloFormulario" text="Detalles del Plato" styleClass="card-title"/>
@@ -146,14 +146,14 @@
                         <VBox spacing="5" HBox.hgrow="ALWAYS">
                             <Label text="PRECIO VENTA *" styleClass="input-label"/>
                             <HBox styleClass="input-wrapper" alignment="CENTER_LEFT">
-                                <Label text="\$" style="-fx-text-fill: #94A3B8; -fx-font-weight: bold;"/>
+                                <Label text="\$" styleClass="currency-prefix"/>
                                 <MFXTextField fx:id="txtPlatPrecio" promptText="0.00" styleClass="transparent-field" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
                         <VBox spacing="5" HBox.hgrow="ALWAYS">
                             <Label text="COSTO PROD." styleClass="input-label"/>
                             <HBox styleClass="input-wrapper" alignment="CENTER_LEFT">
-                                <Label text="\$" style="-fx-text-fill: #94A3B8; -fx-font-weight: bold;"/>
+                                <Label text="\$" styleClass="currency-prefix"/>
                                 <MFXTextField fx:id="txtPlatCosto" promptText="0.00" styleClass="transparent-field" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
@@ -179,20 +179,19 @@
                     <padding><Insets top="18" right="22" bottom="22" left="22" /></padding>
                     
                     <MFXButton fx:id="btnGuardarPlato" onAction="#guardarPlato" text="Guardar Cambios" styleClass="btn-raised-primary" maxWidth="Infinity" prefHeight="45">
-                        <graphic><FontIcon iconLiteral="fas-save" iconSize="14" iconColor="white"/></graphic>
+                        <graphic><FontIcon iconLiteral="fas-save" iconSize="14" styleClass="icon-on-primary"/></graphic>
                     </MFXButton>
                     
                     <HBox spacing="10">
                         <MFXButton fx:id="btnCancelarPlato" onAction="#cancelarEdicion" text="Nuevo / Limpiar" styleClass="btn-outline-primary-form" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="40">
-                             <graphic><FontIcon iconLiteral="fas-plus" iconSize="12" iconColor="#5457CD"/></graphic>
+                             <graphic><FontIcon iconLiteral="fas-plus" iconSize="12" styleClass="icon-primary"/></graphic>
                         </MFXButton>
                         <MFXButton fx:id="btnDesactivarPlato" onAction="#desactivarPlato" text="Eliminar" styleClass="btn-outline-danger-form" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="40">
-                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12" iconColor="#EF4444"/></graphic>
+                            <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12" styleClass="icon-danger"/></graphic>
                         </MFXButton>
                     </HBox>
                 </VBox>
             </VBox>
-        </ScrollPane>
+        </MFXScrollPane>
     </HBox>
 </StackPane>
-

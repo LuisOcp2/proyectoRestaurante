@@ -2,7 +2,7 @@
    🍽  RESTAURANTE 2026 — PREMIUM TAILWIND MATERIAL DESIGN
    Paleta: Violet #8B5CF6  ·  Cyan #06B6D4  ·  Emerald #10B981
    Glassmorphism · Gradients · Glow effects · Premium cards
-   Compatible: JavaFX 13+ (pure JavaFX CSS, no MaterialFX)
+   Compatible: JavaFX 13+ (pure JavaFX CSS)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════════
@@ -17,7 +17,7 @@
    TOPBAR — Gradiente violeta → cyan → emerald
    ══════════════════════════════════════════════════ */
 .topbar {
-    -fx-background-color: linear-gradient(to right, #8B5CF6 0%, #06B6D4 55%, #10B981 100%);
+    -fx-background-color: -color-primary;
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-pref-height: 58px;
@@ -99,7 +99,7 @@
 }
 
 .menu-btn:hover {
-    -fx-background-color: linear-gradient(to right, rgba(139, 92, 246, 0.12), rgba(6, 182, 212, 0.06));
+    -fx-background-color: rgba(139, 92, 246, 0.12);
     -fx-text-fill: #8B5CF6;
     -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.12), 8, 0.1, 0, 2);
 }
@@ -159,7 +159,7 @@
    BOTONES PREMIUM — Gradiente + Glow
    ══════════════════════════════════════════════════ */
 .btn-premium {
-    -fx-background-color: linear-gradient(to bottom right, #8B5CF6, #06B6D4);
+    -fx-background-color: #8B5CF6;
     -fx-background-radius: 14px;
     -fx-text-fill: white;
     -fx-font-size: 13px;
@@ -170,7 +170,7 @@
 }
 
 .btn-premium:hover {
-    -fx-background-color: linear-gradient(to bottom right, #7C3AED, #0891B2);
+    -fx-background-color: #7C3AED;
     -fx-scale-x: 1.04;
     -fx-scale-y: 1.04;
     -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.55), 22, 0.35, 0, 8);
@@ -184,7 +184,7 @@
 
 /* ── Botón de acción primario — reemplaza naranja por violeta ── */
 .btn-accion-primario {
-    -fx-background-color: linear-gradient(to bottom right, #8B5CF6, #06B6D4);
+    -fx-background-color: #8B5CF6;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 13px;
     -fx-font-weight: 700;
@@ -195,7 +195,7 @@
 }
 
 .btn-accion-primario:hover {
-    -fx-background-color: linear-gradient(to bottom right, #7C3AED, #0891B2);
+    -fx-background-color: #7C3AED;
     -fx-scale-x: 1.03;
     -fx-scale-y: 1.03;
     -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.52), 18, 0.3, 0, 6);
@@ -318,7 +318,7 @@
 }
 
 .crud-table .column-header-background {
-    -fx-background-color: linear-gradient(to right, #F5F3FF, #ECFEFF);
+    -fx-background-color: #F5F3FF;
     -fx-border-color: rgba(139, 92, 246, 0.14);
     -fx-border-width: 0 0 1 0;
 }
@@ -427,50 +427,6 @@
     
 }
 
-/* MaterialFX ComboBox Specific Fixes */
-.mfx-combo-box, .mfx-filter-combo-box {
-    -fx-text-fill: #1E1B4B;
-}
-
-.mfx-combo-box .mfx-combo-box-selected-value-container .text,
-.mfx-combo-box .mfx-combo-box-selected-value-container .label,
-.mfx-combo-box .display-node,
-.mfx-combo-box .value-label,
-.mfx-combo-box .prompt-text,
-.mfx-filter-combo-box .prompt-text {
-    -fx-fill: #1E1B4B;
-    -fx-text-fill: #1E1B4B;
-}
-
-.mfx-combo-box {
-    -fx-prompt-text-fill: #A78BFA;
-}
-
-/* Dropdown styling */
-.mfx-combo-box .virtual-flow .mfx-combo-box-list-cell .text,
-.mfx-combo-box .virtual-flow .mfx-combo-box-cell .text,
-.mfx-combo-box-cell .label,
-.mfx-combo-box-list-cell .text,
-.mfx-list-cell .text,
-.mfx-list-cell .label {
-    -fx-fill: #1E1B4B;
-    -fx-text-fill: #1E1B4B;
-}
-
-.mfx-combo-box-cell:hover, .mfx-combo-box-list-cell:hover, .mfx-list-cell:hover {
-    -fx-background-color: #EDE9FE;
-}
-
-.mfx-combo-box-cell:selected, .mfx-combo-box-list-cell:selected, .mfx-list-cell:selected {
-    -fx-background-color: #8B5CF6;
-}
-
-.mfx-combo-box-cell:selected .text, .mfx-combo-box-list-cell:selected .text,
-.mfx-combo-box-cell:selected .label, .mfx-combo-box-list-cell:selected .label,
-.mfx-list-cell:selected .text, .mfx-list-cell:selected .label {
-    -fx-fill: #FFFFFF;
-    -fx-text-fill: #FFFFFF;
-}
 
 .form-textarea {
     -fx-background-color: #F5F3FF;

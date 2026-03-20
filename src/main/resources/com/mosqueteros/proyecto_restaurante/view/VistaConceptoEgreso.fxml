@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
@@ -13,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
 <!--
 ╔════════════════════════════════════════════════════════════════════════════╗
@@ -56,7 +54,7 @@
 
                     <VBox spacing="2">
                         <Label text="Estado" styleClass="input-label"/>
-                        <ComboBox fx:id="cmbFiltroEstado" promptText="Todos los estados"
+                        <MFXComboBox fx:id="cmbFiltroEstado" promptText="Todos los estados"
                                   prefWidth="120" styleClass="filtro-combo-nativo"/>
                     </VBox>
 
@@ -123,8 +121,8 @@
                 <Label styleClass="form-header-titulo" text="Detalle de Concepto"/>
             </HBox>
 
-            <!-- ScrollPane con import corregido -->
-            <ScrollPane fitToWidth="true" fitToHeight="false"
+            <!-- MFXScrollPane con import corregido -->
+            <MFXScrollPane fitToWidth="true" fitToHeight="false"
                         hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                         styleClass="form-scroll">
                 <VBox styleClass="main-card" spacing="0">
@@ -132,14 +130,19 @@
                     <VBox spacing="18">
                         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
 
-                        <!-- Campo: Nombre -->
-                        <VBox spacing="6">
-                            <Label text="Nombre" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
-                                <FontIcon iconLiteral="fas-tag" iconSize="14" styleClass="icon-muted"/>
-                                <MFXTextField fx:id="txtConNombre" promptText="Ej. Servicios Públicos"
-                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
-                            </HBox>
+                        <!-- Campo Pixel Perfect: Nombre -->
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxConNombreField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-tag"/>
+                                </HBox>
+                                <MFXTextField fx:id="txtConNombre" promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Nombre" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                            <Label fx:id="lblConNombreError" text="" styleClass="field-error"
+                                   managed="false" visible="false"/>
                         </VBox>
 
                         <!-- Campo: Descripción -->
@@ -152,14 +155,17 @@
                             </HBox>
                         </VBox>
 
-                        <!-- Campo: Estado -->
-                        <VBox spacing="6">
-                            <Label text="Estado" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
-                                <FontIcon iconLiteral="fas-toggle-on" iconSize="14" styleClass="icon-muted"/>
-                                <MFXComboBox fx:id="cmbConEstado" promptText="Seleccionar estado"
-                                             styleClass="input-combo" HBox.hgrow="ALWAYS"/>
-                            </HBox>
+                        <!-- Combo Pixel Perfect: Estado -->
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxConEstadoField" styleClass="pixel-combo-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-toggle-on"/>
+                                </HBox>
+                                <MFXComboBox fx:id="cmbConEstado" promptText=" "
+                                             styleClass="pixel-history-combo"
+                                             StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Estado" styleClass="floating-label" StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
                         </VBox>
 
                         <Label fx:id="lblMensajeConcepto" styleClass="form-mensaje" text=""
@@ -189,7 +195,7 @@
                         </MFXButton>
                     </HBox>
                 </VBox>
-            </ScrollPane>
+            </MFXScrollPane>
         </VBox>
     </HBox>
 </StackPane>

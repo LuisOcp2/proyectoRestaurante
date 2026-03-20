@@ -3,11 +3,14 @@ package com.mosqueteros.proyecto_restaurante.controller;
 import com.mosqueteros.proyecto_restaurante.dao.CategoriaInsumoDAO;
 import com.mosqueteros.proyecto_restaurante.model.CategoriaInsumo;
 import com.mosqueteros.proyecto_restaurante.util.Alertas;
+import com.mosqueteros.proyecto_restaurante.util.FloatingFieldHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Controlador del módulo Categorías de Insumo.
@@ -23,10 +26,10 @@ import javafx.scene.layout.VBox;
 public class CategoriaInsumoController {
 
     // ── Barra de filtros ────────────────────────────────────────────
-    @FXML private io.github.palexdev.materialfx.controls.MFXTextField txtBuscarCategoria;
-    @FXML private ComboBox<String> cmbFiltroEstado;
-    @FXML private Button           btnBuscarCategoria;
-    @FXML private Button           btnLimpiarFiltroCategoria;
+    @FXML private MFXTextField        txtBuscarCategoria;
+    @FXML private MFXComboBox<String> cmbFiltroEstado;
+    @FXML private MFXButton           btnBuscarCategoria;
+    @FXML private MFXButton           btnLimpiarFiltroCategoria;
 
     // ── Tabla ──────────────────────────────────────────────────────
     @FXML private TableView<CategoriaInsumo>         tblListaCategorias;
@@ -38,16 +41,19 @@ public class CategoriaInsumoController {
     @FXML private VBox  boxPlaceholder;
 
     // ── Formulario ──────────────────────────────────────────────────
-    @FXML private io.github.palexdev.materialfx.controls.MFXTextField txtCatNombre;
-    @FXML private io.github.palexdev.materialfx.controls.MFXTextField txtCatDescripcion;
-    @FXML private ComboBox<String> cmbCatEstado;
+    @FXML private MFXTextField        txtCatNombre;
+    @FXML private StackPane           boxCatNombreField;
+    @FXML private Label               lblCatNombreError;
+    @FXML private MFXTextField        txtCatDescripcion;
+    @FXML private MFXComboBox<String> cmbCatEstado;
+    @FXML private StackPane           boxCatEstadoField;
     @FXML private Label            lblMensajeCategoria;
 
     // ── Botones del formulario ─────────────────────────────────────────
-    @FXML private Button btnNuevoCategoria;
-    @FXML private Button btnNuevoCategoriaForm;
-    @FXML private Button btnGuardarCategoria;
-    @FXML private Button btnEliminarCategoriaForm;
+    @FXML private MFXButton btnNuevoCategoria;
+    @FXML private MFXButton btnNuevoCategoriaForm;
+    @FXML private MFXButton btnGuardarCategoria;
+    @FXML private MFXButton btnEliminarCategoriaForm;
 
     /** Categoría seleccionada actualmente para edición (null = modo nuevo) */
     private CategoriaInsumo categoriaSeleccionada = null;
@@ -69,6 +75,7 @@ public class CategoriaInsumoController {
         configurarColumnas();
         configurarComboBoxes();
         configurarSeleccionTabla();
+        configurarFloatingFields();
         cargarCategorias();
     }
 
@@ -166,6 +173,7 @@ public class CategoriaInsumoController {
         txtCatNombre.clear();
         txtCatDescripcion.clear();
         cmbCatEstado.setValue("Activo");
+        limpiarErroresCampos();
         ocultarMensaje();
         btnEliminarCategoriaForm.setDisable(true);
         tblListaCategorias.getSelectionModel().clearSelection();
@@ -178,8 +186,15 @@ public class CategoriaInsumoController {
      */
     @FXML
     private void guardarCategoria() {
+        limpiarErroresCampos();
         if (txtCatNombre.getText().isBlank()) {
+            mostrarErrorNombre("El nombre es obligatorio.");
             mostrarMensaje("⚠️ El nombre es obligatorio.", "form-mensaje-error");
+            return;
+        }
+        if (cmbCatEstado.getValue() == null || cmbCatEstado.getValue().isBlank()) {
+            marcarInvalido(boxCatEstadoField, true);
+            mostrarMensaje("⚠️ Selecciona un estado.", "form-mensaje-error");
             return;
         }
         CategoriaInsumo c = construirDesdeFormulario();
@@ -255,6 +270,7 @@ public class CategoriaInsumoController {
         txtCatNombre.setText(c.getNombre());
         txtCatDescripcion.setText(c.getDescripcion() != null ? c.getDescripcion() : "");
         cmbCatEstado.setValue(c.getEstado());
+        limpiarErroresCampos();
         ocultarMensaje();
         btnEliminarCategoriaForm.setDisable(false);
     }
@@ -303,5 +319,32 @@ public class CategoriaInsumoController {
     private void ocultarMensaje() {
         lblMensajeCategoria.setVisible(false);
         lblMensajeCategoria.setManaged(false);
+    }
+
+    private void configurarFloatingFields() {
+        FloatingFieldHelper.bindTextField(boxCatNombreField, txtCatNombre);
+        FloatingFieldHelper.bindComboBox(boxCatEstadoField, cmbCatEstado);
+    }
+
+    private void limpiarErroresCampos() {
+        if (lblCatNombreError != null) {
+            lblCatNombreError.setText("");
+            lblCatNombreError.setVisible(false);
+            lblCatNombreError.setManaged(false);
+        }
+        FloatingFieldHelper.clearInvalid(boxCatNombreField, boxCatEstadoField);
+    }
+
+    private void mostrarErrorNombre(String mensaje) {
+        if (lblCatNombreError != null) {
+            lblCatNombreError.setText(mensaje);
+            lblCatNombreError.setVisible(true);
+            lblCatNombreError.setManaged(true);
+        }
+        FloatingFieldHelper.setInvalid(boxCatNombreField, true);
+    }
+
+    private void marcarInvalido(StackPane contenedor, boolean invalido) {
+        FloatingFieldHelper.setInvalid(contenedor, invalido);
     }
 }

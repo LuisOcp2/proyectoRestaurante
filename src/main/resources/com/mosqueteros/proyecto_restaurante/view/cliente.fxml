@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXTableView?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -14,8 +10,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" styleClass="main-container" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" styleClass="main-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -122,13 +119,13 @@
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="search-container">
                                     <children>
-                                        <MFXTextField fx:id="txtBuscar" floatMode="DISABLED" prefHeight="45.0" promptText="Buscar por nombre, documento o correo..." styleClass="search-input" HBox.hgrow="ALWAYS" />
+                                        <MFXTextField fx:id="txtBuscar"  prefHeight="45.0" promptText="Buscar por nombre, documento o correo..." styleClass="search-input" HBox.hgrow="ALWAYS" />
                                         <MFXButton prefHeight="45.0" styleClass="btn-outline" text="Filtros" />
                                         <MFXButton contentDisplay="GRAPHIC_ONLY" prefHeight="45.0" prefWidth="45.0" styleClass="btn-outline" text="R" />
                                     </children>
                                 </HBox>
       
-                                <MFXTableView fx:id="tablaClientes" styleClass="custom-table" VBox.vgrow="ALWAYS" />
+                                <TableView fx:id="tablaClientes" styleClass="custom-table" VBox.vgrow="ALWAYS" />
       
                             </children>
                         </VBox>

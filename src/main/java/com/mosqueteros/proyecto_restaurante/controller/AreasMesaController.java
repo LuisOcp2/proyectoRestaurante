@@ -1,20 +1,21 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import com.mosqueteros.proyecto_restaurante.util.FloatingFieldHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Controlador para VistaAreasMesa.fxml.
@@ -26,8 +27,8 @@ public class AreasMesaController implements Initializable {
     // ─── Filtros ──────────────────────────────────────────────────
     /** Campo de búsqueda por nombre o descripción */
     @FXML private MFXTextField txtBuscarArea;
-    /** ComboBox nativo filtro por estado */
-    @FXML private ComboBox<String> cmbFiltroEstado;
+    /** MFXComboBox nativo filtro por estado */
+    @FXML private MFXComboBox<String> cmbFiltroEstado;
 
     // ─── Tabla ────────────────────────────────────────────────────
     /** Tabla principal de áreas de mesa */
@@ -44,10 +45,16 @@ public class AreasMesaController implements Initializable {
     // ─── Formulario ───────────────────────────────────────────────
     /** Campo nombre del área */
     @FXML private MFXTextField txtAreaNombre;
+    /** Contenedor visual del campo nombre */
+    @FXML private StackPane boxAreaNombreField;
+    /** Error de validacion del nombre */
+    @FXML private Label lblAreaNombreError;
     /** Campo descripción del área */
     @FXML private MFXTextField txtAreaDescripcion;
-    /** ComboBox estado del formulario */
+    /** MFXComboBox estado del formulario */
     @FXML private MFXComboBox<String> cmbAreaEstado;
+    /** Contenedor visual del combo estado */
+    @FXML private StackPane boxAreaEstadoField;
     /** Botón eliminar del formulario */
     @FXML private MFXButton btnEliminarAreaForm;
     /** Etiqueta de mensajes de validación */
@@ -71,6 +78,7 @@ public class AreasMesaController implements Initializable {
         tblListaAreas.setItems(listaAreas);
         // Ocultar placeholder al inicio
         actualizarPlaceholder();
+        configurarFloatingFields();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -121,8 +129,15 @@ public class AreasMesaController implements Initializable {
      */
     @FXML
     private void guardarArea() {
+        limpiarErroresCampos();
         if (txtAreaNombre.getText().isBlank()) {
+            mostrarErrorNombre("El nombre es obligatorio.");
             mostrarMensaje("⚠ El nombre del área es obligatorio.", true);
+            return;
+        }
+        if (cmbAreaEstado.getValue() == null || cmbAreaEstado.getValue().isBlank()) {
+            marcarInvalido(boxAreaEstadoField, true);
+            mostrarMensaje("⚠ Selecciona un estado.", true);
             return;
         }
         // TODO: integrar con AreasMesaDAO.insertar/actualizar(...)
@@ -151,6 +166,7 @@ public class AreasMesaController implements Initializable {
         txtAreaDescripcion.clear();
         cmbAreaEstado.setValue("Activo");
         btnEliminarAreaForm.setDisable(true);
+        limpiarErroresCampos();
         ocultarMensaje();
     }
 
@@ -177,5 +193,32 @@ public class AreasMesaController implements Initializable {
         lblMensajeArea.setText("");
         lblMensajeArea.setVisible(false);
         lblMensajeArea.setManaged(false);
+    }
+
+    private void configurarFloatingFields() {
+        FloatingFieldHelper.bindTextField(boxAreaNombreField, txtAreaNombre);
+        FloatingFieldHelper.bindComboBox(boxAreaEstadoField, cmbAreaEstado);
+    }
+
+    private void limpiarErroresCampos() {
+        if (lblAreaNombreError != null) {
+            lblAreaNombreError.setText("");
+            lblAreaNombreError.setVisible(false);
+            lblAreaNombreError.setManaged(false);
+        }
+        FloatingFieldHelper.clearInvalid(boxAreaNombreField, boxAreaEstadoField);
+    }
+
+    private void mostrarErrorNombre(String mensaje) {
+        if (lblAreaNombreError != null) {
+            lblAreaNombreError.setText(mensaje);
+            lblAreaNombreError.setVisible(true);
+            lblAreaNombreError.setManaged(true);
+        }
+        FloatingFieldHelper.setInvalid(boxAreaNombreField, true);
+    }
+
+    private void marcarInvalido(StackPane contenedor, boolean invalido) {
+        FloatingFieldHelper.setInvalid(contenedor, invalido);
     }
 }

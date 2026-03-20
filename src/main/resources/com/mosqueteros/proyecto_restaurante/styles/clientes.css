@@ -82,12 +82,11 @@
     -fx-text-transform: uppercase;
 }
 
-/* MaterialFX TextField Styling */
-.mfx-text-field, .mfx-combo-box {
+/* TextField y ComboBox Styling */
+.custom-input {
     -fx-background-color: #f8fafc;
     -fx-border-color: #e2e8f0;
     -fx-border-radius: 8px;
-    -mfx-main-color: #f48c25; /* Color de foco */
     -fx-font-size: 13px;
 }
 
@@ -130,13 +129,12 @@
     -fx-text-fill: #f48c25;
 }
 
-/* --- Tabla MaterialFX --- */
+/* --- Tabla --- */
 .custom-table {
     -fx-background-color: white;
     -fx-background-radius: 12px;
     -fx-border-color: #e2e8f0;
     -fx-border-radius: 12px;
-    -mfx-main-color: #f48c25;
 }
 
 /* Estilo de las cabeceras de la tabla */
@@ -152,7 +150,7 @@
 }
 
 /* Estilo de las filas al pasar el mouse */
-.mfx-table-row:hover {
+.custom-table .table-row-cell:hover {
     -fx-background-color: rgba(244, 140, 37, 0.05);
 }
 

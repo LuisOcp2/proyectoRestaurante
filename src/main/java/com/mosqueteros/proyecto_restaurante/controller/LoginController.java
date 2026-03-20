@@ -1,12 +1,14 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
+import com.mosqueteros.proyecto_restaurante.App;
 import com.mosqueteros.proyecto_restaurante.dao.UsuarioDAO;
+import com.mosqueteros.proyecto_restaurante.dao.SedeDAO;
+import com.mosqueteros.proyecto_restaurante.dao.ConfiguracionDAO;
 import com.mosqueteros.proyecto_restaurante.model.Usuario;
+import com.mosqueteros.proyecto_restaurante.model.Sede;
 import com.mosqueteros.proyecto_restaurante.util.SessionUtil;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXCheckbox;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import com.mosqueteros.proyecto_restaurante.util.ThemeManager;
+import com.mosqueteros.proyecto_restaurante.util.ConfiguracionUtil;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -16,6 +18,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -30,6 +33,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import io.github.palexdev.materialfx.controls.*;
 
 public class LoginController implements Initializable {
 
@@ -51,7 +55,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         deshabilitarMenuContextual();
-        ocultarOjoNativoMFX();
+        ocultarOjoNativo();
         animarEntrada();
         configurarListeners();
     }
@@ -69,7 +73,7 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void ocultarOjoNativoMFX() {
+    private void ocultarOjoNativo() {
         texContrasena.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 Platform.runLater(() -> aplicarOcultamientoOjo());
@@ -233,18 +237,55 @@ public class LoginController implements Initializable {
     private void manejarLoginExitoso(String usuarioLogin) {
         System.out.println("✅ Login exitoso: " + usuarioLogin + " - " + SessionUtil.getUserRole());
         try {
+            establecerSedeActivaPorDefecto();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mosqueteros/proyecto_restaurante/view/main.fxml"));
             Parent root = loader.load();
             MainController mainCtrl = loader.getController();
             mainCtrl.inicializarDashboard();
             
             Stage stage = (Stage) botIngreso.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(App.class.getResource("styles/styles.css").toExternalForm());
+            ThemeManager.aplicarTemaGlobal(scene);
+            stage.setScene(scene);
             stage.setTitle("Cali Delights - " + SessionUtil.getUserRole());
             stage.show();
         } catch (Exception e) {
             mostrarBannerError("Error dashboard: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void establecerSedeActivaPorDefecto() {
+        if (SessionUtil.getSedeActivaId() != null && SessionUtil.getSedeActivaNombre() != null) {
+            return;
+        }
+        try {
+            long usuId = SessionUtil.getUserId();
+            String clavePreferencia = ConfiguracionUtil.claveSedeActivaPorUsuario(usuId);
+            String sedePreferidaRaw = ConfiguracionDAO.obtenerValorPorClave(clavePreferencia);
+            if (sedePreferidaRaw != null && !sedePreferidaRaw.isBlank()) {
+                try {
+                    Long sedePreferidaId = Long.parseLong(sedePreferidaRaw.trim());
+                    Sede sedePreferida = SedeDAO.buscarPorId(sedePreferidaId);
+                    if (sedePreferida != null) {
+                        SessionUtil.setSedeActiva(sedePreferida.getId(), sedePreferida.getNombre());
+                        return;
+                    }
+                } catch (NumberFormatException ignored) {
+                    // continua con fallback
+                }
+            }
+
+            java.util.List<Sede> sedes = SedeDAO.listarTodas();
+            if (!sedes.isEmpty()) {
+                Sede sede = sedes.get(0);
+                SessionUtil.setSedeActiva(sede.getId(), sede.getNombre());
+            } else {
+                SessionUtil.setSedeActiva(null, "Sede Principal");
+            }
+        } catch (Exception e) {
+            SessionUtil.setSedeActiva(null, "Sede Principal");
         }
     }
 

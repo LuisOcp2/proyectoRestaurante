@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
 <VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="com.mosqueteros.proyecto_restaurante.controller.SedeController"
@@ -11,13 +12,13 @@
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
     
-    <StackPane style="-fx-background-color: rgba(84, 87, 205, 0.1); -fx-background-radius: 60; -fx-min-width: 120; -fx-min-height: 120; -fx-max-width: 120; -fx-max-height: 120;">
-        <FontIcon iconLiteral="fas-building" iconSize="54" iconColor="#5457CD" />
+    <StackPane styleClass="clientes-hero-icon">
+        <FontIcon iconLiteral="fas-building" iconSize="54" styleClass="icon-primary" />
     </StackPane>
     
     <VBox alignment="CENTER" spacing="8.0">
         <Label text="Sedes y Sucursales" styleClass="welcome-title" />
-        <Label text="Módulo en Desarrollo" style="-fx-text-fill: #5457CD; -fx-font-weight: bold; -fx-font-size: 18px;" />
+        <Label text="Módulo en Desarrollo" styleClass="clientes-dev-title" />
         <Label text="Configura las ubicaciones físicas de tu restaurante aquí." styleClass="welcome-subtitle" />
     </VBox>
 </VBox>

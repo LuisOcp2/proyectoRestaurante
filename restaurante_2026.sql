@@ -173,7 +173,15 @@ INSERT INTO `configuracion` (`cfg_id`, `cfg_clave`, `cfg_valor`, `created_at`, `
 (2, 'company_address', 'Calle Principal #123', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
 (3, 'company_phone', '300 000 0000', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
 (4, 'currency_symbol', '$', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
-(5, 'ticket_footer', '¡Gracias por su visita! Vuelva pronto.', '2026-03-05 01:44:54', '2026-03-05 01:44:54');
+(5, 'ticket_footer', 'Gracias por su visita. Vuelva pronto.', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(6, 'company_email', 'contacto@mirestaurante.com', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(7, 'currency_code', 'COP', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(8, 'currency_decimals', '2', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(9, 'tax_percentage', '19', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(10, 'default_tip_percentage', '10', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(11, 'invoice_prefix', 'RC', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(12, 'timezone', 'America/Bogota', '2026-03-05 01:44:54', '2026-03-05 01:44:54'),
+(13, 'ui_theme', 'violet', '2026-03-05 01:44:54', '2026-03-05 01:44:54');
 
 -- --------------------------------------------------------
 
@@ -999,7 +1007,7 @@ ALTER TABLE `concepto_egreso`
 -- AUTO_INCREMENT de la tabla `configuracion`
 --
 ALTER TABLE `configuracion`
-  MODIFY `cfg_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `cfg_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `encabezado_egresos`

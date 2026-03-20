@@ -240,7 +240,63 @@ VALUES (
     (
         5,
         'ticket_footer',
-        '¡Gracias por su visita! Vuelva pronto.',
+        'Gracias por su visita. Vuelva pronto.',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        6,
+        'company_email',
+        'contacto@mirestaurante.com',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        7,
+        'currency_code',
+        'COP',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        8,
+        'currency_decimals',
+        '2',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        9,
+        'tax_percentage',
+        '19',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        10,
+        'default_tip_percentage',
+        '10',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        11,
+        'invoice_prefix',
+        'RC',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        12,
+        'timezone',
+        'America/Bogota',
+        '2026-02-24 19:54:20',
+        '2026-02-24 19:54:20'
+    ),
+    (
+        13,
+        'ui_theme',
+        'violet',
         '2026-02-24 19:54:20',
         '2026-02-24 19:54:20'
     );
@@ -1353,7 +1409,7 @@ AUTO_INCREMENT = 6;
 --
 ALTER TABLE `configuracion`
 MODIFY `cfg_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-AUTO_INCREMENT = 6;
+AUTO_INCREMENT = 13;
 
 --
 -- AUTO_INCREMENT de la tabla `encabezado_egresos`

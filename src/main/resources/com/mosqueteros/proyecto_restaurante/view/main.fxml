@@ -13,12 +13,12 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <!--
-  Cali Delights — main.fxml  v3.0  (Shell Inmersivo MaterialFX)
+  Cali Delights — main.fxml  v3.0  (Shell Inmersivo JavaFX)
   Topbar: gradiente índigo→cian  |  Sidebar: blanco 260px colapsable
   Acento: #FF6933  |  Fondo: #F8F9FA
 -->
 
-<BorderPane styleClass="shell-root" stylesheets="@../styles/main-shell.css,@../styles/styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mosqueteros.proyecto_restaurante.controller.MainController">
+<BorderPane styleClass="shell-root" stylesheets="@../styles/main-shell.css,@../styles/styles.css,@../styles/theme-overrides.css,@../styles/design-preview.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mosqueteros.proyecto_restaurante.controller.MainController">
 
     <!-- ══════════════════════════════════════════════════════════════
          TOPBAR — gradiente índigo → cian, 60px alto
@@ -30,12 +30,30 @@
             <MFXButton fx:id="btnHamburger" onAction="#toggleSidebar" styleClass="btn-hamburger" text="☰" />
 
             <!-- Marca en topbar (sólo visible en mini-sidebar) -->
-            <Label fx:id="lblTopbarBrand" managed="false" styleClass="topbar-brand" text="🍽  Cali Delights" visible="false" />
+            <VBox fx:id="topbarBrandBlock" alignment="CENTER_LEFT" managed="false" spacing="1" styleClass="topbar-brand-block" visible="false">
+                <Label fx:id="lblTopbarBrand" styleClass="topbar-brand" text="Cali Delights" />
+                <Label fx:id="lblTopbarSubline" styleClass="topbar-subline" text="Control operativo multisede" />
+            </VBox>
 
             <!-- Buscador global con icono -->
             <HBox alignment="CENTER_LEFT" spacing="6" styleClass="topbar-search-wrapper">
                 <Label styleClass="topbar-search-icon" text="🔍" />
-                <MFXTextField fx:id="txtBusqueda" floatMode="DISABLED" promptText="Buscar..." styleClass="topbar-search" />
+                <MFXTextField fx:id="txtBusqueda" promptText="Buscar..." styleClass="topbar-search" />
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="topbar-meta">
+                <HBox fx:id="chipTopbarSede" alignment="CENTER_LEFT" spacing="5" styleClass="topbar-chip,topbar-chip-sede">
+                    <FontIcon iconLiteral="fas-building" iconSize="11" styleClass="topbar-chip-icon" />
+                    <Label fx:id="lblTopbarSede" styleClass="topbar-chip-text" text="Sede Principal" />
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="5" styleClass="topbar-chip">
+                    <FontIcon iconLiteral="fas-layer-group" iconSize="11" styleClass="topbar-chip-icon" />
+                    <Label fx:id="lblTopbarModulo" styleClass="topbar-chip-text" text="Dashboard" />
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="5" styleClass="topbar-chip">
+                    <FontIcon iconLiteral="fas-clock" iconSize="11" styleClass="topbar-chip-icon" />
+                    <Label fx:id="lblTopbarHora" styleClass="topbar-chip-text" text="--:--" />
+                </HBox>
             </HBox>
 
             <!-- Spacer -->
@@ -63,7 +81,7 @@
             <!-- Botón Cerrar Sesión -->
             <MFXButton fx:id="btnCerrarSesion" onAction="#cerrarSesion" styleClass="btn-logout" text="Salir">
                 <graphic>
-                    <FontIcon iconColor="white" iconLiteral="fas-power-off" iconSize="16" />
+                    <FontIcon iconLiteral="fas-power-off" iconSize="16" styleClass="icon-on-primary" />
                 </graphic>
                 <HBox.margin><Insets left="8" right="8" /></HBox.margin>
             </MFXButton>
@@ -86,162 +104,112 @@
                     <Label fx:id="lblSidebarSub" styleClass="sidebar-brand-sub" text="Gestión de restaurante" />
                 </VBox>
 
-                <!-- Menú con scroll MFX -->
+                <!-- Header actions -->
+                <VBox styleClass="sidebar-section">
+                    <MFXButton fx:id="btnDashboard" maxWidth="Infinity" onAction="#mostrarDashboard" styleClass="menu-btn" text="Dashboard">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-chart-bar" iconSize="18" styleClass="menu-icon" />
+                        </graphic>
+                    </MFXButton>
+                </VBox>
+
+                <!-- Menú con scroll agrupado -->
                 <MFXScrollPane fx:id="sidebarScroll" fitToWidth="true" styleClass="sidebar-scroll" VBox.vgrow="ALWAYS">
+                    <VBox styleClass="sidebar-content">
 
-                    <VBox spacing="2">
-                        <padding><Insets bottom="20" left="8" right="8" top="8" /></padding>
+                        <VBox styleClass="sidebar-group">
+                            <Label fx:id="seccionPedidos" prefHeight="18.0" prefWidth="233.0" styleClass="menu-section sidebar-group-label" text="🍽 PEDIDOS Y COMANDAS  -" />
+                            <VBox fx:id="menuPedidos" styleClass="sidebar-menu">
+                                <MFXButton fx:id="btnMesas" maxWidth="Infinity" onAction="#mostrarVistaMesas" styleClass="menu-btn" text="Mesas">
+                                    <graphic><FontIcon iconLiteral="fas-chair" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnAreasMesa" maxWidth="Infinity" onAction="#mostrarVistaAreasMesa" styleClass="menu-btn" text="Áreas de Mesa">
+                                    <graphic><FontIcon iconLiteral="fas-map-marked-alt" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnPedidos" maxWidth="Infinity" onAction="#mostrarVistaPedidos" styleClass="menu-btn" text="Pedidos">
+                                    <graphic><FontIcon iconLiteral="fas-clipboard-list" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnComandas" maxWidth="Infinity" onAction="#mostrarVistaComandas" styleClass="menu-btn" text="Cocina / Comandas">
+                                    <graphic><FontIcon iconLiteral="fas-fire" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnPlatos" maxWidth="Infinity" onAction="#mostrarVistaPlatos" styleClass="menu-btn" text="Platos">
+                                    <graphic><FontIcon iconLiteral="fas-utensils" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnCategoriasPlato" maxWidth="Infinity" onAction="#mostrarVistaCategoriasPlato" styleClass="menu-btn" text="Categorías Plato">
+                                    <graphic><FontIcon iconLiteral="fas-folder" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                            </VBox>
+                        </VBox>
 
-                        <!-- ══════════════════════════════════════════
-                             BOTÓN: DASHBOARD
-                             ══════════════════════════════════════════ -->
-                        <MFXButton fx:id="btnDashboard" maxWidth="Infinity" onAction="#mostrarDashboard" styleClass="menu-btn" text="Dashboard">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-chart-bar" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
+                        <VBox styleClass="sidebar-group">
+                            <Label fx:id="seccionEgresos" prefHeight="18.0" prefWidth="225.0" styleClass="menu-section sidebar-group-label" text="🛡 EGRESOS Y SEGURIDAD  -" />
+                            <VBox fx:id="menuEgresos" styleClass="sidebar-menu">
+                                <MFXButton fx:id="btnEgresos" maxWidth="Infinity" onAction="#mostrarVistaEgresos" styleClass="menu-btn" text="Egresos">
+                                    <graphic><FontIcon iconLiteral="fas-money-bill-wave" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnConceptoEgreso" maxWidth="Infinity" onAction="#mostrarVistaConceptoEgreso" styleClass="menu-btn" text="Concepto Egreso">
+                                    <graphic><FontIcon iconLiteral="fas-tag" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnFormaPago" maxWidth="Infinity" onAction="#mostrarVistaFormaPago" styleClass="menu-btn" text="Forma de Pago">
+                                    <graphic><FontIcon iconLiteral="fas-credit-card" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnUsuarios" maxWidth="Infinity" onAction="#mostrarVistaUsuarios" styleClass="menu-btn" text="Usuarios">
+                                    <graphic><FontIcon iconLiteral="fas-users" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                            </VBox>
+                        </VBox>
 
-                        <!-- ══════════════════════════════════════════
-                             SECCIÓN: LUIS — Pedidos y Comandas
-                             ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionPedidos" styleClass="menu-section" text="PEDIDOS Y COMANDAS" />
+                        <VBox styleClass="sidebar-group">
+                            <Label fx:id="seccionFacturacion" prefHeight="18.0" prefWidth="226.0" styleClass="menu-section sidebar-group-label" text="🧾 FACTURACIÓN Y ROLES  -" />
+                            <VBox fx:id="menuFacturacion" styleClass="sidebar-menu">
+                                <MFXButton fx:id="btnReciboCaja" maxWidth="Infinity" onAction="#mostrarVistaReciboCaja" styleClass="menu-btn" text="Recibos de Caja">
+                                    <graphic><FontIcon iconLiteral="fas-file-invoice-dollar" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnClientes" maxWidth="Infinity" onAction="#mostrarVistaClientes" styleClass="menu-btn" text="Clientes">
+                                    <graphic><FontIcon iconLiteral="fas-user" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnPerfiles" maxWidth="Infinity" onAction="#mostrarVistaPerfiles" styleClass="menu-btn" text="Perfiles / Roles">
+                                    <graphic><FontIcon iconLiteral="fas-id-badge" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                            </VBox>
+                        </VBox>
 
-                        <MFXButton fx:id="btnMesas" maxWidth="Infinity" onAction="#mostrarVistaMesas" styleClass="menu-btn" text="Mesas">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-chair" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnAreasMesa" maxWidth="Infinity" onAction="#mostrarVistaAreasMesa" styleClass="menu-btn" text="Áreas de Mesa">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-map-marked-alt" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnPlatos" maxWidth="Infinity" onAction="#mostrarVistaPlatos" styleClass="menu-btn" text="Platos">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-utensils" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnCategoriasPlato" maxWidth="Infinity" onAction="#mostrarVistaCategoriasPlato" styleClass="menu-btn" text="Categorías Plato">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-folder" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnPedidos" maxWidth="Infinity" onAction="#mostrarVistaPedidos" styleClass="menu-btn" text="Pedidos">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-clipboard-list" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnComandas" maxWidth="Infinity" onAction="#mostrarVistaComandas" styleClass="menu-btn" text="Cocina / Comandas">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-fire" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <!-- ══════════════════════════════════════════
-                             SECCIÓN: SEBASTIÁN — Egresos y Seguridad
-                             ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionEgresos" styleClass="menu-section" text="EGRESOS" />
-
-                        <MFXButton fx:id="btnEgresos" maxWidth="Infinity" onAction="#mostrarVistaEgresos" styleClass="menu-btn" text="Egresos">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-money-bill-wave" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnConceptoEgreso" maxWidth="Infinity" onAction="#mostrarVistaConceptoEgreso" styleClass="menu-btn" text="Concepto Egreso">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-tag" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnFormaPago" maxWidth="Infinity" onAction="#mostrarVistaFormaPago" styleClass="menu-btn" text="Forma de Pago">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-credit-card" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <!-- ══════════════════════════════════════════
-                             SECCIÓN: ANGIE — Facturación y Roles
-                             ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionFacturacion" styleClass="menu-section" text="FACTURACIÓN" />
-
-                        <MFXButton fx:id="btnReciboCaja" maxWidth="Infinity" onAction="#mostrarVistaReciboCaja" styleClass="menu-btn" text="Recibos de Caja">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-file-invoice-dollar" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnClientes" maxWidth="Infinity" onAction="#mostrarVistaClientes" styleClass="menu-btn" text="Clientes">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-user" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnPerfiles" maxWidth="Infinity" onAction="#mostrarVistaPerfiles" styleClass="menu-btn" text="Perfiles / Roles">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-id-badge" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnUsuarios" maxWidth="Infinity" onAction="#mostrarVistaUsuarios" styleClass="menu-btn" text="Usuarios">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-users" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <!-- ══════════════════════════════════════════
-                             SECCIÓN: NICOLÁS — Inventario / PQRS
-                             ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionInventario" styleClass="menu-section" text="INVENTARIO / PQRS" />
-
-                        <MFXButton fx:id="btnInventarioLog" maxWidth="Infinity" onAction="#mostrarVistaInventarioLog" styleClass="menu-btn" text="Movimientos Bodega">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-box" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnInsumos" maxWidth="Infinity" onAction="#mostrarVistaInsumos" styleClass="menu-btn" text="Insumos">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-leaf" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnPresentacion" maxWidth="Infinity" onAction="#mostrarVistaPresentacion" styleClass="menu-btn" text="Presentaciones">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-balance-scale" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnCategoriaInsumo" maxWidth="Infinity" onAction="#mostrarVistaCategoriaInsumo" styleClass="menu-btn" text="Cat. Insumo">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-folder" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <MFXButton fx:id="btnPQRS" maxWidth="Infinity" onAction="#mostrarVistaPQRS" styleClass="menu-btn" text="PQRS">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-comment-alt" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
-
-                        <!-- ══════════════════════════════════════════
-                             SECCIÓN: CONFIGURACIÓN GENERAL
-                             ══════════════════════════════════════════ -->
-                        <Label fx:id="seccionConfiguracion" styleClass="menu-section" text="CONFIGURACIÓN" />
-
-                        <MFXButton fx:id="btnSedes" maxWidth="Infinity" onAction="#mostrarVistaSedes" styleClass="menu-btn" text="Sedes">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-building" iconSize="18" styleClass="menu-icon" />
-                            </graphic>
-                        </MFXButton>
+                        <VBox styleClass="sidebar-group">
+                            <Label fx:id="seccionInventario" prefHeight="18.0" prefWidth="228.0" styleClass="menu-section sidebar-group-label" text="📦 INVENTARIO / PQRS  -" />
+                            <VBox fx:id="menuInventario" styleClass="sidebar-menu">
+                                <MFXButton fx:id="btnInventarioLog" maxWidth="Infinity" onAction="#mostrarVistaInventarioLog" styleClass="menu-btn" text="Movimientos Bodega">
+                                    <graphic><FontIcon iconLiteral="fas-box" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnInsumos" maxWidth="Infinity" onAction="#mostrarVistaInsumos" styleClass="menu-btn" text="Insumos">
+                                    <graphic><FontIcon iconLiteral="fas-leaf" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnPresentacion" maxWidth="Infinity" onAction="#mostrarVistaPresentacion" styleClass="menu-btn" text="Presentaciones">
+                                    <graphic><FontIcon iconLiteral="fas-balance-scale" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnCategoriaInsumo" maxWidth="Infinity" onAction="#mostrarVistaCategoriaInsumo" styleClass="menu-btn" text="Cat. Insumo">
+                                    <graphic><FontIcon iconLiteral="fas-folder" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                                <MFXButton fx:id="btnPQRS" maxWidth="Infinity" onAction="#mostrarVistaPQRS" styleClass="menu-btn" text="PQRS">
+                                    <graphic><FontIcon iconLiteral="fas-comment-alt" iconSize="18" styleClass="menu-icon" /></graphic>
+                                </MFXButton>
+                            </VBox>
+                        </VBox>
 
                     </VBox>
                 </MFXScrollPane>
+
+                <!-- Footer actions -->
+                <VBox styleClass="sidebar-section">
+                    <Label fx:id="seccionConfiguracion" prefHeight="18.0" prefWidth="232.0" styleClass="menu-section sidebar-group-label" text="⚙ CONFIGURACIÓN  -" />
+                    <VBox fx:id="menuConfiguracion" styleClass="sidebar-menu">
+                        <MFXButton fx:id="btnConfiguracion" maxWidth="Infinity" onAction="#mostrarVistaConfiguracion" styleClass="menu-btn" text="Parámetros">
+                            <graphic><FontIcon iconLiteral="fas-cogs" iconSize="18" styleClass="menu-icon" /></graphic>
+                        </MFXButton>
+                        <MFXButton fx:id="btnSedes" maxWidth="Infinity" onAction="#mostrarVistaSedes" styleClass="menu-btn" text="Sedes">
+                            <graphic><FontIcon iconLiteral="fas-building" iconSize="18" styleClass="menu-icon" /></graphic>
+                        </MFXButton>
+                    </VBox>
+                </VBox>
 
             </VBox>
 

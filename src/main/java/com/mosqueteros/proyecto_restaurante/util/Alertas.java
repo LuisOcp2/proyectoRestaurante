@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -13,6 +13,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Clase utilitaria para mostrar diálogos personalizados en la app.
@@ -165,7 +166,7 @@ public final class Alertas {
             Region fondo = crearFondoOscuro();
             VBox tarjeta = construirTarjeta(tipo, titulo, contenido);
 
-            Button btnAceptar = crearBoton("Aceptar", tipo.color, true);
+            MFXButton btnAceptar = crearBoton("Aceptar", tipo.color, true);
             HBox pie = new HBox(btnAceptar);
             pie.setAlignment(Pos.CENTER_RIGHT);
             pie.setPadding(new Insets(0, 28, 24, 28));
@@ -218,8 +219,8 @@ public final class Alertas {
             tarjeta.getChildren().add(lblExtra);
 
             // Botones
-            Button btnAceptar  = crearBoton("Aceptar",  COLOR_ERROR, true);
-            Button btnCancelar = crearBoton("Cancelar", COLOR_BORDE, false);
+            MFXButton btnAceptar  = crearBoton("Aceptar",  COLOR_ERROR, true);
+            MFXButton btnCancelar = crearBoton("Cancelar", COLOR_BORDE, false);
 
             Region espacio = new Region();
             HBox.setHgrow(espacio, Priority.ALWAYS);
@@ -336,8 +337,8 @@ public final class Alertas {
     }
 
     /** Crea un boton estilizado del sistema Cali Delights. */
-    private static Button crearBoton(String texto, String colorFondo, boolean esPrimario) {
-        Button boton = new Button(texto);
+    private static MFXButton crearBoton(String texto, String colorFondo, boolean esPrimario) {
+        MFXButton boton = new MFXButton(texto);
         boton.setMinWidth(100);
         boton.setMinHeight(40);
         if (esPrimario) {

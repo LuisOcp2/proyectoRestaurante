@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
@@ -14,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import io.github.palexdev.materialfx.controls.*?>
 
 <!--
 ╔════════════════════════════════════════════════════════════════════════════╗
@@ -24,9 +21,9 @@
 ║                                                                          ║
 ║  CONTRATO CONTROLADOR (UsuarioController):                              ║
 ║    txtBuscarUsuario    → MFXTextField  búsqueda por nombre/login        ║
-║    cmbFiltroPerfil     → ComboBox<String> filtro por perfil             ║
-║    cmbFiltroEstado     → ComboBox<String> filtro por estado             ║
-║    tblListaUsuarios    → MFXTableView<Usuario>                          ║
+║    cmbFiltroPerfil     → MFXComboBox<String> filtro por perfil             ║
+║    cmbFiltroEstado     → MFXComboBox<String> filtro por estado             ║
+║    tblListaUsuarios    → TableView<Usuario>                             ║
 ║    lblConteoUsuarios   → Label conteo de resultados                     ║
 ║    txtUsuNombre        → MFXTextField  usunombre                        ║
 ║    txtUsuApellido      → MFXTextField  usuapellido                      ║
@@ -90,7 +87,7 @@
                     <!-- Filtro por perfil/rol del usuario -->
                     <VBox spacing="2">
                         <Label text="Perfil" styleClass="input-label"/>
-                        <ComboBox fx:id="cmbFiltroPerfil"
+                        <MFXComboBox fx:id="cmbFiltroPerfil"
                                   promptText="Todos los perfiles"
                                   prefWidth="140"
                                   styleClass="filtro-combo-nativo"/>
@@ -99,7 +96,7 @@
                     <!-- Filtro por estado Activo / Inactivo -->
                     <VBox spacing="2">
                         <Label text="Estado" styleClass="input-label"/>
-                        <ComboBox fx:id="cmbFiltroEstado"
+                        <MFXComboBox fx:id="cmbFiltroEstado"
                                   promptText="Todos los estados"
                                   prefWidth="120"
                                   styleClass="filtro-combo-nativo"/>
@@ -204,8 +201,8 @@
                 <Label styleClass="form-header-titulo" text="Detalle de Usuario"/>
             </HBox>
 
-            <!-- Formulario derecho: ScrollPane con VBox styleClass="main-card" -->
-            <ScrollPane fitToWidth="true" 
+            <!-- Formulario derecho: MFXScrollPane con VBox styleClass="main-card" -->
+            <MFXScrollPane fitToWidth="true" 
                         fitToHeight="false" 
                         hbarPolicy="NEVER" 
                         vbarPolicy="AS_NEEDED"
@@ -216,16 +213,25 @@
                     <VBox spacing="18">
                         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
 
-                        <!-- Campo: Nombre (usunombre) -->
-                        <VBox spacing="6">
-                            <Label text="Nombre" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
-                                <FontIcon iconLiteral="fas-user" iconSize="14" styleClass="icon-muted"/>
+                        <!-- Campo Pixel Perfect: Usuario (Floating Label + Error) -->
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxUsuNombreField" styleClass="pixel-field-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-user"/>
+                                </HBox>
                                 <MFXTextField fx:id="txtUsuNombre"
-                                              promptText="Ej. Luis"
-                                              styleClass="input-field"
-                                              HBox.hgrow="ALWAYS"/>
-                            </HBox>
+                                              promptText=" "
+                                              styleClass="pixel-text-field"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Usuario"
+                                       styleClass="floating-label"
+                                       StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
+                            <Label fx:id="lblUsuNombreError"
+                                   text=""
+                                   styleClass="field-error"
+                                   managed="false"
+                                   visible="false"/>
                         </VBox>
 
                         <!-- Campo: Apellido (usuapellido) -->
@@ -300,16 +306,20 @@
                             </HBox>
                         </VBox>
 
-                        <!-- Campo: Perfil/Rol (perfid FK → perfil) -->
-                        <VBox spacing="6">
-                            <Label text="Perfil / Rol" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
-                                <FontIcon iconLiteral="fas-user-shield" iconSize="14" styleClass="icon-muted"/>
+                        <!-- Combo Pixel Perfect: Perfil / Rol -->
+                        <VBox styleClass="pixel-field-block">
+                            <StackPane fx:id="boxUsuPerfilField" styleClass="pixel-combo-container">
+                                <HBox styleClass="field-icon-left" alignment="CENTER_LEFT" StackPane.alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-user-shield"/>
+                                </HBox>
                                 <MFXComboBox fx:id="cmbUsuPerfil"
-                                             promptText="Seleccionar perfil"
-                                             styleClass="input-combo"
-                                             HBox.hgrow="ALWAYS"/>
-                            </HBox>
+                                             promptText=" "
+                                             styleClass="pixel-history-combo"
+                                             StackPane.alignment="CENTER_LEFT"/>
+                                <Label text="Perfil / Rol"
+                                       styleClass="floating-label"
+                                       StackPane.alignment="CENTER_LEFT"/>
+                            </StackPane>
                         </VBox>
 
                         <!-- Campo: Estado (usuestado: Activo/Inactivo) -->
@@ -366,7 +376,7 @@
                         </MFXButton>
                     </HBox>
                 </VBox>
-            </ScrollPane>
+            </MFXScrollPane>
         </VBox>
     </HBox>
 </StackPane>

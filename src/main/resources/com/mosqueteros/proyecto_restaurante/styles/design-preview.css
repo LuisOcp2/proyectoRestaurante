@@ -1,0 +1,55 @@
+/*
+ * Scene Builder preview helpers.
+ * Objetivo: acercar la vista de diseno al runtime sin tocar logica Java.
+ */
+
+.shell-root {
+    -fx-font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+.sidebar-group-label {
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+    -fx-alignment: CENTER_LEFT;
+    -fx-wrap-text: false;
+}
+
+.sidebar-group-label .text {
+    -fx-font-smoothing-type: lcd;
+}
+
+.sidebar-group {
+    -fx-spacing: 6;
+}
+
+.sidebar-menu {
+    -fx-spacing: 2;
+}
+
+.menu-btn {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.topbar-search-wrapper,
+.input-wrapper,
+.search-wrapper,
+.input-combo,
+.filtro-combo-nativo {
+    -fx-min-height: 46px;
+}
+
+.density-compact .topbar-search-wrapper,
+.density-compact .input-wrapper,
+.density-compact .search-wrapper,
+.density-compact .input-combo,
+.density-compact .filtro-combo-nativo {
+    -fx-min-height: 40px;
+}
+
+.density-ultra-compact .topbar-search-wrapper,
+.density-ultra-compact .input-wrapper,
+.density-ultra-compact .search-wrapper,
+.density-ultra-compact .input-combo,
+.density-ultra-compact .filtro-combo-nativo {
+    -fx-min-height: 36px;
+}

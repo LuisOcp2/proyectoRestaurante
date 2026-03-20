@@ -1,20 +1,21 @@
 package com.mosqueteros.proyecto_restaurante.controller;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import com.mosqueteros.proyecto_restaurante.util.FloatingFieldHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import io.github.palexdev.materialfx.controls.*;
 
 /**
  * Controlador para VistaCategoriasPlato.fxml.
@@ -26,8 +27,8 @@ public class CategoriasPlatoController implements Initializable {
     // ─── Filtros ──────────────────────────────────────────────────
     /** Campo de búsqueda por nombre o descripción */
     @FXML private MFXTextField txtBuscarCategoria;
-    /** ComboBox nativo filtro por estado */
-    @FXML private ComboBox<String> cmbFiltroEstado;
+    /** MFXComboBox nativo filtro por estado */
+    @FXML private MFXComboBox<String> cmbFiltroEstado;
 
     // ─── Tabla ────────────────────────────────────────────────────
     /** Tabla principal de categorías de plato */
@@ -44,10 +45,16 @@ public class CategoriasPlatoController implements Initializable {
     // ─── Formulario ───────────────────────────────────────────────
     /** Campo nombre de la categoría */
     @FXML private MFXTextField txtCatNombre;
+    /** Contenedor visual del campo nombre */
+    @FXML private StackPane boxCatNombreField;
+    /** Error de validacion del nombre */
+    @FXML private Label lblCatNombreError;
     /** Campo descripción de la categoría */
     @FXML private MFXTextField txtCatDescripcion;
-    /** ComboBox estado del formulario */
+    /** MFXComboBox estado del formulario */
     @FXML private MFXComboBox<String> cmbCatEstado;
+    /** Contenedor visual del combo estado */
+    @FXML private StackPane boxCatEstadoField;
     /** Botón eliminar del formulario */
     @FXML private MFXButton btnEliminarCategoriaForm;
     /** Etiqueta de mensajes de validación */
@@ -67,6 +74,7 @@ public class CategoriasPlatoController implements Initializable {
         cmbFiltroEstado.setItems(FXCollections.observableArrayList("", "Activo", "Inactivo"));
         tblListaCategorias.setItems(listaCategorias);
         actualizarPlaceholder();
+        configurarFloatingFields();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -117,8 +125,15 @@ public class CategoriasPlatoController implements Initializable {
      */
     @FXML
     private void guardarCategoria() {
+        limpiarErroresCampos();
         if (txtCatNombre.getText().isBlank()) {
+            mostrarErrorNombre("El nombre es obligatorio.");
             mostrarMensaje("⚠ El nombre de la categoría es obligatorio.", true);
+            return;
+        }
+        if (cmbCatEstado.getValue() == null || cmbCatEstado.getValue().isBlank()) {
+            marcarInvalido(boxCatEstadoField, true);
+            mostrarMensaje("⚠ Selecciona un estado.", true);
             return;
         }
         // TODO: integrar con CategoriasPlatoDAO.insertar/actualizar(...)
@@ -147,6 +162,7 @@ public class CategoriasPlatoController implements Initializable {
         txtCatDescripcion.clear();
         cmbCatEstado.setValue("Activo");
         btnEliminarCategoriaForm.setDisable(true);
+        limpiarErroresCampos();
         ocultarMensaje();
     }
 
@@ -173,5 +189,32 @@ public class CategoriasPlatoController implements Initializable {
         lblMensajeCategoria.setText("");
         lblMensajeCategoria.setVisible(false);
         lblMensajeCategoria.setManaged(false);
+    }
+
+    private void configurarFloatingFields() {
+        FloatingFieldHelper.bindTextField(boxCatNombreField, txtCatNombre);
+        FloatingFieldHelper.bindComboBox(boxCatEstadoField, cmbCatEstado);
+    }
+
+    private void limpiarErroresCampos() {
+        if (lblCatNombreError != null) {
+            lblCatNombreError.setText("");
+            lblCatNombreError.setVisible(false);
+            lblCatNombreError.setManaged(false);
+        }
+        FloatingFieldHelper.clearInvalid(boxCatNombreField, boxCatEstadoField);
+    }
+
+    private void mostrarErrorNombre(String mensaje) {
+        if (lblCatNombreError != null) {
+            lblCatNombreError.setText(mensaje);
+            lblCatNombreError.setVisible(true);
+            lblCatNombreError.setManaged(true);
+        }
+        FloatingFieldHelper.setInvalid(boxCatNombreField, true);
+    }
+
+    private void marcarInvalido(StackPane contenedor, boolean invalido) {
+        FloatingFieldHelper.setInvalid(contenedor, invalido);
     }
 }

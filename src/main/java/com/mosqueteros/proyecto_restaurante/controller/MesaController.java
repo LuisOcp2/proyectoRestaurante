@@ -12,18 +12,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import com.mosqueteros.proyecto_restaurante.util.Alertas;
 import javafx.scene.Node;
 import java.util.List;
+import io.github.palexdev.materialfx.controls.*;
 
 public class MesaController {
 
     // ── Filtros de listado ────────────────────────────────────────────────────
-    @FXML private ComboBox<Sede>     cmbFiltroSede;
-    @FXML private ComboBox<AreaMesa> cmbFiltroArea;
-    @FXML private ComboBox<String>   cmbFiltroEstado;
+    @FXML private MFXComboBox<Sede>     cmbFiltroSede;
+    @FXML private MFXComboBox<AreaMesa> cmbFiltroArea;
+    @FXML private MFXComboBox<String>   cmbFiltroEstado;
 
     // ── Tabla ─────────────────────────────────────────────────────────────────
     @FXML private TableView<Mesa>            tblListaMesas;
@@ -36,9 +35,9 @@ public class MesaController {
     // ── Formulario ────────────────────────────────────────────────────────────
     @FXML private MFXTextField       txtMesNumero;
     @FXML private MFXTextField       txtMesCapacidad;
-    @FXML private ComboBox<Sede>     cmbSedeMesa;
-    @FXML private ComboBox<AreaMesa> cmbAreaMesa;
-    @FXML private ComboBox<String>   cmbEstadoMesa;
+    @FXML private MFXComboBox<Sede>     cmbSedeMesa;
+    @FXML private MFXComboBox<AreaMesa> cmbAreaMesa;
+    @FXML private MFXComboBox<String>   cmbEstadoMesa;
 
     // ── Botones ───────────────────────────────────────────────────────────────
     @FXML private MFXButton   btnGuardarMesa;
@@ -135,25 +134,22 @@ public class MesaController {
         txtMesNumero.setText(mesa.getNumero());
         txtMesCapacidad.setText(String.valueOf(mesa.getCapacidad()));
 
-        // Uso de API nativa: getSelectionModel().select()
         for (Sede s : cmbSedeMesa.getItems()) {
             if (s.getId() == mesa.getSedeId()) {
-                cmbSedeMesa.getSelectionModel().select(s);
+                cmbSedeMesa.selectItem(s);
                 break;
             }
         }
 
-        // Uso de API nativa: getSelectionModel().select()
         for (AreaMesa a : cmbAreaMesa.getItems()) {
             if (a.getId() == mesa.getAreaId()) {
-                cmbAreaMesa.getSelectionModel().select(a);
+                cmbAreaMesa.selectItem(a);
                 break;
             }
         }
 
-        // Uso de API nativa: getSelectionModel().select()
         if (cmbEstadoMesa != null) {
-            cmbEstadoMesa.getSelectionModel().select(mesa.getEstado());
+            cmbEstadoMesa.selectItem(mesa.getEstado());
         }
 
         btnEliminarMesaForm.setDisable(false);
