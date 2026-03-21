@@ -13,7 +13,7 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.mosqueteros.proyecto_restaurante.controller.LoginController"
            styleClass="login-root"
-           stylesheets="@../styles/login-v5.css">
+           stylesheets="@../styles/styles.css,@../styles/theme-overrides.css,@../styles/login-v5.css">
 
     <VBox fx:id="contenedorFormulario"
           styleClass="login-card"

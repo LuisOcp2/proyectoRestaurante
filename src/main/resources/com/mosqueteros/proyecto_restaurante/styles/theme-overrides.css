@@ -1,6 +1,44 @@
 /* Overrides globales para tematizacion y UI polish */
 
 /* ================================================================
+   FALLBACK PARA SCENE BUILDER
+   Si no existe clase theme-* en el root, usar violet por defecto.
+   ================================================================ */
+
+.root,
+.root-container,
+.layout-root,
+.shell-root,
+.login-root {
+    -color-bg-app: #f9f8ff;
+    -color-surface: #ffffff;
+    -color-surface-alt: #f1ecff;
+    -color-surface-soft: #f6f2ff;
+    -color-border: #ddd7ef;
+    -color-text: #1e1a2b;
+    -color-text-muted: #6f6784;
+    -color-primary: #6f34da;
+    -color-primary-strong: #5522b8;
+    -color-accent: #c6ef43;
+    -color-accent-strong: #a8d132;
+    -color-accent-ink: #1d2b00;
+    -color-danger: #b3261e;
+    -contrast-focus-border: #6f34da;
+    -contrast-focus-width: 1.7px;
+    -contrast-focus-shadow: rgba(111, 52, 218, 0.24);
+    -contrast-table-hover: rgba(111, 52, 218, 0.08);
+    -contrast-table-selected: rgba(111, 52, 218, 0.16);
+    -contrast-table-selected-text: #2b1458;
+    -topbar-start: #6f34da;
+    -topbar-end: #5522b8;
+    -topbar-on: #ffffff;
+    -topbar-on-muted: rgba(255, 255, 255, 0.78);
+    -topbar-search-bg: rgba(255, 255, 255, 0.16);
+    -topbar-search-border: rgba(255, 255, 255, 0.3);
+    -topbar-search-focus-bg: rgba(255, 255, 255, 0.23);
+}
+
+/* ================================================================
    TOKENS GLOBALES DE TEMA
    ================================================================ */
 

@@ -20,7 +20,7 @@
 -->
 <StackPane
     styleClass="layout-root"
-    stylesheets="@../styles/styles.css"
+    stylesheets="@../styles/styles.css,@../styles/theme-overrides.css,@../styles/vista-mesas.css"
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.mosqueteros.proyecto_restaurante.controller.FormaPagoController">

@@ -11,7 +11,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.mosqueteros.proyecto_restaurante.controller.PlatoController"
            styleClass="layout-root"
-           stylesheets="@../styles/vista-platos.css">
+           stylesheets="@../styles/styles.css,@../styles/theme-overrides.css,@../styles/vista-platos.css">
 
     <padding><Insets bottom="28" left="28" right="28" top="28" /></padding>
 
