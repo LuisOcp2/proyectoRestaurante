@@ -5,11 +5,7 @@
    Si no existe clase theme-* en el root, usar violet por defecto.
    ================================================================ */
 
-.root,
-.root-container,
-.layout-root,
-.shell-root,
-.login-root {
+.root {
     -color-bg-app: #f9f8ff;
     -color-surface: #ffffff;
     -color-surface-alt: #f1ecff;
