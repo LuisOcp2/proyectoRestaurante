@@ -13,7 +13,7 @@
 <?import io.github.palexdev.materialfx.controls.*?>
 
 <StackPane
-    styleClass="root-container"
+    styleClass="layout-root"
     stylesheets="@../styles/styles.css"
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
@@ -26,11 +26,11 @@
         <VBox spacing="14" HBox.hgrow="ALWAYS" maxHeight="Infinity">
 
             <VBox alignment="CENTER_LEFT" spacing="4">
-                <Label text="CONFIGURACION GLOBAL" styleClass="input-label"/>
-                <Label styleClass="titulo-texto" text="Parametros del Sistema"/>
+                <Label text="CONFIGURACION GLOBAL" styleClass="form__label"/>
+                <Label styleClass="panel-card__title" text="Parametros del Sistema"/>
             </VBox>
 
-            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+            <VBox styleClass="panel-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
 
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
                     <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
@@ -39,7 +39,7 @@
                         <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted"/>
                         <MFXTextField fx:id="txtBuscarConfiguracion"
                                       promptText="Buscar por clave o valor..."
-                                      styleClass="search-field" HBox.hgrow="ALWAYS" />
+                                      styleClass="input,input--search" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <Region HBox.hgrow="ALWAYS"/>
@@ -55,14 +55,14 @@
                     </MFXButton>
                 </HBox>
 
-                <HBox styleClass="table-header-row">
-                    <Label text="ID" styleClass="col-header" prefWidth="70"/>
-                    <Label text="Clave" styleClass="col-header" HBox.hgrow="ALWAYS"/>
-                    <Label text="Valor" styleClass="col-header" HBox.hgrow="ALWAYS"/>
+                <HBox styleClass="table__head">
+                    <Label text="ID" styleClass="table__col-title" prefWidth="70"/>
+                    <Label text="Clave" styleClass="table__col-title" HBox.hgrow="ALWAYS"/>
+                    <Label text="Valor" styleClass="table__col-title" HBox.hgrow="ALWAYS"/>
                 </HBox>
 
                 <VBox VBox.vgrow="ALWAYS" spacing="0">
-                    <TableView fx:id="tblListaConfiguraciones" styleClass="mesas-table" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="tblListaConfiguraciones" styleClass="table,table--data" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="colIdConfiguracion" text="ID" prefWidth="70"/>
                             <TableColumn fx:id="colClave" text="CLAVE"/>
@@ -71,14 +71,14 @@
                     </TableView>
 
                     <VBox fx:id="boxPlaceholder" alignment="CENTER" spacing="16"
-                          visible="true" managed="true" styleClass="empty-state">
+                          visible="true" managed="true" styleClass="state-empty">
                         <FontIcon iconLiteral="fas-cogs" iconSize="48" styleClass="icon-muted"/>
-                        <Label text="No hay parametros de configuracion" styleClass="titulo-texto"/>
+                        <Label text="No hay parametros de configuracion" styleClass="panel-card__title"/>
                         <Label text="Agrega una nueva clave para iniciar." styleClass="conteo-label"/>
                     </VBox>
                 </VBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="layout-footer">
                     <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
                     <Label fx:id="lblConteoConfiguraciones" styleClass="conteo-label"
                            text="0 configuraciones encontradas" HBox.hgrow="ALWAYS"/>
@@ -102,14 +102,14 @@
 
             <MFXScrollPane fitToWidth="true" fitToHeight="false"
                         hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                        styleClass="form-scroll">
-                <VBox styleClass="main-card" spacing="0">
+                        styleClass="form__body">
+                <VBox styleClass="panel-card" spacing="0">
 
                     <VBox spacing="14">
                         <padding><Insets top="18" right="20" bottom="18" left="20" /></padding>
 
                         <VBox spacing="8" styleClass="theme-panel">
-                            <Label text="Tema visual" styleClass="input-label"/>
+                            <Label text="Tema visual" styleClass="form__label"/>
                             <MFXComboBox fx:id="cmbTemaUI" promptText="Selecciona un tema"
                                       styleClass="input-combo" maxWidth="Infinity" prefHeight="46"/>
                             <VBox spacing="8" styleClass="theme-preview-card" fx:id="boxThemePreview">
@@ -185,7 +185,7 @@
                         </VBox>
 
                         <VBox spacing="8" styleClass="theme-panel">
-                            <Label text="Atajos de configuracion" styleClass="input-label"/>
+                            <Label text="Atajos de configuracion" styleClass="form__label"/>
                             <HBox spacing="8">
                                 <MFXButton onAction="#usarPresetEmpresaNombre" styleClass="btn-outline-secondary" text="Empresa"/>
                                 <MFXButton onAction="#usarPresetMoneda" styleClass="btn-outline-secondary" text="Moneda"/>
@@ -203,7 +203,7 @@
                                 <MFXButton onAction="#usarPresetDecimalesMoneda" styleClass="btn-outline-secondary" text="Decimales"/>
                             </HBox>
                             <VBox spacing="6">
-                                <Label text="Perfil rapido" styleClass="input-label"/>
+                                <Label text="Perfil rapido" styleClass="form__label"/>
                                 <MFXComboBox fx:id="cmbPerfilInicial" promptText="Selecciona un perfil"
                                              styleClass="input-combo" maxWidth="Infinity" prefHeight="44"/>
                             </VBox>
@@ -212,28 +212,28 @@
                         </VBox>
 
                         <VBox spacing="6">
-                            <Label text="Clave *" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="input-wrapper" prefHeight="46">
+                            <Label text="Clave *" styleClass="form__label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="form__control-wrap" prefHeight="46">
                                 <FontIcon iconLiteral="fas-key" iconSize="14" styleClass="icon-muted"/>
                                 <MFXTextField fx:id="txtCfgClave" promptText="Ej. company_name"
-                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
+                                              styleClass="input" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
 
                         <VBox spacing="6">
-                            <Label text="Valor" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="input-wrapper" prefHeight="46">
+                            <Label text="Valor" styleClass="form__label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="form__control-wrap" prefHeight="46">
                                 <FontIcon iconLiteral="fas-align-left" iconSize="14" styleClass="icon-muted"/>
                                 <MFXTextField fx:id="txtCfgValor" promptText="Valor del parametro"
-                                              styleClass="input-field" HBox.hgrow="ALWAYS"/>
+                                              styleClass="input" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
 
-                        <Label fx:id="lblMensajeConfiguracion" styleClass="form-mensaje" text=""
+                        <Label fx:id="lblMensajeConfiguracion" styleClass="form__status" text=""
                                wrapText="true" managed="false" visible="false"/>
                     </VBox>
 
-                    <HBox alignment="CENTER_RIGHT" spacing="8" styleClass="form-footer">
+                    <HBox alignment="CENTER_RIGHT" spacing="8" styleClass="form__actions">
                         <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
 
                         <MFXButton maxWidth="Infinity"

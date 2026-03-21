@@ -10,7 +10,7 @@
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.mosqueteros.proyecto_restaurante.controller.PlatoController"
-           styleClass="root-container"
+           styleClass="layout-root"
            stylesheets="@../styles/vista-platos.css">
 
     <padding><Insets bottom="28" left="28" right="28" top="28" /></padding>
@@ -25,13 +25,13 @@
             <!-- Encabezado con ícono -->
             <HBox spacing="12" alignment="CENTER_LEFT">
                 <FontIcon iconLiteral="fas-utensils" iconSize="24" styleClass="header-icon" />
-                <Label text="Platos del Menú" styleClass="view-title"/>
+                <Label text="Platos del Menú" styleClass="panel-card__title"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="lblConteoPlatos" text="0 platos registrados" styleClass="view-subtitle"/>
             </HBox>
 
             <!-- Card para filtros y tabla -->
-            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" spacing="0">
+            <VBox styleClass="panel-card" VBox.vgrow="ALWAYS" spacing="0">
                 
                 <!-- Toolbar de filtros -->
                 <HBox spacing="12" alignment="CENTER_LEFT">
@@ -39,7 +39,7 @@
                     
                     <HBox styleClass="search-wrapper" prefHeight="36" HBox.hgrow="ALWAYS" maxWidth="350">
                         <FontIcon iconLiteral="fas-search" iconSize="13" styleClass="icon-muted" />
-                        <MFXTextField fx:id="txtBuscarPlato" promptText="Buscar nombre o código..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                        <MFXTextField fx:id="txtBuscarPlato" promptText="Buscar nombre o código..." styleClass="input,input--search" HBox.hgrow="ALWAYS"/>
                     </HBox>
 
                     <MFXComboBox fx:id="cmbFiltroCategoriaPlato" promptText="Categoría" prefWidth="160" prefHeight="36" styleClass="filtro-combo"/>
@@ -53,19 +53,19 @@
                 <Region styleClass="divider" maxHeight="1" minHeight="1" />
 
                 <!-- Cabecera manual de tabla -->
-                <HBox styleClass="table-header-row" spacing="0">
-                    <Label text="ID" prefWidth="60" maxWidth="60" minWidth="60" styleClass="table-header-label"/>
-                    <Label text="CATEGORÍA" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="table-header-label"/>
-                    <Label text="NOMBRE" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="table-header-label"/>
-                    <Label text="PRECIO" prefWidth="100" maxWidth="100" minWidth="100" styleClass="table-header-label table-header-price" alignment="CENTER_RIGHT"/>
-                    <Label text="ESTADO" prefWidth="120" maxWidth="120" minWidth="120" styleClass="table-header-label" alignment="CENTER"/>
+                <HBox styleClass="table__head" spacing="0">
+                    <Label text="ID" prefWidth="60" maxWidth="60" minWidth="60" styleClass="table__col-title"/>
+                    <Label text="CATEGORÍA" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="table__col-title"/>
+                    <Label text="NOMBRE" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="table__col-title"/>
+                    <Label text="PRECIO" prefWidth="100" maxWidth="100" minWidth="100" styleClass="table__col-title,table-header-price" alignment="CENTER_RIGHT"/>
+                    <Label text="ESTADO" prefWidth="120" maxWidth="120" minWidth="120" styleClass="table__col-title" alignment="CENTER"/>
                 </HBox>
 
                 <Region styleClass="divider" maxHeight="1" minHeight="1" />
 
                 <!-- Tabla Personalizada -->
                 <StackPane VBox.vgrow="ALWAYS">
-                    <TableView fx:id="tblListaPlatos" styleClass="mesas-table">
+                    <TableView fx:id="tblListaPlatos" styleClass="table,table--data">
                         <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
                         <columns>
                             <TableColumn fx:id="colPlatId" prefWidth="60" maxWidth="60" minWidth="60" resizable="false"/>
@@ -76,19 +76,19 @@
                         </columns>
                     </TableView>
 
-                    <VBox fx:id="boxPlaceholder" alignment="CENTER" spacing="10" visible="true" managed="true" styleClass="empty-state-container">
+                    <VBox fx:id="boxPlaceholder" alignment="CENTER" spacing="10" visible="true" managed="true" styleClass="state-empty__container">
                         <ImageView fitHeight="160" fitWidth="160" preserveRatio="true" opacity="0.5">
                             <Image url="@../images/empty-dishes.png"/>
                         </ImageView>
-                        <Label text="No hay platos que mostrar" styleClass="placeholder-text"/>
-                        <Label text="Ajusta los filtros o registra un nuevo plato." styleClass="placeholder-subtext"/>
+                        <Label text="No hay platos que mostrar" styleClass="state-empty__title"/>
+                        <Label text="Ajusta los filtros o registra un nuevo plato." styleClass="state-empty__subtitle"/>
                     </VBox>
                 </StackPane>
 
                 <Region styleClass="divider" maxHeight="1" minHeight="1" />
 
                 <!-- Footer estadístico -->
-                <HBox styleClass="footer-bar" alignment="CENTER_LEFT" spacing="10">
+                <HBox styleClass="layout-footer" alignment="CENTER_LEFT" spacing="10">
                     <padding><Insets top="14" right="20" bottom="14" left="20" /></padding>
                     <Label text="Gestión de Carta y Menús" styleClass="footer-text"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -100,8 +100,8 @@
         <!-- ─────────────────────────────────────
              COLUMNA DERECHA: Detalle y Edición
              ───────────────────────────────────── -->
-        <MFXScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll" HBox.hgrow="NEVER" minWidth="340" maxWidth="360">
-            <VBox spacing="0" styleClass="main-card" minWidth="338">
+        <MFXScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form__body" HBox.hgrow="NEVER" minWidth="340" maxWidth="360">
+            <VBox spacing="0" styleClass="panel-card" minWidth="338">
                 
                 <!-- Header del Formulario -->
                 <HBox alignment="CENTER_LEFT" spacing="12">
@@ -122,54 +122,54 @@
                     <padding><Insets top="22" right="22" bottom="22" left="22" /></padding>
 
                     <VBox spacing="5">
-                        <Label text="CÓDIGO DE REFERENCIA" styleClass="input-label"/>
-                        <HBox styleClass="input-wrapper" alignment="CENTER_LEFT">
+                        <Label text="CÓDIGO DE REFERENCIA" styleClass="form__label"/>
+                        <HBox styleClass="form__control-wrap" alignment="CENTER_LEFT">
                             <FontIcon iconLiteral="fas-tag" iconSize="14" styleClass="input-icon"/>
-                            <MFXTextField fx:id="txtPlatCodigo" promptText="Ej: PLT-001" styleClass="transparent-field" HBox.hgrow="ALWAYS"/>
+                            <MFXTextField fx:id="txtPlatCodigo" promptText="Ej: PLT-001" styleClass="input" HBox.hgrow="ALWAYS"/>
                         </HBox>
                     </VBox>
 
                     <VBox spacing="5">
-                        <Label text="NOMBRE DEL PLATO *" styleClass="input-label"/>
-                        <HBox styleClass="input-wrapper" alignment="CENTER_LEFT">
+                        <Label text="NOMBRE DEL PLATO *" styleClass="form__label"/>
+                        <HBox styleClass="form__control-wrap" alignment="CENTER_LEFT">
                             <FontIcon iconLiteral="fas-signature" iconSize="14" styleClass="input-icon"/>
-                            <MFXTextField fx:id="txtPlatNombre" promptText="Ej: Lomo Saltado" styleClass="transparent-field" HBox.hgrow="ALWAYS"/>
+                            <MFXTextField fx:id="txtPlatNombre" promptText="Ej: Lomo Saltado" styleClass="input" HBox.hgrow="ALWAYS"/>
                         </HBox>
                     </VBox>
 
                     <VBox spacing="5">
-                        <Label text="DESCRIPCIÓN" styleClass="input-label"/>
+                        <Label text="DESCRIPCIÓN" styleClass="form__label"/>
                         <TextArea fx:id="txtPlatDescripcion" promptText="Ingredientes, preparación..." prefHeight="80" wrapText="true" styleClass="custom-text-area"/>
                     </VBox>
 
                     <HBox spacing="15">
                         <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <Label text="PRECIO VENTA *" styleClass="input-label"/>
-                            <HBox styleClass="input-wrapper" alignment="CENTER_LEFT">
+                            <Label text="PRECIO VENTA *" styleClass="form__label"/>
+                            <HBox styleClass="form__control-wrap" alignment="CENTER_LEFT">
                                 <Label text="\$" styleClass="currency-prefix"/>
-                                <MFXTextField fx:id="txtPlatPrecio" promptText="0.00" styleClass="transparent-field" HBox.hgrow="ALWAYS"/>
+                                <MFXTextField fx:id="txtPlatPrecio" promptText="0.00" styleClass="input" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
                         <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <Label text="COSTO PROD." styleClass="input-label"/>
-                            <HBox styleClass="input-wrapper" alignment="CENTER_LEFT">
+                            <Label text="COSTO PROD." styleClass="form__label"/>
+                            <HBox styleClass="form__control-wrap" alignment="CENTER_LEFT">
                                 <Label text="\$" styleClass="currency-prefix"/>
-                                <MFXTextField fx:id="txtPlatCosto" promptText="0.00" styleClass="transparent-field" HBox.hgrow="ALWAYS"/>
+                                <MFXTextField fx:id="txtPlatCosto" promptText="0.00" styleClass="input" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
                     </HBox>
 
                     <VBox spacing="5">
-                        <Label text="CATEGORÍA *" styleClass="input-label"/>
+                        <Label text="CATEGORÍA *" styleClass="form__label"/>
                         <MFXComboBox fx:id="cmbCategoriaPlato" promptText="Seleccionar..." maxWidth="Infinity" styleClass="form-combo"/>
                     </VBox>
 
                     <VBox spacing="5">
-                        <Label text="ESTADO *" styleClass="input-label"/>
+                        <Label text="ESTADO *" styleClass="form__label"/>
                         <MFXComboBox fx:id="cmbEstadoPlato" promptText="Seleccionar..." maxWidth="Infinity" styleClass="form-combo"/>
                     </VBox>
 
-                    <Label fx:id="lblMensajePlato" styleClass="form-mensaje" visible="false" managed="false" wrapText="true"/>
+                    <Label fx:id="lblMensajePlato" styleClass="form__status" visible="false" managed="false" wrapText="true"/>
                 </VBox>
 
                 <Region styleClass="divider" maxHeight="1" minHeight="1" />
@@ -178,15 +178,15 @@
                 <VBox spacing="10">
                     <padding><Insets top="18" right="22" bottom="22" left="22" /></padding>
                     
-                    <MFXButton fx:id="btnGuardarPlato" onAction="#guardarPlato" text="Guardar Cambios" styleClass="btn-raised-primary" maxWidth="Infinity" prefHeight="45">
+                    <MFXButton fx:id="btnGuardarPlato" onAction="#guardarPlato" text="Guardar Cambios" styleClass="btn,btn--primary" maxWidth="Infinity" prefHeight="45">
                         <graphic><FontIcon iconLiteral="fas-save" iconSize="14" styleClass="icon-on-primary"/></graphic>
                     </MFXButton>
                     
                     <HBox spacing="10">
-                        <MFXButton fx:id="btnCancelarPlato" onAction="#cancelarEdicion" text="Nuevo / Limpiar" styleClass="btn-outline-primary-form" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="40">
+                        <MFXButton fx:id="btnCancelarPlato" onAction="#cancelarEdicion" text="Nuevo / Limpiar" styleClass="btn,btn--outline-primary" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="40">
                              <graphic><FontIcon iconLiteral="fas-plus" iconSize="12" styleClass="icon-primary"/></graphic>
                         </MFXButton>
-                        <MFXButton fx:id="btnDesactivarPlato" onAction="#desactivarPlato" text="Eliminar" styleClass="btn-outline-danger-form" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="40">
+                        <MFXButton fx:id="btnDesactivarPlato" onAction="#desactivarPlato" text="Eliminar" styleClass="btn,btn--outline-danger" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="40">
                             <graphic><FontIcon iconLiteral="fas-trash-alt" iconSize="12" styleClass="icon-danger"/></graphic>
                         </MFXButton>
                     </HBox>

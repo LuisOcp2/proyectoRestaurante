@@ -38,7 +38,7 @@
     lblMensajeCategoria → Label
 -->
 <StackPane
-    styleClass="root-container"
+    styleClass="layout-root"
     stylesheets="@../styles/styles.css"
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
@@ -54,12 +54,12 @@
 
             <!-- Encabezado de sección -->
             <VBox alignment="CENTER_LEFT" spacing="4">
-                <Label text="CATEGORÍAS DE INSUMO" styleClass="input-label"/>
-                <Label styleClass="titulo-texto" text="Categorías de Insumo"/>
+                <Label text="CATEGORÍAS DE INSUMO" styleClass="form__label"/>
+                <Label styleClass="panel-card__title" text="Categorías de Insumo"/>
             </VBox>
 
             <!-- Card principal -->
-            <VBox styleClass="main-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
+            <VBox styleClass="panel-card" VBox.vgrow="ALWAYS" maxHeight="Infinity" spacing="0">
 
                 <!-- Barra de filtros -->
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="filter-bar">
@@ -71,7 +71,7 @@
                         <MFXTextField
                             fx:id="txtBuscarCategoria"
                             promptText="Buscar por nombre o descripción..."
-                            styleClass="search-field"
+                            styleClass="input,input--search"
                             HBox.hgrow="ALWAYS" />
                     </HBox>
 
@@ -79,7 +79,7 @@
 
                     <!-- Filtro por estado -->
                     <VBox spacing="2">
-                        <Label text="Estado" styleClass="input-label"/>
+                        <Label text="Estado" styleClass="form__label"/>
                         <MFXComboBox fx:id="cmbFiltroEstado"
                                   promptText="Todos los estados"
                                   prefWidth="140"
@@ -100,7 +100,7 @@
                 <!-- TABLA: columnas solo con fx:id, el binding se hace en Java -->
                 <VBox VBox.vgrow="ALWAYS" spacing="0">
                     <TableView fx:id="tblListaCategorias"
-                               styleClass="mesas-table"
+                               styleClass="table,table--data"
                                VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="colId"          text="ID"          prefWidth="60"/>
@@ -116,15 +116,15 @@
                           spacing="16"
                           visible="true"
                           managed="true"
-                          styleClass="empty-state">
+                          styleClass="state-empty">
                         <FontIcon iconLiteral="fas-folder-open" iconSize="48" styleClass="icon-muted"/>
-                        <Label text="No hay categorías de insumo registradas" styleClass="titulo-texto"/>
+                        <Label text="No hay categorías de insumo registradas" styleClass="panel-card__title"/>
                         <Label text="Ajusta los filtros o agrega una nueva categoría." styleClass="conteo-label"/>
                     </VBox>
                 </VBox>
 
                 <!-- Footer de tabla -->
-                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-footer">
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="layout-footer">
                     <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
                     <Label fx:id="lblConteoCategorias"
                            styleClass="conteo-label"
@@ -151,8 +151,8 @@
 
             <MFXScrollPane fitToWidth="true" fitToHeight="false"
                         hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                        styleClass="form-scroll">
-                <VBox styleClass="main-card" spacing="0">
+                        styleClass="form__body">
+                <VBox styleClass="panel-card" spacing="0">
 
                     <VBox spacing="18">
                         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
@@ -174,12 +174,12 @@
 
                         <!-- Campo: Descripción -->
                         <VBox spacing="6">
-                            <Label text="Descripción" styleClass="input-label"/>
-                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="input-wrapper">
+                            <Label text="Descripción" styleClass="form__label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="form__control-wrap">
                                 <FontIcon iconLiteral="fas-sticky-note" iconSize="14" styleClass="icon-muted"/>
                                 <MFXTextField fx:id="txtCatDescripcion"
                                               promptText="Descripción detallada"
-                                              styleClass="input-field"
+                                              styleClass="input"
                                               HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
@@ -198,7 +198,7 @@
                         </VBox>
 
                         <Label fx:id="lblMensajeCategoria"
-                               styleClass="form-mensaje"
+                               styleClass="form__status"
                                text=""
                                wrapText="true"
                                managed="false"
@@ -206,7 +206,7 @@
                     </VBox>
 
                     <!-- Footer del formulario -->
-                    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
+                    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form__actions">
                         <padding><Insets top="16" right="24" bottom="16" left="24" /></padding>
 
                         <MFXButton fx:id="btnGuardarCategoria"

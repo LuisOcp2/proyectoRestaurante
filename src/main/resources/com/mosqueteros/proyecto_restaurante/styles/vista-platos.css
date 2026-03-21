@@ -1,11 +1,13 @@
 /* Vista Platos - version simplificada y theme-driven */
 
-.root-container {
+.root-container,
+.layout-root {
     -fx-background-color: -color-bg-app;
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-.main-card {
+.main-card,
+.panel-card {
     -fx-background-color: -color-surface;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
@@ -14,7 +16,9 @@
 }
 
 .form-scroll,
-.form-scroll > .viewport {
+.form-scroll > .viewport,
+.form__body,
+.form__body > .viewport {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
@@ -24,6 +28,7 @@
 }
 
 .view-title,
+.panel-card__title,
 .card-title {
     -fx-font-size: 24px;
     -fx-font-weight: 700;
@@ -33,7 +38,8 @@
 .view-subtitle,
 .card-subtitle,
 .footer-text,
-.placeholder-subtext {
+.placeholder-subtext,
+.state-empty__subtitle {
     -fx-text-fill: -color-text-muted;
 }
 
@@ -45,6 +51,7 @@
 
 .search-wrapper,
 .filtro-combo-nativo,
+.filtro-combo,
 .input-wrapper,
 .form-combo,
 .custom-text-area {
@@ -63,6 +70,7 @@
 
 .search-wrapper:focused-within,
 .filtro-combo-nativo:focused,
+.filtro-combo:focused,
 .input-wrapper:focused-within,
 .form-combo:focused,
 .custom-text-area:focused {
@@ -72,7 +80,9 @@
 }
 
 .search-field,
+.input--search,
 .transparent-field,
+.input,
 .form-combo {
     -fx-background-color: transparent;
     -fx-text-fill: -color-text;
@@ -80,11 +90,17 @@
 }
 
 .search-field > .line,
+.input--search > .line,
 .search-field > .focused-line,
+.input--search > .focused-line,
 .search-field > .unfocused-line,
+.input--search > .unfocused-line,
 .transparent-field > .line,
+.input > .line,
 .transparent-field > .focused-line,
+.input > .focused-line,
 .transparent-field > .unfocused-line,
+.input > .unfocused-line,
 .form-combo > .line,
 .form-combo > .focused-line,
 .form-combo > .unfocused-line {
@@ -93,6 +109,7 @@
 }
 
 .filtro-combo-nativo .list-cell,
+.filtro-combo .list-cell,
 .form-combo .label,
 .form-combo .text {
     -fx-background-color: transparent;
@@ -100,50 +117,60 @@
 }
 
 .filtro-combo-nativo .arrow,
+.filtro-combo .arrow,
 .form-combo .arrow {
     -fx-background-color: -color-text-muted;
 }
 
 .filtro-combo-nativo .combo-box-popup > .list-view,
+.filtro-combo .combo-box-popup > .list-view,
 .form-combo .combo-popup {
     -fx-background-color: -color-surface;
     -fx-border-color: -color-border;
 }
 
 .filtro-combo-nativo .combo-box-popup .list-cell,
+.filtro-combo .combo-box-popup .list-cell,
 .form-combo .combo-popup .list-cell {
     -fx-background-color: transparent;
     -fx-text-fill: -color-text;
 }
 
 .filtro-combo-nativo .combo-box-popup .list-cell:hover,
+.filtro-combo .combo-box-popup .list-cell:hover,
 .form-combo .combo-popup .list-cell:hover {
     -fx-background-color: -contrast-table-hover;
 }
 
 .filtro-combo-nativo .combo-box-popup .list-cell:selected,
+.filtro-combo .combo-box-popup .list-cell:selected,
 .form-combo .combo-popup .list-cell:selected {
     -fx-background-color: -contrast-table-selected;
     -fx-text-fill: -contrast-table-selected-text;
     -fx-font-weight: 600;
 }
 
-.table-header-row {
+.table-header-row,
+.table__head {
     -fx-background-color: -color-surface;
 }
 
-.table-header-label {
+.table-header-label,
+.table__col-title {
     -fx-text-fill: -color-text-muted;
     -fx-font-weight: 700;
 }
 
-.mesas-table {
+.mesas-table,
+.table--data {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
 
 .mesas-table .column-header,
-.mesas-table .column-header-background {
+.mesas-table .column-header-background,
+.table--data .column-header,
+.table--data .column-header-background {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-pref-height: 0;
@@ -152,20 +179,24 @@
     visibility: hidden;
 }
 
-.mesas-table .table-cell {
+.mesas-table .table-cell,
+.table--data .table-cell {
     -fx-text-fill: -color-text;
 }
 
-.mesas-table .table-row-cell {
+.mesas-table .table-row-cell,
+.table--data .table-row-cell {
     -fx-border-color: transparent transparent -color-border transparent;
     -fx-border-width: 0 0 1 0;
 }
 
-.mesas-table .table-row-cell:hover {
+.mesas-table .table-row-cell:hover,
+.table--data .table-row-cell:hover {
     -fx-background-color: -contrast-table-hover;
 }
 
-.mesas-table .table-row-cell:selected {
+.mesas-table .table-row-cell:selected,
+.table--data .table-row-cell:selected {
     -fx-background-color: -contrast-table-selected;
 }
 
@@ -174,16 +205,19 @@
     -fx-background-radius: 10;
 }
 
-.input-label {
+.input-label,
+.form__label {
     -fx-text-fill: -color-primary;
     -fx-font-size: 13px;
     -fx-font-weight: 600;
 }
 
-.form-mensaje {
+.form-mensaje,
+.form__status {
     -fx-text-fill: -color-primary;
 }
 
+.btn,
 .btn-raised-primary,
 .btn-outline-primary-form,
 .btn-outline-danger-form,
@@ -193,7 +227,8 @@
     -fx-font-weight: 600;
 }
 
-.placeholder-text {
+.placeholder-text,
+.state-empty__title {
     -fx-text-fill: -color-text;
 }
 
@@ -202,8 +237,53 @@
     -fx-font-weight: 700;
 }
 
-.footer-bar {
+.footer-bar,
+.layout-footer {
     -fx-background-color: -color-surface;
+}
+
+.input-wrapper,
+.form__control-wrap {
+    -fx-padding: 0 14;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.input-wrapper:focused-within,
+.form__control-wrap:focused-within {
+    -fx-border-color: -contrast-focus-border;
+    -fx-border-width: -contrast-focus-width;
+    -fx-effect: dropshadow(gaussian, -contrast-focus-shadow, 8, 0.12, 0, 1);
+}
+
+.empty-state-container,
+.state-empty__container {
+    -fx-alignment: CENTER;
+}
+
+.btn--primary,
+.btn--outline-primary,
+.btn--outline-danger {
+    -fx-font-weight: 600;
+}
+
+.btn--primary {
+    -fx-background-color: -color-primary;
+    -fx-text-fill: -contrast-btn-primary-text;
+    -fx-border-color: transparent;
+}
+
+.btn--outline-primary {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-primary;
+    -fx-border-color: -color-primary;
+    -fx-border-width: 1;
+}
+
+.btn--outline-danger {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-danger;
+    -fx-border-color: -color-danger;
+    -fx-border-width: 1;
 }
 
 .form-scroll .scroll-bar:vertical .thumb {

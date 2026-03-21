@@ -1,11 +1,13 @@
 /* Vista Mesas - version simplificada y theme-driven */
 
-.root-container {
+.root-container,
+.layout-root {
     -fx-background-color: -color-bg-app;
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-.main-card {
+.main-card,
+.panel-card {
     -fx-background-color: -color-surface;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
@@ -14,7 +16,9 @@
 }
 
 .form-scroll,
-.form-scroll > .viewport {
+.form-scroll > .viewport,
+.form__body,
+.form__body > .viewport {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
@@ -24,7 +28,13 @@
     -fx-max-height: 1;
 }
 
-.titulo-texto {
+.footer-bar,
+.layout-footer {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.titulo-texto,
+.panel-card__title {
     -fx-font-size: 30px;
     -fx-font-weight: 800;
     -fx-text-fill: -color-text;
@@ -33,13 +43,15 @@
 .header-icon { -fx-icon-color: -color-primary; }
 .icon-muted { -fx-icon-color: -color-text-muted; }
 
-.input-label {
+.input-label,
+.form__label {
     -fx-font-size: 13px;
     -fx-font-weight: 700;
     -fx-text-fill: -color-primary;
 }
 
 .input-wrapper,
+.form__control-wrap,
 .search-wrapper,
 .filtro-combo-nativo {
     -fx-background-color: -color-surface;
@@ -49,7 +61,8 @@
     -fx-background-radius: 8;
 }
 
-.input-wrapper {
+.input-wrapper,
+.form__control-wrap {
     -fx-padding: 0 14;
 }
 
@@ -60,6 +73,7 @@
 }
 
 .input-wrapper:focused-within,
+.form__control-wrap:focused-within,
 .search-wrapper:focused-within,
 .filtro-combo-nativo:focused {
     -fx-border-color: -contrast-focus-border;
@@ -68,22 +82,30 @@
 }
 
 .input-field,
+.input,
 .input-combo,
 .search-field,
-.search-field {
+.search-field,
+.input--search {
     -fx-background-color: transparent;
 }
 
 .input-field .text-field,
+.input .text-field,
 .search-field,
-.search-field .text-field {
+.search-field .text-field,
+.input--search,
+.input--search .text-field {
     -fx-text-fill: -color-text;
     -fx-prompt-text-fill: -color-text-muted;
 }
 
 .input-field > .line,
+.input > .line,
 .input-field > .focused-line,
+.input > .focused-line,
 .input-field > .unfocused-line,
+.input > .unfocused-line,
 .search-field > .line,
 .search-field > .focused-line,
 .search-field > .unfocused-line {
@@ -127,25 +149,30 @@
     -fx-font-weight: 700;
 }
 
-.table-header-row {
+.table-header-row,
+.table__head {
     -fx-background-color: -color-surface;
     -fx-padding: 16 20;
     -fx-border-color: transparent transparent -color-border transparent;
     -fx-border-width: 0 0 1 0;
 }
 
-.col-header {
+.col-header,
+.table__col-title {
     -fx-font-weight: 700;
     -fx-font-size: 11px;
     -fx-text-fill: -color-text-muted;
 }
 
-.mesas-table {
+.mesas-table,
+.table--data {
     -fx-background-color: transparent;
 }
 
 .mesas-table .column-header,
-.mesas-table .column-header-background {
+.mesas-table .column-header-background,
+.table--data .column-header,
+.table--data .column-header-background {
     -fx-background-color: transparent;
     -fx-pref-height: 0;
     -fx-max-height: 0;
@@ -153,31 +180,37 @@
     visibility: hidden;
 }
 
-.mesas-table .table-cell {
+.mesas-table .table-cell,
+.table--data .table-cell {
     -fx-text-fill: -color-text;
     -fx-font-size: 14px;
     -fx-padding: 14 16;
 }
 
-.mesas-table .table-row-cell {
+.mesas-table .table-row-cell,
+.table--data .table-row-cell {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent -color-border transparent;
     -fx-border-width: 0 0 1 0;
 }
 
-.mesas-table .table-row-cell:hover {
+.mesas-table .table-row-cell:hover,
+.table--data .table-row-cell:hover {
     -fx-background-color: -contrast-table-hover;
 }
 
-.mesas-table .table-row-cell:selected {
+.mesas-table .table-row-cell:selected,
+.table--data .table-row-cell:selected {
     -fx-background-color: -contrast-table-selected;
 }
 
-.mesas-table .table-row-cell:selected .table-cell {
+.mesas-table .table-row-cell:selected .table-cell,
+.table--data .table-row-cell:selected .table-cell {
     -fx-text-fill: -contrast-table-selected-text;
     -fx-font-weight: 700;
 }
 
+.btn,
 .btn-raised-primary,
 .btn-buscar-raised,
 .btn-outline-primary,
@@ -189,6 +222,38 @@
     -fx-background-radius: 10;
     -fx-border-radius: 10;
     -fx-font-weight: 700;
+}
+
+.btn--primary,
+.btn--outline-primary,
+.btn--outline-secondary,
+.btn--outline-danger,
+.btn--search,
+.btn--ghost {
+    -fx-font-weight: 700;
+}
+
+.form-footer,
+.form__actions {
+    -fx-spacing: 10;
+}
+
+.form-mensaje,
+.form__status {
+    -fx-wrap-text: true;
+}
+
+.placeholder-text,
+.state-empty__title {
+    -fx-text-fill: -color-text;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+}
+
+.placeholder-subtext,
+.state-empty__subtitle {
+    -fx-text-fill: -color-text-muted;
+    -fx-font-size: 13px;
 }
 
 .form-header-badge {
@@ -205,6 +270,13 @@
 .form-header-titulo {
     -fx-font-size: 20px;
     -fx-font-weight: 800;
+    -fx-text-fill: -color-text;
+}
+
+.subtitulo-seccion,
+.panel-card__subtitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
     -fx-text-fill: -color-text;
 }
 

@@ -11,8 +11,22 @@
     -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
+.layout-root {
+    -fx-background-color: #F8F9FA;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+}
+
 /* ── TARJETAS / CARDS ── */
 .main-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #E9ECEF;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.08), 14, 0, 0, 3);
+}
+
+.panel-card {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
@@ -29,11 +43,26 @@
 }
 .form-scroll > .viewport { -fx-background-color: transparent; }
 
+.form__body {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.form__body > .viewport { -fx-background-color: transparent; }
+
 /* Líneas divisorias entre secciones */
 .divider { -fx-background-color: #E9ECEF; }
 
 /* ── TEXTOS DE CABECERA ── */
 .titulo-texto {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #000000;
+}
+
+.panel-card__title {
     -fx-font-size: 26px;
     -fx-font-weight: 800;
     -fx-text-fill: #000000;
@@ -62,9 +91,25 @@
     -fx-border-width: 0;
     -fx-min-height: 20;
 }
+
+.input,
+.input--search {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #6C757D;
+    -fx-font-size: 13px;
+    -fx-border-width: 0;
+}
 .search-field > .line,
 .search-field > .focused-line,
 .search-field > .unfocused-line { -fx-stroke: transparent; }
+
+.input > .line,
+.input > .focused-line,
+.input > .unfocused-line,
+.input--search > .line,
+.input--search > .focused-line,
+.input--search > .unfocused-line { -fx-stroke: transparent; }
 
 /* ═══════════════════════════════════════════════════════════════════
    COMBOS NATIVOS DE FILTRO
@@ -158,7 +203,20 @@
     -fx-background-color: rgba(126,59,237,0.07);
     -fx-padding: 10 20 10 20;
 }
+
+.table__head {
+    -fx-background-color: rgba(126,59,237,0.07);
+    -fx-padding: 10 20 10 20;
+}
 .col-header {
+    -fx-font-weight: 700;
+    -fx-font-size: 11px;
+    -fx-text-fill: #6C757D;
+    -fx-padding: 0 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table__col-title {
     -fx-font-weight: 700;
     -fx-font-size: 11px;
     -fx-text-fill: #6C757D;
@@ -173,8 +231,24 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+
+.table,
+.table--data {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
 .mesas-table .column-header,
 .mesas-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    visibility: hidden;
+}
+
+.table--data .column-header,
+.table--data .column-header-background {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-pref-height: 0;
@@ -187,13 +261,28 @@
     -fx-font-size: 13px;
     -fx-padding: 13 16;
 }
+
+.table--data .table-cell {
+    -fx-text-fill: #000000;
+    -fx-font-size: 13px;
+    -fx-padding: 13 16;
+}
 /* Fila de la tabla con separador gris */
 .mesas-table .table-row-cell {
     -fx-border-color: transparent transparent #E9ECEF transparent;
     -fx-border-width: 0 0 1 0;
 }
+
+.table--data .table-row-cell {
+    -fx-border-color: transparent transparent #E9ECEF transparent;
+    -fx-border-width: 0 0 1 0;
+}
 /* Fila seleccionada: fondo violeta suave */
 .mesas-table .table-row-cell:selected {
+    -fx-background-color: rgba(126,59,237,0.10);
+}
+
+.table--data .table-row-cell:selected {
     -fx-background-color: rgba(126,59,237,0.10);
 }
 
@@ -223,12 +312,22 @@
     -fx-background-color: rgba(126,59,237,0.05);
     -fx-background-radius: 0 0 12 12;
 }
+
+.layout-footer {
+    -fx-background-color: rgba(126,59,237,0.05);
+    -fx-background-radius: 0 0 12 12;
+}
 .conteo-label {
     -fx-text-fill: #6C757D;
     -fx-font-weight: 500;
     -fx-font-size: 13px;
 }
 .form-footer {
+    -fx-background-color: rgba(126,59,237,0.05);
+    -fx-background-radius: 0 0 12 12;
+}
+
+.form__actions {
     -fx-background-color: rgba(126,59,237,0.05);
     -fx-background-radius: 0 0 12 12;
 }
@@ -262,7 +361,23 @@
     -fx-font-weight: 600;
     -fx-text-fill: #000000;
 }
+
+.form__label {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #000000;
+}
 .input-wrapper {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E9ECEF;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(126,59,237,0.05), 3, 0, 0, 1);
+}
+
+.form__control-wrap {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E9ECEF;
     -fx-border-radius: 8;
@@ -302,9 +417,7 @@
     -fx-background-radius: 0 0 12 12;
 }
 
-/* ════════════════════════════════════════════════════════════════════════════════ */
-   BOTONES DEL SISTEMA
-═════════════════════════════════════════════════════════════════════════ */
+
 /* Botón primario: fondo violeta, texto blanco */
 .btn-raised-primary {
     -fx-background-color: #7E3BED;
@@ -395,6 +508,12 @@
 }
 
 .form-mensaje {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #DC3545;
+    -fx-font-weight: 500;
+}
+
+.form__status {
     -fx-font-size: 12.5px;
     -fx-text-fill: #DC3545;
     -fx-font-weight: 500;
